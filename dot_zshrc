@@ -1,5 +1,7 @@
 export ZSH="$HOME/.oh-my-zsh"
 
+source "$HOME/.exports"
+
 CASE_SENSITIVE="false"
 HYPHEN_INSENSITIVE="true"
 
