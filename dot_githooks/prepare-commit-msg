@@ -1,0 +1,17 @@
+#!/bin/bash
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+if [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "message" ] || [ -z "$COMMIT_SOURCE" ]; then
+  ref=$(git rev-parse --abbrev-ref HEAD)
+  if [[ $ref =~ ^.*((BEE)-[0-9]+).* ]]; then
+    hint=$(cat "$COMMIT_MSG_FILE")
+    ticket="${BASH_REMATCH[1]}"
+    if [ "$COMMIT_SOURCE" = "template" ]; then
+      sed -i "s/JIRA_ISSUE_REF/${ticket}/" "$COMMIT_MSG_FILE"
+    else
+      echo "[${ticket}] $hint" > "$COMMIT_MSG_FILE"
+    fi
+  fi
+fi

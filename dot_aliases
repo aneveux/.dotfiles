@@ -8,3 +8,5 @@ alias df='df -h'
 alias free='free -m'
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection c -o'
+
+[ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"

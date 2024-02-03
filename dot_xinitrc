@@ -73,4 +73,6 @@ xmodmap -e "keysym Caps_Lock = Escape"
 
 source "$HOME/.exports"
 
+[ -f ~/.xprofile ] && source ~/.xprofile
+
 exec $(get_session "$1")

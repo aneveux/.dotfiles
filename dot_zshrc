@@ -22,16 +22,6 @@ typeset -U path
 path=(~/bin ~/.local/bin $path[@])
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
-# sourcing .zshrc.d
-
-zshrcd="$HOME/.zshrc.d"
-if [ -d "$zshrcd" ]; then
-    zfiles=("$zshrcd/"*.zsh)
-    for zf in $zfiles; do
-        [ -r $zf ] && . $zf
-    done
-fi
-
 # oh-my-zsh
 
 zstyle ':omz:update' mode reminder  # just remind me to update when it's time
@@ -48,6 +38,16 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# sourcing .zshrc.d
+
+zshrcd="$HOME/.zshrc.d"
+if [ -d "$zshrcd" ]; then
+    zfiles=("$zshrcd/"*.zsh)
+    for zf in $zfiles; do
+        [ -r $zf ] && . $zf
+    done
+fi
 
 # asdf
 
