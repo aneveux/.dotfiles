@@ -1,10 +1,13 @@
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 
+export GTK_THEME='Catppuccin-Mocha-Standard-Blue-dark:dark'
+
 export MANPAGER='most'
 export PAGER='most'
 export SHELL='/usr/bin/zsh'
 
+export TERMINAL='/usr/bin/kitty'
 export BROWSER='firefox'
 export EDITOR='nvim'
 export VISUAL='nvim'

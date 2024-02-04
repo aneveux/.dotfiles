@@ -181,16 +181,16 @@ mode "$mode_gaps_outer" {
 # Workspaces
 # -------------------
 
-set $WS1 "1:"
-set $WS2 "2:"
-set $WS3 "3:"
-set $WS4 "4:"
-set $WS5 "5:"
-set $WS6 "6:"
-set $WS7 "7:"
-set $WS8 "8:"
-set $WS9 "9:"
-set $WS10 "10:"
+set $WS1 "1:"
+set $WS2 "2:󰅩"
+set $WS3 "3:󰈹"
+set $WS4 "4:"
+set $WS5 "5:󰒱"
+set $WS6 "6:󰭹"
+set $WS7 "7:󰆚"
+set $WS8 "8:󰏚"
+set $WS9 "9:󰄛"
+set $WS10 "10:󰳗"
 
 # ---------------------------------------------------
 # Workspaces Switcher
@@ -392,8 +392,8 @@ for_window [class="Xfburn"] floating enable
 # -------------------------
 
 # rofi for running applications or ssh-ing to machines
-bindsym $mod+d exec "rofi -no-lazy-grab -combi-modi window,drun -modi combi,window,drun,ssh -show combi -config ~/.config/rofi/config-fuzzy.rasi -theme ~/.config/rofi/nord.rasi"
-bindsym $mod+Shift+d exec "rofi -no-lazy-grab -modi ssh,window,drun -show ssh -config ~/.config/rofi/config-fuzzy.rasi -theme ~/.config/rofi/nord.rasi"
+bindsym $mod+d exec "rofi -no-lazy-grab -combi-modi window,drun -modi combi,window,drun,ssh -show combi"
+bindsym $mod+Shift+d exec "rofi -no-lazy-grab -modi ssh,window,drun -show ssh"
 
 bindsym $mod+Shift+f exec "~/.i3/search.sh"
 bindsym $mod+Shift+p exec "flameshot gui"
@@ -450,9 +450,8 @@ bindsym $mod+Shift+l exec ~/.i3/lock.sh
 # Autostart Services
 # --------------
 
-exec_always --no-startup-id feh --bg-center ~/wallpaper.jpg
+exec_always --no-startup-id feh --bg-center ~/wallpaper.png
 exec --no-startup-id pamac-tray
-exec --no-startup-id clipit
 exec --no-startup-id nm-applet 
 exec --no-startup-id dex --autostart --environment i3
 

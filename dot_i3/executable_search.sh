@@ -53,10 +53,10 @@ gen_list() {
 
 main() {
   # Pass the list to rofi
-  platform=$( (gen_list) | rofi -dmenu -matching fuzzy -no-custom -location 0 -p "🔎 > " -theme ~/.config/rofi/nord.rasi -config ~/.config/rofi/config-fuzzy.rasi)
+  platform=$( (gen_list) | rofi -dmenu -matching fuzzy -no-custom -location 0 -p "🔎 > ")
 
   if [[ -n "$platform" ]]; then
-    query=$( (echo) | rofi -dmenu -matching fuzzy -location 0 -p "❓ > " -theme ~/.config/rofi/nord.rasi -config ~/.config/rofi/config-fuzzy.rasi)
+    query=$( (echo) | rofi -dmenu -matching fuzzy -location 0 -p "❓ > ")
 
     if [[ -n "$query" ]]; then
       url=${URLS[$platform]}$query
