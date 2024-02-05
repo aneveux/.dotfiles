@@ -75,7 +75,6 @@ font pango: hack, Awesome 10
 
 new_window pixel 1
 new_float normal
-# hide_edge_borders smart
 hide_edge_borders none
 for_window [class="^.*"] border pixel 1
 smart_borders on
@@ -132,8 +131,7 @@ client.background        $base
 # --------------
 
 gaps inner 10
-gaps outer 2
-# gaps outer -4
+gaps outer 0
 smart_gaps on
 
 # --------------
@@ -388,6 +386,25 @@ for_window [class="(?i)virtualbox"] floating enable border normal
 for_window [class="Xfburn"] floating enable
 
 # ---------------------------------------------------
+# Monitors
+# -------------------------
+
+set $MAIN DP-4
+set $LEFT HDMI-0
+
+workspace $WS1 output $MAIN
+workspace $WS2 output $MAIN
+workspace $WS3 output $MAIN
+workspace $WS4 output $MAIN
+workspace $WS5 output $MAIN
+workspace $WS7 output $MAIN
+workspace $WS8 output $MAIN
+workspace $WS9 output $MAIN
+workspace $WS10 output $MAIN
+
+workspace $WS6 output $LEFT
+
+# ---------------------------------------------------
 # Applications
 # -------------------------
 
@@ -430,7 +447,7 @@ mode $launcher_mode {
 bindsym $mod+Shift+e exec "~/.config/rofi/powermenu.sh"
 
 # exit i3 (logs you out of your X session)
-bindsym $mod+End mode "$mode_system"
+bindsym $mod+BackSpace mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
     bindsym l exec --no-startup-id ~/.i3/lock.sh, mode "default"
@@ -465,9 +482,7 @@ exec_always --no-startup-id $HOME/.config/polybar/polybar.sh
 
 # https://forum.manjaro.org/t/pamac-manager-issues/9813/26
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-
 exec --no-startup-id picom --conf ~/.config/picom/picom.conf -b
-
 exec --no-startup-id dunst
 exec --no-startup-id nextcloud --background
 

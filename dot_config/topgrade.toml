@@ -1,2 +1,3 @@
+[misc]
 [commands]
 "asdf" = "asdf update && asdf plugin update --all"
