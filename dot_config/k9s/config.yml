@@ -1,4 +1,6 @@
 k9s:
+  ui:
+    skin: catppuccin-mocha
   liveViewAutoRefresh: false
   refreshRate: 2
   maxConnRetry: 5
@@ -33,7 +35,7 @@ k9s:
         active: default
         lockFavorites: false
         favorites:
-        - default
+          - default
       view:
         active: po
       featureGates:
