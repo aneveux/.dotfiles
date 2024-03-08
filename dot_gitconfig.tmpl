@@ -1,6 +1,6 @@
 [user]
 	name = Antoine Neveux
-	email = antoine@neveux.me
+	email = {{ .email }}
 	signingkey = 72C9B89DB1F04D9C6F52D20F9A20D59AA892142A 
 
 [commit]
@@ -171,3 +171,7 @@
 #	insteadOf = "https://github.com/"
 #	pushInsteadOf = "https://github.com/"
 
+{{ if eq .chezmoi.hostname "flower" }}
+[secrets]
+	providers = opscore security run git-secrets-provider -q
+{{ end }}

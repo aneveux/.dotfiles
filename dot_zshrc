@@ -33,7 +33,6 @@ plugins=(
     extract
     safe-paste
     tmux
-    zoxide
     git
     jira
 )
@@ -49,6 +48,16 @@ if [ -d "$zshrcd" ]; then
         [ -r $zf ] && . $zf
     done
 fi
+
+# sourcing local zsh if exists
+
+localzshrcd="$HOME/local/zshrc.d"
+if [ -d "$localzshrcd" ]; then 
+    localzfiles=("$localzshrcd/"*.zsh)
+    for localzf in $localzfiles; do 
+        [ -r $localzf ] && . $localzf
+    done
+fi 
 
 # asdf
 
@@ -95,6 +104,10 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 source $ZSH/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $ZSH/custom/resources/zsh-syntax-highlighting/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh
 source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# zoxide 
+
+eval "$(zoxide init zsh --cmd cd)"
 
 # prompt
 

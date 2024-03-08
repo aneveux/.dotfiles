@@ -25,3 +25,4 @@ Host *
   IdentityFile ~/.ssh/id_rsa_yubikey.pub
 
 Include config.d/*
+Include local/sshconfig.d/*
