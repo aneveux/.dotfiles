@@ -389,8 +389,8 @@ for_window [class="Xfburn"] floating enable
 # Monitors
 # -------------------------
 
-set $MAIN DP-4
-set $LEFT HDMI-0
+set $MAIN {{ .main_monitor }}
+set $LEFT {{ .vertical_monitor }}
 
 workspace $WS1 output $MAIN
 workspace $WS2 output $MAIN
@@ -404,6 +404,12 @@ workspace $WS10 output $MAIN
 
 workspace $WS6 output $LEFT
 
+{{ if eq .chezmoi.hostname "flower" }}
+bindsym $mod+Shift+m exec ~/.i3/multiscreen.sh
+bindsym $mod+m exec ~/.i3/laptop.sh
+bindsym $mod+j exec ~/.i3/jira.sh
+
+{{ end }}
 # ---------------------------------------------------
 # Applications
 # -------------------------

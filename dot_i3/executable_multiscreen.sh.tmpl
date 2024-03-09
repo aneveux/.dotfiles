@@ -1,0 +1,9 @@
+#!/bin/env bash
+
+# MAIN MONITOR
+xrandr --output {{ .main_monitor }} --primary --mode 3440x1440 --pos 1080x240 --rotate normal
+
+# VERTICAL MONITOR
+xrandr --output {{ .vertical_monitor }} --mode 1920x1080 --pos 0x0 --rotate left
+
+xrandr --output eDP-1 --off
