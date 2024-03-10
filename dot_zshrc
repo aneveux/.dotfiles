@@ -11,11 +11,16 @@ HYPHEN_INSENSITIVE="true"
 HIST_STAMPS="yyyy-mm-dd"
 
 setopt auto_cd
+setopt interactivecomments
+setopt append_history
+setopt no_match
 unsetopt correct
 unsetopt correct_all
 setopt extended_glob
 setopt print_exit_value
 setopt COMPLETE_ALIASES
+setopt no_list_ambiguous
+setopt MENU_COMPLETE
 
 # path
 
