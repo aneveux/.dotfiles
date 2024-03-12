@@ -17,7 +17,7 @@ if [ ! -d "$ZSH_PLUGINS/fzf-tab" ]; then
 fi
 
 if [ ! -d "$ZSH_PLUGINS/zsh-autosuggestions" ]; then
-  git clone git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_PLUGINS/zsh-autosuggestions"
+  git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_PLUGINS/zsh-autosuggestions"
 fi
 
 if [ ! -d "$ZSH_PLUGINS/zsh-syntax-highlighting" ]; then
