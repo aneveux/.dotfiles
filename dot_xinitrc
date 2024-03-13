@@ -63,13 +63,11 @@ get_session() {
   echo "dbus-launch ${dbus_args[*]}"
 }
 
-# nvidia
-nvidia-settings --load-config-only
-
-# keyboard
 source "$HOME/.keyboard"
 
 source "$HOME/.exports"
+
+nvidia-settings --load-config-only
 
 [ -f ~/.xprofile ] && source ~/.xprofile
 
