@@ -1,6 +1,5 @@
 return {
 
-  "christoomey/vim-tmux-navigator",
   "editorconfig/editorconfig-vim",
   "nacro90/numb.nvim",
   {
