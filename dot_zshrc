@@ -111,6 +111,10 @@ source $ZSH/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $ZSH/custom/resources/zsh-syntax-highlighting/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh
 source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# 1password CLI completions 
+
+which op &> /dev/null && eval "$(op completion zsh)" && compdef _op op
+
 # zoxide 
 
 eval "$(zoxide init zsh --cmd cd)"
