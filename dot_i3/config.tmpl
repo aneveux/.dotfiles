@@ -404,12 +404,6 @@ workspace $WS10 output $MAIN
 
 workspace $WS6 output $LEFT
 
-{{ if eq .chezmoi.hostname "flower" }}
-bindsym $mod+Shift+m exec ~/.i3/multiscreen.sh
-bindsym $mod+m exec ~/.i3/laptop.sh
-bindsym $mod+j exec ~/.i3/jira.sh
-exec --no-startup-id blueman
-{{ end }}
 # ---------------------------------------------------
 # Applications
 # -------------------------
@@ -472,6 +466,18 @@ bindsym $mod+Shift+l exec ~/.i3/lock.sh
 # --------------
 # Autostart Services
 # --------------
+
+{{ if eq .chezmoi.hostname "flower" }}
+bindsym $mod+Shift+m exec ~/.i3/multiscreen.sh
+bindsym $mod+m exec ~/.i3/laptop.sh
+bindsym $mod+j exec ~/.i3/jira.sh
+
+exec --no-startup-id blueman
+
+set $LAPTOP {{ .laptop_monitor }}
+workspace $WS4 output $LAPTOP
+exec --no-startup-id ~/.i3/multiscreen.sh
+{{ end }}
 
 exec_always --no-startup-id feh --bg-center ~/wallpaper.png
 exec --no-startup-id pamac-tray

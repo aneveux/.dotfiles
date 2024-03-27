@@ -1,10 +1,12 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
 {{- $main_monitor := promptStringOnce . "main_monitor" "Main Monitor" -}}
 {{- $vertical_monitor := promptStringOnce . "vertical_monitor" "Vertical Monitor" -}}
+{{- $laptop_monitor := promptStringOnce . "laptop_monitor" "Laptop Monitor" -}}
 
 [data]
     email = {{ $email | quote }}
     main_monitor = {{ $main_monitor | quote }}
     vertical_monitor = {{ $vertical_monitor | quote }}
+    laptop_monitor = {{ $laptop_monitor | quote }}
 [diff]
     pager = "diff-so-fancy"

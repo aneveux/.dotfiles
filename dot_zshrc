@@ -7,7 +7,7 @@ source "$HOME/.keyboard"
 # path
 
 typeset -U path
-path=(~/bin ~/.local/bin $path[@])
+path=(~/bin ~/.local/bin ~/.cargo/bin $path[@])
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 # oh-my-zsh
