@@ -107,6 +107,7 @@
 	pullr = pull --rebase
 	surr = submodule update --recursive --remote
 	sclone = clone --depth=1
+	cleanall = !git clean -f -x -d && git submodule foreach --recursive git clean -f -x -d
 
 	# Logs
 	l = log --graph --pretty=custom
