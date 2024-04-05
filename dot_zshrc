@@ -124,6 +124,14 @@ which op &> /dev/null && eval "$(op completion zsh)" && compdef _op op
 
 eval "$(zoxide init zsh --cmd cd)"
 
+# atuin history 
+
+eval "$(atuin init zsh)"
+
+# navi widget 
+
+eval "$(navi widget zsh)"
+
 # prompt
 
 eval "$(oh-my-posh init zsh --config $ZSH/custom/resources/catppuccin_mocha.omp.json)"
