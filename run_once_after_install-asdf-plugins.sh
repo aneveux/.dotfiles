@@ -31,4 +31,5 @@ if [ "$(isAvailable "asdf")" -eq 1 ]; then
   asdf plugin add nodejs
   asdf plugin add yarn
   asdf plugin add bun
+  asdf plugin add quarkus 
 fi
