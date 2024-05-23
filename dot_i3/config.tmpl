@@ -333,6 +333,7 @@ assign [class="Toolbox"] $WS2
 
 # WS3: Browsers
 assign [class="firefox"] $WS3
+assign [class="floorp"] $WS3
 assign [class="chromium"] $WS3
 
 # WS4: Media
@@ -429,7 +430,7 @@ set $launcher_mode "launcher"
 bindsym $mod+Return mode $launcher_mode
 
 mode $launcher_mode {
-  bindsym f exec firefox, mode "default"
+  bindsym f exec floorp, mode "default"
   bindsym i exec idea, mode "default"
   bindsym s exec spotify, mode "default"
   bindsym d exec discord, mode "default"
