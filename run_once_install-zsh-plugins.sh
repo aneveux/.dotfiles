@@ -36,6 +36,3 @@ if [ ! -d "$HOME/bin/" ]; then
   mkdir "$HOME/bin/"
 fi
 
-if [ ! -f "$HOME/bin/oh-my-posh" ]; then
-  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$HOME/bin/oh-my-posh"
-fi

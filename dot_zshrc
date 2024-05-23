@@ -134,5 +134,5 @@ eval "$(navi widget zsh)"
 
 # prompt
 
-eval "$(oh-my-posh init zsh --config $ZSH/custom/resources/catppuccin_mocha.omp.json)"
+eval "$(starship init zsh)"
 
