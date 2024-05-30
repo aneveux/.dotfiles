@@ -1,0 +1,62 @@
+#!/bin/zsh
+
+# clone++
+# script relying on `gh` and `gh s` extension to allow fuzzy finding GitHub repositories,
+# cloning them, and setting up a fork.
+
+# configuration is made through environment variables
+
+# workspace where projects are cloned
+WORKSPACE=${WORKSPACE:-"$HOME/projects"}
+# github username used to setup a remote branch while forking
+GITHUB_USERNAME=${GITHUB_USERNAME:-$(whoami)}
+# github organizations, comma separated, used for shortcuts
+GITHUB_ORGANIZATIONS=$(echo "$GITHUB_ORGANIZATIONS" | xargs)
+IFS=',' read -rA ORGANIZATIONS <<<"$GITHUB_ORGANIZATIONS"
+
+function usage() {
+  echo "Usage: $0 <organization> <repository>"
+  echo "Note: <organization> can be a short form of an organization configured through GITHUB_ORGANIZATIONS envvar"
+  echo "Note: <repository> can be a pattern used with fuzzy search"
+  exit 1
+}
+
+if [ "$#" -ne 2 ]; then
+  usage
+fi
+
+ORGANIZATION="$1"
+REPOSITORY_PATTERN="$2"
+
+# simply allows to write organizations in a short way
+for org in "${ORGANIZATIONS[@]}"; do
+  if [[ $org == *$ORGANIZATION* ]]; then
+    echo "🔍 Found organization $org matching your shortcut: $ORGANIZATION"
+    ORGANIZATION="$org"
+  fi
+done
+
+echo "🔭 Searching for $REPOSITORY_PATTERN in $ORGANIZATION..."
+if ! REPOSITORY_URL=$(gh s -u "$ORGANIZATION" "$REPOSITORY_PATTERN"); then
+  echo "😭 Cannot find $REPOSITORY_PATTERN in $ORGANIZATION"
+  return 1
+fi
+
+REPOSITORY_PATH=${REPOSITORY_URL#*github.com/}
+REPOSITORY_NAME=${REPOSITORY_PATH#*/}
+
+if [ -d "$WORKSPACE/$REPOSITORY_NAME" ]; then
+  echo "✅ $REPOSITORY_NAME already cloned in $WORKSPACE..."
+else
+  echo "📥 Cloning $REPOSITORY_NAME in $WORKSPACE..."
+  gh repo clone "$REPOSITORY_PATH" "$WORKSPACE/$REPOSITORY_NAME"
+fi
+
+echo "⭐ Jumping in $REPOSITORY_NAME workspace..."
+cd "$WORKSPACE/$REPOSITORY_NAME" || exit 1
+
+echo "🧰 Forking and configuring project..."
+gh repo fork --remote-name "$GITHUB_USERNAME" --remote
+gh repo set-default "$REPOSITORY_PATH"
+
+echo "🚀 Have fun!"

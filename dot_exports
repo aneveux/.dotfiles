@@ -14,5 +14,9 @@ export VISUAL='nvim'
 export TEXT_EDITOR='nvim'
 export GIT_EDITOR='nvim'
 
+export GITHUB_ORGANIZATIONS="jenkinsci,cloudbees,aneveux"
+export GITHUB_USERNAME='aneveux'
+export WORKSPACE="$HOME/projects"
+
 export GPG_TTY=$TTY
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)

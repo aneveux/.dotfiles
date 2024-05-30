@@ -4,9 +4,15 @@ alias d='docker'
 alias g='git'
 alias k='kubectl'
 
+alias mv='mv -v'
+alias rm='rm -iv'
+
 alias df='df -h'
 alias free='free -m'
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection c -o'
+
+# sourcing the script so it can be used to `cd` in directories
+alias clone='. "$HOME/bin/clone"'
 
 [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
