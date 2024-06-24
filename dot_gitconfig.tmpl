@@ -3,6 +3,9 @@
 	email = {{ .email }}
 	signingkey = 72C9B89DB1F04D9C6F52D20F9A20D59AA892142A 
 
+[include]
+	path = ~/catppuccin.gitconfig
+
 [commit]
 	template = ~/.gitmessage
 	gpgsign = true
@@ -23,6 +26,7 @@
 
 [merge]
 	tool = nvimdiff
+	conflictstyle = diff3
 
 [rebase]
 	autostash = true
@@ -34,6 +38,7 @@
 [diff]
 	indentHeuristic = true
 	wordRegex = [A-Za-z0-9]+|[^[:space:]]
+	colorMoved = default
 
 [log]
 	date = format:%a %b %-d %Y @ %-I:%M %p
@@ -45,11 +50,11 @@
 	filemode = false
 	trustctime = false
 	autocrlf = input
-	pager = diff-so-fancy | less --tabs=4 -RFX
+	pager = delta
 	hooksPath = ~/.githooks/
 
 [interactive]
-	diffFilter = "diff-so-fancy --patch"
+	diffFilter = delta --color-only --features=interactive
 
 [advice]
 	commitBeforeMerge = false
@@ -171,6 +176,15 @@
 #[url "git@github.com:"]
 #	insteadOf = "https://github.com/"
 #	pushInsteadOf = "https://github.com/"
+
+[delta]
+	true-color = always
+	navigate = true
+	line-numbers = true
+	side-by-side = true
+	hyperlinks = true
+	hyperlinks-file-link-format = "idea://open?file={path}&line={line}"
+	features = catppuccin-mocha unobtrusive-line-numbers decorations
 
 {{ if eq .chezmoi.hostname "flower" }}
 [secrets]
