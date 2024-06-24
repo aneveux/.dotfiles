@@ -120,6 +120,12 @@ source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 which op &> /dev/null && eval "$(op completion zsh)" && compdef _op op
 
+# broot 
+
+if [ -f "$HOME/.config/broot/launcher/bash/br" ]; then 
+    source "$HOME/.config/broot/launcher/bash/br"
+fi 
+
 # zoxide 
 
 eval "$(zoxide init zsh --cmd cd)"
