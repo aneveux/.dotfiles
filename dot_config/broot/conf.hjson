@@ -24,7 +24,7 @@
 # you can launch broot with `br -H`).
 # A popular flag is the `g` one which displays git related info.
 #
-# default_flags:
+default_flags: -gh
 
 ###############################################################
 # Terminal's title
@@ -85,7 +85,7 @@ show_selection_mark: true
 # and set it to false or true if you notice the colors in
 # previewed images are too off.
 #
-# true_colors: false
+true_colors: true
 
 ###############################################################
 # Icons
@@ -93,7 +93,7 @@ show_selection_mark: true
 # (see https://dystroy.org/broot/icons for installation and
 # troubleshooting)
 #
-# icon_theme: vscode
+icon_theme: nerdfonts
 
 ###############################################################
 # Special paths
@@ -204,7 +204,7 @@ content_search_max_file_size: 10MB
 # This makes it possible to use shortcuts like 'space-n', 
 # 'ctrl-alt-a-b', 'shift-space', etc.
 #
-enable_kitty_keyboard: false
+enable_kitty_keyboard: true
 
 ###############################################################
 # lines around matching line in filtered preview
@@ -239,9 +239,9 @@ imports: [
             unknown
         ]
         # (un)comment to choose your preferred skin
-        file: skins/dark-blue.hjson
+        //file: skins/dark-blue.hjson
         //file: skins/catppuccin-macchiato.hjson
-        //file: skins/catppuccin-mocha.hjson
+        file: skins/catppuccin-mocha.hjson
         //file: skins/dark-gruvbox.hjson
         //file: skins/dark-orange.hjson
         //file: skins/solarized-dark.hjson
