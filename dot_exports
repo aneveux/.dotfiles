@@ -8,7 +8,7 @@ export PAGER='most'
 export SHELL='/usr/bin/zsh'
 
 export TERMINAL='/usr/bin/kitty'
-export BROWSER='floorp'
+export BROWSER='firefox'
 export EDITOR='nvim'
 export VISUAL='nvim'
 export TEXT_EDITOR='nvim'
