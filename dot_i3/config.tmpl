@@ -354,6 +354,7 @@ assign [class="Toolbox"] $WS2
 assign [class="firefox"] $WS3
 assign [class="floorp"] $WS3
 assign [class="chromium"] $WS3
+assign [class="google-chrome"] $WS3
 
 # WS4: Media
 for_window [class="Spotify"] move to workspace $WS4
@@ -450,6 +451,7 @@ bindsym $mod+Return mode $launcher_mode
 
 mode $launcher_mode {
   bindsym f exec firefox, mode "default"
+  bindsym c exec google-chrome, mode "default"
   bindsym i exec idea, mode "default"
   bindsym s exec spotify, mode "default"
   bindsym d exec discord, mode "default"
