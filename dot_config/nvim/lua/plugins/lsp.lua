@@ -1,22 +1,22 @@
 -- LSP Servers (only LSPs, no formatters/linters/etc)
 local servers = {
-  bashls = {},
-  cssls = {},
-  codeqlls = {},
-  dockerls = {},
+  bashls                          = {},
+  cssls                           = {},
+  codeqlls                        = {},
+  dockerls                        = {},
   docker_compose_language_service = {},
-  gopls = {},
-  html = {},
-  jsonls = {},
-  tsserver = {},
-  jdtls = {},
-  jqls = {},
-  marksman = {},
-  svelte = {},
-  terraformls = {},
-  lemminx = {},
-  yamlls = {},
-  lua_ls = {
+  gopls                           = {},
+  html                            = {},
+  jsonls                          = {},
+  ts_ls                           = {},
+  jdtls                           = {},
+  jqls                            = {},
+  marksman                        = {},
+  svelte                          = {},
+  terraformls                     = {},
+  lemminx                         = {},
+  yamlls                          = {},
+  lua_ls                          = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
@@ -100,7 +100,7 @@ return {
     "neovim/nvim-lspconfig",
 
     dependencies = {
-      { "williamboman/mason.nvim", config = true },
+      { "williamboman/mason.nvim",          config = true },
       { "williamboman/mason-lspconfig.nvim" },
       {
         "j-hui/fidget.nvim",

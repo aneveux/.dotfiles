@@ -1,0 +1,310 @@
+{{- define "map" -}}
+{{- $recursive := dig "recursive" true . | ternary "" "nore" -}}
+{{- $map := print $recursive "map" -}}
+
+{{- $mode := list "" -}}
+{{- if hasKey . "mode" -}}
+  {{- if kindIs "slice" .mode -}}
+    {{- $mode = .mode -}}
+  {{- else -}}
+    {{- $mode = list .mode -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if hasKey . "comment" }}
+""" {{ .comment }}
+{{ end -}}
+{{- if hasKey . "help" -}}
+  let g:WhichKeyDesc_{{.key | b64enc | replace "+" "_p_" | replace "/" "_s_" | replace "=" "_e_"}} = "{{.key}} {{.help}}"
+{{ end -}}
+
+{{- if hasKey . "bindings" -}}
+{{template "bindings_mapping" merge (dict "map" $map) . }}
+{{- else -}}
+  {{- $this := . -}}
+  {{- range $mode -}}
+{{ template "key_mapping" merge (dict "map" $map "mode" .) $this }}
+{{- end }}
+
+{{- if hasKey . "extra" -}}
+  {{- $this := . -}}
+  {{- range $k, $v := .extra -}}
+  {{- if not (kindIs "map" $v) -}}{{ $v = dict }}{{- end -}}
+{{ template "key_mapping" merge (dict "map" $map "mode" $k "key" $this.key) $v }}
+{{- end -}}
+{{- end -}}
+
+{{- end -}}
+{{- end -}}
+
+{{- define "bindings_mapping" -}}
+  {{- if hasKey . "action" -}}
+  " Clashing configuration was ignored
+" {{.map}} {{.key}} {{.action}}
+{{ end -}}
+  {{- if hasKey . "rhs" -}}
+  " Clashing configuration was ignored
+" {{.map}} {{.key}} {{.rhs}}
+{{ end -}}
+  {{- $parentKey := (dig "key" "" .) -}}
+  {{- range $k, $v := .bindings -}}
+    {{- $d := dict "key" (print $parentKey $k) -}}
+    {{- template "map" (merge $d $v) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "key_mapping" -}}
+  {{- if hasKey . "rhs" -}}
+    {{ template "rhs_mapping" . }}
+  {{- else if hasKey . "action" -}}
+  {{ template "action_mapping" . }}
+{{ end -}}
+{{ end -}}
+
+{{- define "rhs_mapping" -}}
+  {{- if hasKey . "action" -}}
+  " Clashing configuration was ignored
+" {{.mode}}{{.map}} {{.key}} {{.action}}
+{{ end -}}
+    {{.mode}}{{.map}} {{.key}} {{.rhs}}
+{{ end -}}
+
+{{- define "action_mapping" -}}
+  {{- if kindIs "string" .action -}}
+    {{.mode}}{{.map}} {{.key}} <Action>({{.action}})
+  {{- else if kindIs "slice" .action -}}
+    {{.mode}}{{.map}} {{.key}} <Action>({{ join ") <Action>(" .action}})
+  {{- end -}}
+{{ end -}}
+""" -------------------------------------------------------------------
+""" -------------------------------------------------------------------
+""" .ideavimrc is a configuration file for IdeaVim plugin. 
+""" You can find a list of commands here: https://jb.gg/h38q75
+""" Find more examples here: https://jb.gg/share-ideavimrc
+
+""" -------------------------------------------------------------------
+""" Basics
+
+source ~/.vimrc
+let mapleader = " "
+
+" Ataman
+"nnoremap <Space> :action LeaderAction<cr>
+"vnoremap <Space> :action LeaderAction<cr>
+
+""" -------------------------------------------------------------------
+""" Clipboard management
+
+" Use system clipboard by default for y and p operations
+nnoremap yy "+yy
+vnoremap y "+y
+nnoremap p "+p
+vnoremap p "+p
+nnoremap P "+P
+vnoremap P "+P
+
+" Allow access to original y and p operations with leader key
+nnoremap <leader>yy yy
+vnoremap <leader>y y
+nnoremap <leader>p p
+vnoremap <leader>p p
+nnoremap <leader>P P
+vnoremap <leader>P P
+
+" Allow to cut to system clipboard by using leader key with d
+nnoremap <leader>dd "+dd
+vnoremap <leader>d "+d
+
+""" -------------------------------------------------------------------
+""" Plugins (https://jb.gg/ideavim-plugins)
+
+" https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
+" plugin for managing surroundings (parenthesis, quotes, etc)
+set surround
+
+" https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt
+" comment and uncomment
+set commentary
+
+" https://github.com/terryma/vim-multiple-cursors/blob/master/doc/multiple_cursors.txt
+set multiple-cursors
+
+" Highlight copied text
+set highlightedyank
+
+" https://www.vim.org/scripts/script.php?script_id=2699
+set argtextobj
+let g:argtextobj_pairs="[:],(:),<:>"
+
+" https://github.com/easymotion/vim-easymotion
+set easymotion
+let g:EasyMotion_do_mapping=0
+
+" https://github.com/kana/vim-textobj-entire/blob/master/doc/textobj-entire.txt
+set textobj-entire
+
+" https://github.com/michaeljsmith/vim-indent-object/blob/master/doc/indent-object.txt
+set textobj-indent
+
+" https://github.com/vim-scripts/ReplaceWithRegister/blob/master/doc/ReplaceWithRegister.txt
+set ReplaceWithRegister
+
+" https://raw.githubusercontent.com/wiki/JetBrains/ideavim/NERDTree-support.md
+set NERDTree
+let g:NERDTreeMapActivateNode='l'
+let g:NERDTreeMapJumpParent='h'
+
+" https://github.com/TheBlob42/idea-which-key
+set which-key
+" close the popup and don't process formerly typed keys
+let g:WhichKey_ProcessUnknownMappings = "false"
+
+""" -------------------------------------------------------------------
+""" Idea specific settings
+
+" Enables IdeaVim's "smart join" feature
+" https://github.com/JetBrains/ideavim/blob/master/doc/ideajoin-examples.md
+" 'ideajoin'              boolean (default off)
+"                         global or local to buffer
+"         When enabled, join commands will be handled by the IDE's "smart join"
+"         feature. The IDE can change syntax when joining lines, such as merging
+"         string literals or if statements. See the wiki for more examples. Not
+"         all languages support smart join functionality.
+set ideajoin
+
+set ideastatusicon=gray
+
+" Configures IdeaVim's refactor mode to preserve the current selection after the refactor is applied
+" 'idearefactormode'      string  (default "select")
+"                         global or local to buffer
+"         Specifies the mode to be used when a refactoring selects text to be
+"         edited (e.g. renaming, live template fields, introduce variable, etc):
+"            keep         Keep the current mode
+"            select       Switch to Select mode
+"            visual       Switch to Visual mode
+"
+"         This option is only used when the refactoring is started in Normal,
+"         Insert or Replace mode. Visual or Select modes are not changed.
+set idearefactormode=keep
+
+" use `m`+letter to create a bookmark. `'`+letter to jump to it. F11 to delete.
+set ideamarks
+
+""" -------------------------------------------------------------------
+""" Common settings
+
+" https://github.com/JetBrains/ideavim/blob/master/doc/sethandler.md
+" From most generic to less generic
+sethandler a:ide
+sethandler <C-V> a:ide n:vim
+sethandler <C-O> a:ide i:vim
+
+set nu
+set number relativenumber
+
+let g:WhichKeyDesc_toggle_relative_line_number = "<leader>n Toggle relative line number"
+map <leader>n :set relativenumber!<CR>
+
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+set scrolloff=15
+
+" Do not implement a timeout for mapped sequences and command-line completion
+set notimeout
+
+" Common settings: Shows current mode at the bottom of the screen
+set showmode
+
+" Use the surround plugin or built-in capabilities (might depend on Vim version or plugins installed)
+set surround
+
+" Enable incremental search, search as characters are typed
+set incsearch
+" Ignore case in search patterns
+set ignorecase
+" Make search case-sensitive if the search pattern contains uppercase, requires ignorecase to be set
+set smartcase
+" Highlight all matches in search
+set hlsearch
+
+" 'keymodel'      'km'    Controls selection behaviour with special keys
+"         List of comma separated words, which enable special things that keys
+"         can do. These values can be used:
+"            startsel     Using a shifted special key starts selection (either
+"                         Select mode or Visual mode, depending on "key" being
+"                         present in 'selectmode')
+"            stopsel      Using a NOT-shifted special key stops selection.
+"                         Automatically enables `stopselect` and `stopvisual`
+"            stopselect   Using a NOT-shifted special key stops select mode
+"                         and removes selection - IdeaVim ONLY
+"            stopvisual   Using a NOT-shifted special key stops visual mode
+"                         and removes selection - IdeaVim ONLY
+"            continueselect   Using a shifted arrow key doesn't start selection,
+"                         but in select mode acts like startsel is enabled
+"                         - IdeaVim ONLY
+"            continuevisual   Using a shifted arrow key doesn't start selection,
+"                         but in visual mode acts like startsel is enabled
+"                         - IdeaVim ONLY
+"
+"         Special keys in this context are the cursor keys, <End>, <Home>,
+"         <PageUp> and <PageDown>.
+set keymodel+=startsel
+
+" 'selectmode'    'slm'   Controls when to start Select mode instead of Visual
+"        This is a comma-separated list of words:
+"
+"           mouse        When using the mouse
+"           key          When using shifted special[1] keys
+"           cmd          When using "v", "V", or <C-V>
+"           ideaselection    When IDE sets a selection - IdeaVim ONLY
+"                        (e.g.: extend selection, wrap with while, etc.)
+set selectmode=mouse,key,ideaselection
+
+" 'virtualedit'   've'    Placement of the cursor where there is no actual text
+"         A comma-separated list of these words:
+"            block        Allow virtual editing in Visual mode (not supported)
+"            insert       Allow virtual editing in Insert mode (not supported)
+"            all          Allow virtual editing in all modes (not supported)
+"            onemore      Allow the cursor to move just past the end of the line
+set virtualedit=onemore
+
+" In visual mode, decrease the indent level of selected text and reselect the text
+vnoremap < <gv
+
+" In visual mode, increase the indent level of selected text and reselect the text
+vnoremap > >gv
+
+" Remap home to skip the indentation
+" noremap <Home> ^
+
+" Popup navigation
+map <c-j> <Action>(PopupMenu-selectnext)
+map <c-k> <Action>(PopupMenu-selectprev)
+
+let g:WhichKey_ShowVimActions = "true"
+
+""" -------------------------------------------------------------------
+""" -------------------------------------------------------------------
+""" -------------------------------------------------------------------
+""" GENERATED SECTION
+
+{{template "map" .ideavim }}
+
+""" END GENERATED SECTION
+""" -------------------------------------------------------------------
+""" -------------------------------------------------------------------
+""" -------------------------------------------------------------------
+
+""" Niceties
+let g:WhichKeyDesc_clear_all_notifications = "<leader>\\ Clear Notifications"
+map <leader>\ <Action>(ClearAllNotifications)
+let g:WhichKeyDesc_save_all = "<leader>w Save All"
+map <leader>w <Action>(SaveAll)
+let g:WhichKeyDesc_actions = "<leader>i Show Intentions"
+map <leader>i <Action>(ShowIntentionActions)
+let g:WhichKeyDesc_edit_source = "<leader>E Edit Source"
+map <leader>E <Action>(EditSource)
+
+" Don't use Ex mode, use Q for formatting.
+map Q ggq
+
