@@ -177,6 +177,22 @@ ataman:
         U:
           help: Go to URL
           action: GotoUrlAction
+    h: &harpoon
+      comment: Harpoon 
+      help: Harpoon 
+      bindings:
+        m:
+          help: Menu 
+          action: HarpoonerQuickMenu
+        a: 
+          help: Add 
+          action: HarpoonerAddFile
+        j:
+          help: Previous 
+          action: HarpoonerPreviousFileAction
+        k: 
+          help: Next 
+          action: HarpoonerNextFileAction
     j: &acejump # https://github.com/acejump/AceJump/blob/1af49c2e9150ff48fea7ace572c54253f808c977/src/main/resources/META-INF/plugin.xml
       comment: AceJump
       help: AceJump
@@ -541,6 +557,22 @@ ideavim:
       extra:
         i:
           rhs: "<C-o>[w"
+    <M-j>:
+      action: HarpoonerOpenFile0
+      mode:
+        - n
+    <M-k>:
+      action: HarpoonerOpenFile1
+      mode:
+        - n
+    <M-l>:
+      action: HarpoonerOpenFile2
+      mode:
+        - n
+    <M-;>: 
+      action: HarpoonerOpenFile3
+      mode:
+        - n
     <leader>:
       bindings:
         .:
@@ -553,6 +585,7 @@ ideavim:
         e: *editor
         f: *folding
         g: *goto
+        h: *harpoon 
         j:
           comment: (Ace)Jump
           help: Jump at the beginning of the match
