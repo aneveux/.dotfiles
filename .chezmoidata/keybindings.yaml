@@ -11,11 +11,8 @@ ataman:
       help: AI
       bindings:
         c:
-          help: Complete code with AI
-          action: AIAssistant.Editor.CompleteCodeWithAI
-        g:
-          help: Generate code with AI
-          action: AIAssistant.Editor.GenerateCodeInplace
+          help: Chat inline 
+          action: OpenInlineChatAction
     a: &analyze
       help: Analyze
       comment: Analysis
