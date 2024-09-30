@@ -1,3 +1,6 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
 # Sets user-defined palette
 palette = "catppuccin_mocha"
 add_newline = true
@@ -33,10 +36,10 @@ $shell\
 $character"""
 
 [character]
-# Note the use of Catppuccin color 'maroon'
-success_symbol = "[[♥](green) ❯](maroon)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+# Note the use of Catppuccin color 'peach'
+success_symbol = "[[󰄛](green) ❯](peach)"
+error_symbol = "[[󰄛](red) ❯](peach)"
+vimcmd_symbol = "[󰄛 ❮](subtext1)" # For use with zsh-vi-mode
 
 [directory]
 truncation_length = 4
