@@ -1,0 +1,100 @@
+{
+    "com.github.ulauncher.ulauncher-emoji": {
+        "id": "com.github.ulauncher.ulauncher-emoji",
+        "url": "https://github.com/Ulauncher/ulauncher-emoji",
+        "updated_at": "2024-10-07T17:13:33.350966",
+        "last_commit": "827cfe5e1d2f89f742f811f981759787b0654fa9",
+        "last_commit_time": "2023-11-04T18:37:13"
+    },
+    "com.github.tchar.ulauncher-albert-calculate-anything": {
+        "id": "com.github.tchar.ulauncher-albert-calculate-anything",
+        "url": "https://github.com/tchar/ulauncher-albert-calculate-anything",
+        "updated_at": "2024-10-07T17:14:36.009104",
+        "last_commit": "037965a44e6f6f496e7ad71ec1651b9edfcde32d",
+        "last_commit_time": "2024-05-29T21:57:26"
+    },
+    "com.github.friday.ulauncher-clipboard": {
+        "id": "com.github.friday.ulauncher-clipboard",
+        "url": "https://github.com/friday/ulauncher-clipboard",
+        "updated_at": "2024-10-07T17:15:31.717607",
+        "last_commit": "73420cf4816f925321db15379c9c981c8f28c6fe",
+        "last_commit_time": "2022-08-03T20:22:13"
+    },
+    "com.github.mikebarkmin.ulauncher-obsidian": {
+        "id": "com.github.mikebarkmin.ulauncher-obsidian",
+        "url": "https://github.com/mikebarkmin/ulauncher-obsidian",
+        "updated_at": "2024-10-07T17:16:59.206387",
+        "last_commit": "a419cdc5e73453e4b284bb4905448ca60e4a3864",
+        "last_commit_time": "2023-09-12T10:42:25"
+    },
+    "com.github.iboyperson.ulauncher-system": {
+        "id": "com.github.iboyperson.ulauncher-system",
+        "url": "https://github.com/iboyperson/ulauncher-system",
+        "updated_at": "2024-10-07T17:18:08.254245",
+        "last_commit": "7dedd992709fa2297735cddf852404144d4da47c",
+        "last_commit_time": "2023-11-14T16:53:20"
+    },
+    "com.github.hillaryychan.ulauncher-fzf": {
+        "id": "com.github.hillaryychan.ulauncher-fzf",
+        "url": "https://github.com/hillaryychan/ulauncher-fzf",
+        "updated_at": "2024-10-07T17:18:22.145568",
+        "last_commit": "e8137dae6448041fc53ae418263501b068857073",
+        "last_commit_time": "2023-05-16T12:35:35"
+    },
+    "com.github.the-lay.ulauncher-spotify-api": {
+        "id": "com.github.the-lay.ulauncher-spotify-api",
+        "url": "https://github.com/the-lay/ulauncher-spotify-api",
+        "updated_at": "2024-10-07T17:19:05.026769",
+        "last_commit": "7ffedbe72ea62f797d13be5dd90472ce26b7eb3d",
+        "last_commit_time": "2023-07-29T09:23:34"
+    },
+    "com.github.nastuzzisamy.ulauncher-translate": {
+        "id": "com.github.nastuzzisamy.ulauncher-translate",
+        "url": "https://github.com/NastuzziSamy/ulauncher-translate",
+        "updated_at": "2024-10-07T17:22:17.938445",
+        "last_commit": "f16b6eed05923e604bacafefdc40b7b7290e21da",
+        "last_commit_time": "2021-03-27T11:43:48"
+    },
+    "com.github.brpaz.ulauncher-devdocs": {
+        "id": "com.github.brpaz.ulauncher-devdocs",
+        "url": "https://github.com/brpaz/ulauncher-devdocs",
+        "updated_at": "2024-10-07T17:23:56.977268",
+        "last_commit": "491bb5a5ccef082c5f6623db5f5676a8ab481144",
+        "last_commit_time": "2022-04-03T10:50:15"
+    },
+    "com.github.seofernando25.ulauncher-gpt": {
+        "id": "com.github.seofernando25.ulauncher-gpt",
+        "url": "https://github.com/SeoFernando25/ulauncher-gpt",
+        "updated_at": "2024-10-07T17:25:16.623492",
+        "last_commit": "2d51ff40fcbd501e64034f3c7be1cd35abc47d6b",
+        "last_commit_time": "2023-04-14T22:57:18"
+    },
+    "com.github.glovecc.ulauncher-github-search": {
+        "id": "com.github.glovecc.ulauncher-github-search",
+        "url": "https://github.com/Glovecc/ulauncher-github-search",
+        "updated_at": "2024-10-07T17:26:26.942587",
+        "last_commit": "ee3ea43e905cf184449c328f0dadaa4395f3ec0c",
+        "last_commit_time": "2022-01-14T13:46:35"
+    },
+    "com.github.mikebarkmin.ulauncher-duckduckgo": {
+        "id": "com.github.mikebarkmin.ulauncher-duckduckgo",
+        "url": "https://github.com/mikebarkmin/ulauncher-duckduckgo",
+        "updated_at": "2024-10-07T17:27:07.992764",
+        "last_commit": "f2ea6a187082c600a59acc9cca6e288d96f66cc0",
+        "last_commit_time": "2021-08-07T18:51:44"
+    },
+    "com.github.epholys.ultz": {
+        "id": "com.github.epholys.ultz",
+        "url": "https://github.com/Epholys/ultz",
+        "updated_at": "2024-10-07T17:29:04.123936",
+        "last_commit": "9f0749d6ab1fcb99545dae75934b698e5ff975b6",
+        "last_commit_time": "2021-05-12T14:01:01"
+    },
+    "com.github.brpaz.ulauncher-awesomelists": {
+        "id": "com.github.brpaz.ulauncher-awesomelists",
+        "url": "https://github.com/brpaz/ulauncher-awesomelists",
+        "updated_at": "2024-10-07T21:42:46.167978",
+        "last_commit": "a48a0b11cef4c2fb5375b11834ce0378be2d15d3",
+        "last_commit_time": "2021-12-12T15:44:13"
+    }
+}
