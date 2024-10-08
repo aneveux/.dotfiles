@@ -98,8 +98,8 @@ let mapleader = " "
 " Use system clipboard by default for y and p operations
 nnoremap yy "+yy
 vnoremap y "+y
-nnoremap p "+p
-vnoremap p "+p
+nnoremap p "+P
+vnoremap p "+P
 nnoremap P "+P
 vnoremap P "+P
 
@@ -114,6 +114,9 @@ vnoremap <leader>P P
 " Allow to cut to system clipboard by using leader key with d
 nnoremap <leader>dd "+dd
 vnoremap <leader>d "+d
+
+" black hole register 
+noremap \ "_
 
 """ -------------------------------------------------------------------
 """ Plugins (https://jb.gg/ideavim-plugins)
@@ -215,9 +218,6 @@ set notimeout
 " Common settings: Shows current mode at the bottom of the screen
 set showmode
 
-" Use the surround plugin or built-in capabilities (might depend on Vim version or plugins installed)
-set surround
-
 " Enable incremental search, search as characters are typed
 set incsearch
 " Ignore case in search patterns
@@ -226,6 +226,7 @@ set ignorecase
 set smartcase
 " Highlight all matches in search
 set hlsearch
+nnoremap <Esc> :nohlsearch<cr>
 
 " 'keymodel'      'km'    Controls selection behaviour with special keys
 "         List of comma separated words, which enable special things that keys
@@ -304,6 +305,14 @@ let g:WhichKeyDesc_actions = "<leader>i Show Intentions"
 map <leader>i <Action>(ShowIntentionActions)
 let g:WhichKeyDesc_edit_source = "<leader>E Edit Source"
 map <leader>E <Action>(EditSource)
+
+set matchpairs+=<:>
+
+" word navigation in CamelCase and snake_case
+map W [w
+map E ]w
+map B [b
+map GE ]b
 
 " redo 
 map U <C-r>

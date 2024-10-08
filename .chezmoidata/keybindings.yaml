@@ -29,9 +29,6 @@ ataman:
         n:
           help: Infer Nullity
           action: InferNullity
-        q:
-          help: Quick Javadoc
-          action: QuickJavaDoc
         S:
           help: Analyze stacktrace
           action: Unscramble
@@ -39,6 +36,9 @@ ataman:
       help: Code related actions 
       comment: Code related actions
       bindings:
+        a:
+          help: Intention Actions 
+          action: ShowIntentionActions
         C:
           help: Generate Constructor
           action: GenerateConstructor
@@ -51,18 +51,33 @@ ataman:
         g: 
           help: Generate 
           action: Generate
+        i:
+          help: Info 
+          action: ShowHoverInfo
+        n: 
+          help: New File 
+          action: NewFile
+        N:
+          help: New Directory 
+          action: NewDir
         o:
           help: Optimize Imports
           action: OptimizeImports
         q: 
           help: Quick Javadoc
           action: QuickJavaDoc
+        r:
+          help: Rearrange Code 
+          action: RearrangeCode
         s:
           help: File Structure
           action: FileStructurePopup
-        S:
-          help: Symbols
-          action: GotoSymbol
+        S: 
+          help: Surround With 
+          action: SurroundWith
+        t:
+          help: Type Info 
+          action: ExpressionTypeInfo
     e: &editor
       comment: Editor
       help: Editor
@@ -70,6 +85,9 @@ ataman:
         s:
           help: Swap selection
           action: EditorSwapSelectionBoundaries
+        S:
+          help: Scratch File 
+          action: NewScratchFile
     f: &folding
       comment: Folding
       help: Folding
@@ -138,6 +156,9 @@ ataman:
         d:
           help: Go to declaration
           action: GotoDeclaration
+        D:
+          help: Go to definition 
+          action: ViewSource
         h:
           help: Highlight
           bindings:
@@ -174,6 +195,9 @@ ataman:
         T:
           help: Go to test
           action: GotoTest
+        u:
+          help: Usages
+          action: FindUsages
         U:
           help: Go to URL
           action: GotoUrlAction
@@ -190,6 +214,12 @@ ataman:
         j:
           help: Previous 
           action: HarpoonerPreviousFileAction
+        l:
+          help: Last Change 
+          action: JumpToLastChange
+        L:
+          help: Recent Locations 
+          action: RecentLocations
         k: 
           help: Next 
           action: HarpoonerNextFileAction
@@ -260,6 +290,9 @@ ataman:
         c:
           help: Close Project
           action: CloseProject
+        o: 
+          help: Open File 
+          action: OpenFile
         r:
           help: Open Recent Project
           action: "$LRU"
@@ -300,6 +333,9 @@ ataman:
         c:
           help: Introduce Constant
           action: IntroduceConstant
+        f:
+          help: Introduce Field 
+          action: IntroduceField
         i:
           help: Inline
           action: Inline
@@ -315,6 +351,9 @@ ataman:
         r:
           help: Rename
           action: RenameElement
+        R:
+          help: Rename File 
+          action: RenameFile
         s:
           help: Change Signature
           action: ChangeSignature
@@ -337,6 +376,9 @@ ataman:
         c:
           help: Class
           action: GotoClass
+        d:
+          help: Definition
+          action: ViewSource
         e:
           help: Everywhere
           action: SearchEverywhere
@@ -352,13 +394,18 @@ ataman:
         R:
           help: Replace
           action: ReplaceInPath
-
+        s:
+          help: Symbols
+          action: GotoSymbol
         t:
           help: In Path
           action: FindInPath
         u:
           help: Usages
           action: FindUsages
+        U:
+          help: Usages (Show)
+          action: ShowUsages
         w:
           help: Web 
           action: SearchWeb
@@ -496,6 +543,9 @@ ataman:
         "+":
           comment: Copy Popup
           action: CopyReferencePopupGroup
+        a: 
+          help: Copy Aboslute Path 
+          action: CopyAbsolutePath
         r:
           help: Copy Reference
           action: CopyReference
@@ -537,6 +587,12 @@ ideavim:
       comment: Keep cursor at the center of the screen
       rhs: kzt
       recursive: false
+    <S-Left>:
+      help: Back 
+      action: Back 
+    <S-Right>:
+      help: Forward 
+      action: Forward
     <C-Down>:
       help: Forward
       action: Forward
@@ -557,6 +613,18 @@ ideavim:
       extra:
         i:
           rhs: "<C-o>[w"
+    <C-j>:
+      help: Move Line Down 
+      action: MoveLineDown
+    <C-k>:
+      help: Move Line Up 
+      action: MoveLineUp
+    <C-S-j>:
+      help: Move Statement Down 
+      action: MoveStatementDown
+    <C-S-k>:
+      help: Move Statement Up 
+      action: MoveStatementUp
     <M-j>:
       action: HarpoonerOpenFile0
       mode:
