@@ -198,9 +198,9 @@ set ideamarks
 
 " https://github.com/JetBrains/ideavim/blob/master/doc/sethandler.md
 " From most generic to less generic
-sethandler a:ide
-sethandler <C-V> a:ide n:vim
-sethandler <C-O> a:ide i:vim
+" sethandler a:ide
+" sethandler <C-V> a:ide n:vim
+" sethandler <C-O> a:ide i:vim
 
 set nu
 set number relativenumber
@@ -278,10 +278,6 @@ vnoremap > >gv
 " Remap home to skip the indentation
 " noremap <Home> ^
 
-" Popup navigation
-map <c-j> <Action>(PopupMenu-selectnext)
-map <c-k> <Action>(PopupMenu-selectprev)
-
 let g:WhichKey_ShowVimActions = "true"
 
 """ -------------------------------------------------------------------
@@ -316,6 +312,10 @@ map GE ]b
 
 " redo 
 map U <C-r>
+
+" Popup navigation
+map <C-n> <Action>(PopupMenu-selectNext)
+map <C-p> <Action>(PopupMenu-selectPrev)
 
 " Don't use Ex mode, use Q for formatting.
 map Q ggq

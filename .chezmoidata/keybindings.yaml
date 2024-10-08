@@ -567,13 +567,6 @@ ataman:
 ideavim:
   bindings:
     .:
-      help: Jump to line mark
-      rhs: <Plug>(acejump-linemarks)
-      mode:
-        - n
-        - v
-    J:
-      comment: (Ace)Jump
       help: Jump at the beginning of the match
       rhs: <Plug>(easymotion-bd-f)
       mode:
@@ -613,16 +606,16 @@ ideavim:
       extra:
         i:
           rhs: "<C-o>[w"
-    <C-j>:
+    <C-S-j>:
       help: Move Line Down 
       action: MoveLineDown
-    <C-k>:
+    <C-S-k>:
       help: Move Line Up 
       action: MoveLineUp
-    <C-S-j>:
+    <C-S-M-j>:
       help: Move Statement Down 
       action: MoveStatementDown
-    <C-S-k>:
+    <C-S-M-k>:
       help: Move Statement Up 
       action: MoveStatementUp
     <M-j>:
