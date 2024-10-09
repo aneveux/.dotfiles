@@ -96,5 +96,12 @@
         "updated_at": "2024-10-07T21:42:46.167978",
         "last_commit": "a48a0b11cef4c2fb5375b11834ce0378be2d15d3",
         "last_commit_time": "2021-12-12T15:44:13"
+    },
+    "com.github.randomcharacter.ulauncher-meet": {
+        "id": "com.github.randomcharacter.ulauncher-meet",
+        "url": "https://github.com/randomCharacter/ulauncher-meet",
+        "updated_at": "2024-10-09T13:53:23.046080",
+        "last_commit": "f2fe055b6e21e15ea4c65918a6f499d61d4cf4b0",
+        "last_commit_time": "2021-02-26T22:04:21"
     }
 }

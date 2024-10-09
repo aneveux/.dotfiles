@@ -12,7 +12,7 @@ ataman:
       bindings:
         c:
           help: Chat inline 
-          action: OpenInlineChatAction
+          action: CodeGPT.AskQuestion
     a: &analyze
       help: Analyze
       comment: Analysis
@@ -634,6 +634,16 @@ ideavim:
       action: HarpoonerOpenFile3
       mode:
         - n
+    <C-w>:
+      action: EditorSelectWord
+      mode:
+        - n 
+        - v 
+    <C-S-w>:
+      action: EditorUnSelectWord
+      mode:
+        - n 
+        - v
     <leader>:
       bindings:
         .:
