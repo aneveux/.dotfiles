@@ -287,6 +287,9 @@ ataman:
     p: &project
       help: Project
       bindings:
+        b:
+          help: Build Project 
+          action: CompileDirty
         c:
           help: Close Project
           action: CloseProject
