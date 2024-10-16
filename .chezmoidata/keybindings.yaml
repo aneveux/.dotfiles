@@ -159,8 +159,8 @@ ataman:
         D:
           help: Go to definition 
           action: ViewSource
-        h:
-          help: Highlight
+        e:
+          help: Errors Highlights
           bindings:
             j:
               help: Next Highlight
