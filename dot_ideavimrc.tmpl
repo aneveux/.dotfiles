@@ -95,21 +95,8 @@ let mapleader = " "
 """ -------------------------------------------------------------------
 """ Clipboard management
 
-" Use system clipboard by default for y and p operations
-nnoremap yy "+yy
-vnoremap y "+y
-nnoremap p "+P
-vnoremap p "+P
-nnoremap P "+P
-vnoremap P "+P
-
-" Allow access to original y and p operations with leader key
-nnoremap <leader>yy yy
-vnoremap <leader>y y
-nnoremap <leader>p p
-vnoremap <leader>p p
-nnoremap <leader>P P
-vnoremap <leader>P P
+" sync Vim clipboard with OS clipboard
+set clipboard^=unnamed,unnamedplus
 
 " Allow to cut to system clipboard by using leader key with d
 nnoremap <leader>dd "+dd
