@@ -1,4 +1,4 @@
-java openjdk-21.0.2
+java adoptopenjdk-21.0.5+11.0.LTS
 cosign 2.2.3
 helm 3.14.0
 helmfile 0.161.0
