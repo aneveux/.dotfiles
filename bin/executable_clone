@@ -59,4 +59,14 @@ echo "🧰 Forking and configuring project..."
 gh repo fork --remote-name "$GITHUB_USERNAME" --remote
 gh repo set-default "$REPOSITORY_PATH"
 
+if gh api repos/"$GITHUB_USERNAME"/"$REPOSITORY_NAME" --method=PATCH -f delete_branch_on_merge=true >/dev/null 2>&1; then
+    echo "👍 Branch deletion setting updated successfully."
+else
+    echo "👎 Failed to update branch deletion setting."
+fi
+
+echo "🔐 Enabling Git Secrets..."
+git secrets --install
+git secrets --register-aws
+
 echo "🚀 Have fun!"
