@@ -22,6 +22,7 @@ plugins=(
     tmux
     git
     jira
+    vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
