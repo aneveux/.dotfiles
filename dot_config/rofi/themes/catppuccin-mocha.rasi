@@ -8,6 +8,14 @@
     fg-col2: #f38ba8;
     grey: #6c7086;
 
+    base: #1e1e2e;
+    mantle: #181825;
+    text: #cdd6f4;
+    red: #f38ba8;
+    green: #a6e3a1;
+
+    accent: #b4befe;
+
     width: 600;
     font: "JetBrainsMono Nerd Font 14";
 }

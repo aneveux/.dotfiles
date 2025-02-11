@@ -7,7 +7,8 @@ source "$HOME/.keyboard"
 # path
 
 typeset -U path
-path=(~/bin ~/.local/bin ~/.cargo/bin `go env GOPATH`/bin $path[@])
+gobins=$(go env GOPATH)/bin
+path=(~/bin ~/.local/bin ~/.cargo/bin ${gobins} $path[@])
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 # oh-my-zsh

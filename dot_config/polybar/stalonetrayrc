@@ -1,0 +1,7 @@
+background "#11111b"
+vertical true 
+geometry 5x1+1080+0
+max_geometry 10x1
+grow_gravity NE 
+icon_gravity NE
+slot_size 32
