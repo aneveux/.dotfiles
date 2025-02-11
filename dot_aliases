@@ -16,5 +16,3 @@ alias getclip='xclip -selection c -o'
 alias clone='. "$HOME/bin/clone"'
 
 [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
-
-alias gcai='git --no-pager diff | mods 'write a commit message for this patch. also write the long commit message. use semantic commits. break the lines at 80 chars' >.git/gcai; git commit -a -F .git/gcai -e";'
