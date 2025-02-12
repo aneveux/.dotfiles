@@ -1,4 +1,5 @@
-Given the following git diff, generate a concise, factual commit message. 
-A commit message is a concise 80-character summary of the commit goal, 
-followed by a blank line, and then a detailed summary of the changes made in the commit. 
+Given the following git diff, generate a concise and factual commit message.
+Focus on creating a brief, descriptive title (less than 80 characters). 
+Follow it with a blank line, then a short and factual description of the key changes (one or two lines). 
+Ensure clarity and conciseness throughout.
 Break lines at 80 characters.
