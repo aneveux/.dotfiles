@@ -1,17 +1,49 @@
 #!/bin/bash
 
+# Git hook script to automatically append or replace the Jira ticket reference in commit messages
+# based on the current branch name. Supports patterns: BEE-XXX, JENKINS-XXX, SECURITY-XXX.
+
+# Arguments passed to the hook
 COMMIT_MSG_FILE=$1
 COMMIT_SOURCE=$2
 
-if [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "message" ] || [ -z "$COMMIT_SOURCE" ]; then
-  ref=$(git rev-parse --abbrev-ref HEAD)
-  if [[ $ref =~ ^.*((BEE)-[0-9]+).* ]]; then
-    hint=$(cat "$COMMIT_MSG_FILE")
-    ticket="${BASH_REMATCH[1]}"
+# Function to run a local hook if it exists
+# This allows running the `git secrets` hooks
+run_local_hook() {
+  local hook=$1
+  local project_root
+  project_root=$(git rev-parse --show-toplevel)
+
+  if [ -e "$project_root/.git/hooks/$hook" ]; then
+    "$project_root/.git/hooks/$hook" "$@"
+  fi
+}
+
+# Extract the branch name and check for Jira ticket references
+append_ticket_to_commit_message() {
+  local branch_name
+  branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+  # Check if branch name matches any supported ticket pattern
+  if [[ $branch_name =~ ^.*((BEE|JENKINS|SECURITY)-[0-9]+).* ]]; then
+    local ticket="${BASH_REMATCH[1]}"
+    local current_message
+    current_message=$(<"$COMMIT_MSG_FILE")
+
     if [ "$COMMIT_SOURCE" = "template" ]; then
+      # Replace placeholder with the ticket reference in the commit message template
       sed -i "s/JIRA_ISSUE_REF/${ticket}/" "$COMMIT_MSG_FILE"
     else
-      echo "[${ticket}] $hint" > "$COMMIT_MSG_FILE"
+      # Prepend the ticket reference to the commit message
+      echo "[${ticket}] $current_message" >"$COMMIT_MSG_FILE"
     fi
   fi
+}
+
+# Main script execution starts here
+if [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "message" ] || [ -z "$COMMIT_SOURCE" ]; then
+  append_ticket_to_commit_message
 fi
+
+# Run a local hook if it exists
+run_local_hook "$(basename "$0")" "$@"
