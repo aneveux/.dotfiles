@@ -1,7 +1,11 @@
 return {
   {
     "folke/snacks.nvim",
-    opts = { explorer = {} },
+    opts = { explorer = {
+      hidden = true,
+      ignored = true,
+      exclude = { "node_modules", ".git" },
+    } },
     keys = {
       {
         "<leader>e",

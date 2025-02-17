@@ -45,6 +45,9 @@ setopt COMPLETE_ALIASES
 setopt no_list_ambiguous
 setopt MENU_COMPLETE
 setopt complete_in_word
+setopt IGNORE_EOF # disable default ctrl+d
+
+bindkey '^D' clear-screen
 
 # sourcing .zshrc.d
 
