@@ -1,0 +1,428 @@
+""" -------------------------------------------------------------------
+""" aneveux - ideavimrc
+""" -------------------------------------------------------------------
+
+""" -------------------------------------------------------------------
+"""
+""" PLUGINS DECLARATION
+"""
+""" -------------------------------------------------------------------
+
+" https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
+set surround
+
+" https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt
+set commentary
+
+" https://github.com/terryma/vim-multiple-cursors/blob/master/doc/multiple_cursors.txt
+set multiple-cursors
+
+" Highlight copied text
+set highlightedyank
+
+" https://www.vim.org/scripts/script.php?script_id=2699
+set argtextobj
+let g:argtextobj_pairs="[:],(:),<:>"
+
+" https://github.com/kana/vim-textobj-entire/blob/master/doc/textobj-entire.txt
+set textobj-entire
+
+" https://github.com/michaeljsmith/vim-indent-object/blob/master/doc/indent-object.txt
+set textobj-indent
+
+" https://github.com/vim-scripts/ReplaceWithRegister/blob/master/doc/ReplaceWithRegister.txt
+set ReplaceWithRegister
+
+" https://raw.githubusercontent.com/wiki/JetBrains/ideavim/NERDTree-support.md
+set NERDTree
+
+" https://github.com/TheBlob42/idea-which-key
+set which-key
+" Enable Which-Key-style menu for easier key discovery
+let g:which_key_use_floating_win = 1
+" close the popup and don't process formerly typed keys
+let g:WhichKey_ProcessUnknownMappings = "false"
+let g:WhichKey_FontSize = 16
+let g:WhichKey_SortOrder = "by_key_prefix_first"
+
+" https://github.com/jphalip/ideavim-functiontextobj
+set functiontextobj
+
+""" -------------------------------------------------------------------
+"""
+""" GENERAL SETTINGS
+"""
+""" -------------------------------------------------------------------
+
+" Enable extended Vim functionality in IntelliJ
+set ex
+
+" Define <Space> as leader key
+let mapleader = " "
+let maplocalleader = " "
+
+" Redo
+map U <C-r>
+
+set scrolloff=10
+set nu
+set number relativenumber
+set showmode
+set showcmd
+set visualbell
+set notimeout
+
+""" -------------------------------
+""" CLIPBOARD
+""" -------------------------------
+
+" Sync Vim clipboard with OS clipboard
+set clipboard^=unnamed,unnamedplus
+
+" Allow to cut to system clipboard by using leader key with d
+nnoremap <leader>dd "+dd
+vnoremap <leader>d "+d
+
+" Simple x does not buffer
+nnoremap x _x
+
+" Black hole register
+noremap \ "_
+
+""" -------------------------------
+""" SEARCH
+""" -------------------------------
+
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+nnoremap <Esc> :nohlsearch<cr>
+
+""" -------------------------------
+""" NAVIGATION
+""" -------------------------------
+
+" Tab navigation
+nnoremap <A-n> :tabnext<CR>
+nnoremap <A-p> :tabprev<CR>\
+
+" Pane navigation
+nnoremap <A-h> <C-w>h
+nnoremap <A-l> <C-w>l
+nnoremap <A-k> <C-w>k
+nnoremap <A-j> <C-w>j
+
+" Jump between methods
+nnoremap [[ <Action>(MethodUp)
+nnoremap ]] <Action>(MethodDown)
+
+" Easy visual indentation
+vnoremap < <gv
+vnoremap > >gv
+
+" Popup navigation
+inoremap <C-j> <Action>(PopupMenu-selectNext)
+inoremap <C-k> <Action>(PopupMenu-selectPrev)
+
+" Keep cursor at the center of the screen
+noremap j jzt
+
+" Keep cursor at the center of the screen
+noremap k kzt
+
+" Word navigation in CamelCase and snake_case
+map W [w
+map E ]w
+map B [b
+map GE ]b
+
+" Moving things
+map <C-S-M-j> <Action>(MoveStatementDown)
+map <C-S-M-k> <Action>(MoveStatementUp)
+map <C-S-j> <Action>(MoveLineDown)
+map <C-S-k> <Action>(MoveLineUp)
+
+" Prev / Next
+nmap <C-Down> <Action>(Forward)
+nmap <C-Right> <Action>(Forward)
+nmap <C-Up> <Action>(Back)
+nmap <C-Left> <Action>(Back)
+
+""" -------------------------------
+""" IDEA SPECIFIC SETTINGS
+""" -------------------------------
+
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+set selectmode=mouse,cmd,ideaselection
+set virtualedit=onemore
+" use `m`+letter to create a bookmark. `'`+letter to jump to it. F11 to delete.
+set ideamarks
+set matchpairs+=<:>
+
+""" -------------------------------------------------------------------
+"""
+""" KEYMAP
+"""
+""" -------------------------------------------------------------------
+
+""" -------------------------------
+""" generic stuff
+""" -------------------------------
+nnoremap <Space><CR> (Action)ShowIntentionActions
+
+" flash
+map s <Action>(flash.search)
+" nerdtree
+map <leader>e :NERDTree<CR>
+map <leader>E :NERDTreeFind<CR>
+" Enable vim-commentary for quick commenting
+autocmd FileType * nmap <leader>/ :Commentary<CR>
+
+" Smart selection
+nnoremap <C-Space> (Action)EditorSelectWord
+nnoremap <BS> (Action)EditorUnSelectWord
+vnoremap <C-Space> (Action)EditorSelectWord
+vnoremap <BS> (Action)EditorUnSelectWord
+
+""" -------------------------------
+""" surround
+""" -------------------------------
+nmap gsa <Plug>(SurroundAdd)
+xmap gsa <Plug>(SurroundAdd)
+nmap gsd <Plug>(SurroundDelete)
+nmap gsf <Plug>(SurroundFind)
+nmap gsF <Plug>(SurroundFindLeft)
+nmap gsh <Plug>(SurroundHighlight)
+nmap gsr <Plug>(SurroundReplace)
+nmap gsn <Plug>(SurroundUpdateNLines)
+
+""" -------------------------------
+""" MNEMONIC SHORTCUTS
+""" ----
+"""
+""" - a: ai
+""" - c: code
+""" - g: goto
+""" - f: find
+""" - h: harpoon
+""" - m: misc
+""" - p: project
+""" - r: refactor
+""" - t: tools
+""" - v: view
+""" - x: execute
+""" - y: yank
+""" - z: folding
+""" -------------------------------
+
+""" -------------------------------
+""" - a: ai
+""" -------------------------------
+
+map <leader>aa <Action>(CodeGPT.AskQuestion)
+
+""" -------------------------------
+""" - c: code
+""" -------------------------------
+
+" info
+map <leader>cq <Action>(QuickJavaDoc)
+map <leader>cs <Action>(FileStructurePopup)
+map <leader>ct <Action>(ExpressionTypeInfo)
+map <leader>ci <Action>(ShowHoverInfo)
+" actions
+map <leader>ca <Action>(ShowIntentionActions)
+map <leader>cg <Action>(Generate)
+map <leader>cC <Action>(GenerateConstructor)
+map <leader>cF <Action>(SilentCodeCleanup)
+map <leader>cn <Action>(NewFile)
+map <leader>cN <Action>(NewDir)
+map <leader>cS <Action>(SurroundWith)
+map <leader>cO <Action>(OverrideMethods)
+map <leader>cR <Action>(ReplaceInPath)
+" style
+map <leader>co <Action>(OptimizeImports)
+map <leader>cr <Action>(RearrangeCode)
+map <leader>cf <Action>(ReformatCode)
+
+""" -------------------------------
+""" - g: goto
+""" -------------------------------
+
+map <leader>g+ <Action>(GoToMenu)
+map <leader>gD <Action>(ViewSource)
+map <leader>gS <Action>(GotoStaplerView)
+map <leader>gT <Action>(GotoTest)
+map <leader>gU <Action>(GotoUrlAction)
+map <leader>gb <Action>(EditorMatchBrace)
+map <leader>gcj <Action>(VcsShowNextChangeMarker)
+map <leader>gck <Action>(VcsShowPrevChangeMarker)
+map <leader>gd <Action>(GotoDeclaration)
+map <leader>ge <Action>(GotoNextError)
+map <leader>gE <Action>(GotoPreviousError)
+map <leader>gi <Action>(GotoImplementation)
+map <leader>gl <Action>(GotoLine)
+map <leader>gmj <Action>(MethodDown)
+map <leader>gmk <Action>(MethodUp)
+map <leader>gs <Action>(GotoSuperMethod)
+map <leader>gt <Action>(GotoTypeDeclaration)
+map <leader>gu <Action>(FindUsages)
+
+""" -------------------------------
+""" - f: find
+""" -------------------------------
+
+map <leader>fu <Action>(ShowUsages)
+map <leader>fa <Action>(GotoAction)
+map <leader>fc <Action>(GotoClass)
+map <leader>fd <Action>(ViewSource)
+map <leader>fe <Action>(SearchEverywhere)
+map <leader>ff <Action>(GotoFile)
+map <leader>fh <Action>(CallHierarchy)
+map <leader>fr <Action>(RecentFiles)
+map <leader><leader> <Action>(RecentFiles)
+map <leader>fl <Action>(RecentLocations)
+map <leader>fs <Action>(GotoSymbol)
+map <leader>ft <Action>(FindInPath)
+map <leader>fw <Action>(SearchWeb)
+
+""" -------------------------------
+""" - h: harpoon
+""" -------------------------------
+nmap <M-h> <Action>(HarpoonerOpenFile0)
+nmap <M-j> <Action>(HarpoonerOpenFile1)
+nmap <M-k> <Action>(HarpoonerOpenFile2)
+nmap <M-l> <Action>(HarpoonerOpenFile3)
+nmap <leader>hm <Action>(HarpoonerQuickMenu)
+nmap <leader>ha <Action>(HarpoonerAddFile)
+nmap <leader>hn <Action>(HarpoonerNextFileAction)
+nmap <leader>hp <Action>(HarpoonerPreviousFileAction)
+
+""" -------------------------------
+""" - m: misc
+""" -------------------------------
+
+map <leader>mS <Action>(NewScratchFile)
+map <leader>mn <Action>(MarkNotificationsAsRead)
+map <leader>mc <Action>(ClearAllNotifications)
+map <leader>ms <Action>(osmedile.intellij.stringmanip.PopupChoiceAction)
+
+""" -------------------------------
+""" - p: project
+""" -------------------------------
+
+map <leader>pR <Action>(Maven.ReimportProject)
+map <leader>pb <Action>(CompileDirty)
+map <leader>pc <Action>(CloseProject)
+map <leader>po <Action>(OpenFile)
+map <leader>pr <Action>($LRU)
+map <leader>ps <Action>(FrameSwitchAction)
+map <leader>pu <Action>(Vcs.UpdateProject)
+map <leader>pw <Action>(OpenProjectWindows)
+
+""" -------------------------------
+""" - r: refactor
+""" -------------------------------
+
+map <leader>rr <Action>(Refactorings.QuickListPopupAction)
+map <leader>rP <Action>(IntroduceFunctionalParameter)
+map <leader>rR <Action>(RenameFile)
+map <leader>rS <Action>(ExtractSuperclass)
+map <leader>rc <Action>(IntroduceConstant)
+map <leader>rf <Action>(IntroduceField)
+map <leader>ri <Action>(Inline)
+map <leader>rm <Action>(ExtractMethod)
+map <leader>rp <Action>(IntroduceParameter)
+map <leader>rn <Action>(RenameElement)
+map <leader>rs <Action>(ChangeSignature)
+map <leader>ru <Action>(MembersPullUp)
+map <leader>rv <Action>(IntroduceVariable)
+
+""" -------------------------------
+""" - t: tools
+""" -------------------------------
+
+map <leader>t+ <Action>(ToolWindowsGroup)
+map <leader>t, <Action>(HideActiveWindow)
+map <leader>tH <Action>(HideAllWindows)
+map <leader>tP <Action>(ActivateProblemsViewToolWindow)
+map <leader>tR <Action>(ActivatePullRequestsToolWindow)
+map <leader>tS <Action>(ActivateServicesToolWindow)
+map <leader>tT <Action>(ActivateTODOToolWindow)
+map <leader>tb <Action>(ActivateBookmarksToolWindow)
+map <leader>td <Action>(ActivateDebugToolWindow)
+map <leader>tf <Action>(ActivateFindToolWindow)
+map <leader>th <Action>(ActivateHierarchyToolWindow)
+map <leader>tl <Action>(JumpToLastWindow)
+map <leader>tm <Action>(ActivateMavenToolWindow)
+map <leader>tp <Action>(ActivateProjectToolWindow)
+map <leader>tr <Action>(ActivateRunToolWindow)
+map <leader>ts <Action>(ActivateStructureToolWindow)
+map <leader>tt <Action>(ActivateTerminalToolWindow)
+map <leader>tw <Action>(ActivateWebInspectorToolWindow)
+
+""" -------------------------------
+""" - v: view
+""" -------------------------------
+
+map <leader>v+ <Action>(ViewMenu)
+map <leader>vA <Action>(TogglePresentationAssistantAction)
+map <leader>vP <Action>(TogglePresentationMode)
+map <leader>vQ <Action>(CloseAllEditors)
+map <leader>vU <Action>(UnsplitAll)
+map <leader>vb <Action>(ViewToolButtons)
+map <leader>vj <Action>(SplitHorizontally)
+map <leader>v- <Action>(SplitHorizontally)
+map <leader>vl <Action>(SplitVertically)
+map <leader>v<Bar> <Action>(SplitVertically)
+map <leader>vm <Action>(MaximizeEditorInSplit)
+map <leader>vn <Action>(NextSplitter)
+map <leader>vp <Action>(PrevSplitter)
+map <leader>vu <Action>(Unsplit)
+map <leader>vM <Action>(MoveEditorToOppositeTabGroup)
+map <leader>vz <Action>(ToggleZenMode)
+
+""" -------------------------------
+""" - x: execute
+""" -------------------------------
+
+map <leader>xt <Action>(RunTest)
+map <leader>xT <Action>(RunTestFile)
+map <leader>xA <Action>(RunAllTests)
+map <leader>xm <Action>(MavenHelper.QuickRunRootMavenGoal)
+map <leader>xr <Action>(Run)
+map <leader>xR <Action>(Rerun)
+map <leader>xd <Action>(Debug)
+
+""" -------------------------------
+""" - y: yank
+""" -------------------------------
+
+map <leader>y+ <Action>(CopyReferencePopupGroup)
+map <leader>ya <Action>(CopyAbsolutePath)
+map <leader>yr <Action>(CopyReference)
+
+map <leader>ypc <Action>(com.github.kawamataryo.copygitlink.CopyAsMarkdownWithCode)
+map <leader>ypm <Action>(com.github.kawamataryo.copygitlink.CopyPermalinkAsMarkdown)
+map <leader>ypp <Action>(com.github.kawamataryo.copygitlink.CopyPermalink)
+
+""" -------------------------------
+""" - z: folding
+""" -------------------------------
+
+map <leader>zC <Action>(CollapseAllRegions)
+map <leader>zE <Action>(ExpandAllRegions)
+map <leader>zL <Action>(ExpandAllToLevel)
+map <leader>zb <Action>(CollapseBlock)
+map <leader>zc <Action>(CollapseRegion)
+map <leader>ze <Action>(ExpandRegion)
+map <leader>zl <Action>(ExpandToLevel)
+map <leader>zrc <Action>(CollapseRegionRecursively)
+map <leader>zre <Action>(ExpandRegionRecursively)
+map <leader>ztC <Action>(CollapseAll)
+map <leader>ztE <Action>(ExpandAll)
+map <leader>ztn <Action>(ExpandTreeNode)
