@@ -59,7 +59,7 @@ set clipboard^=unnamed,unnamedplus " Sync Vim clipboard with OS clipboard
 nnoremap <leader>dd "+dd
 vnoremap <leader>d "+d
 
-nnoremap x _x " Simple x does not buffer
+nnoremap x _x
 nnoremap <leader>_ "_
 
 """ -------------------------------
@@ -80,10 +80,11 @@ nnoremap <Esc> :nohlsearch<cr>
 set ideajoin
 set ideastatusicon=gray
 set idearefactormode=keep
-set selectmode=mouse,cmd,ideaselection
 set virtualedit=onemore
 set ideamarks " use `m`+letter to create a bookmark. `'`+letter to jump to it. F11 to delete.
 set matchpairs+=<:>
+set keymodel+=startsel
+set selectmode=key,ideaselection
 
 """ -------------------------------------------------------------------
 """
@@ -205,10 +206,30 @@ nmap gsn <Plug>(SurroundUpdateNLines)
 """ -------------------------------
 
 """ -------------------------------
-""" - a: ai
+""" - a: AI (GitHub Copilot)
 """ -------------------------------
 
-map <leader>aa <Action>(CodeGPT.AskQuestion)
+map <leader>ac <Action>(GithubCopilot.CompletionsPopup)
+map <leader>ai <Action>(GithubCopilot.InlineChat)
+map <leader>ao <Action>(GithubCopilot.OpenChat)
+map <leader>an <Action>(GithubCopilot.Completions.Next)
+map <leader>aN <Action>(GithubCopilot.Completions.Prev)
+map <leader>ad <Action>(GithubCopilot.Disable)
+map <leader>ae <Action>(GithubCopilot.Enable)
+map <leader>aa <Action>(GithubCopilot.ApplyCompletion)
+
+""" WHICH-KEY DESCRIPTIONS
+
+let g:WhichKeyDesc_ai               = "<leader>a [A]I (GitHub Copilot)"
+
+let g:WhichKeyDesc_ai_completions   = "<leader>ac [C]ompletions (Show Copilot Completions)"
+let g:WhichKeyDesc_ai_inline_chat   = "<leader>ai [I]nline Chat (Open Copilot Inline Chat)"
+let g:WhichKeyDesc_ai_open_chat     = "<leader>ao [O]pen Chat (Open Copilot Full Chat)"
+let g:WhichKeyDesc_ai_next          = "<leader>an [N]ext (Next Copilot Completion)"
+let g:WhichKeyDesc_ai_prev          = "<leader>aN [P]revious (Previous Copilot Completion)"
+let g:WhichKeyDesc_ai_disable       = "<leader>ad [D]isable (Disable Copilot Completions)"
+let g:WhichKeyDesc_ai_enable        = "<leader>ae [E]nable (Enable Copilot Completions)"
+let g:WhichKeyDesc_ai_apply         = "<leader>aa [A]pply (Apply Completion to Editor)"
 
 """ -------------------------------
 """ - c: code
