@@ -59,8 +59,7 @@ set clipboard^=unnamed,unnamedplus " Sync Vim clipboard with OS clipboard
 nnoremap <leader>dd "+dd
 vnoremap <leader>d "+d
 
-nnoremap x _x
-nnoremap <leader>_ "_
+nnoremap x "_x
 
 """ -------------------------------
 """ SEARCH
@@ -117,7 +116,6 @@ nnoremap k gk
 map W [w
 map E ]w
 map B [b
-map GE ]b
 
 " Prev / Next
 nmap <C-Down> <Action>(Forward)
@@ -145,20 +143,20 @@ map <C-S-M-k> <Action>(MoveStatementUp)
 map <C-S-j> <Action>(MoveLineDown)
 map <C-S-k> <Action>(MoveLineUp)
 
-nnoremap <Space-Enter> (Action)ShowIntentionActions
+nnoremap <Space-Enter> <Action>(ShowIntentionActions)
 map U <C-r> " Redo
 nnoremap <leader>nn :set relativenumber!<CR>
 
 " Smart selection
-nnoremap <C-Space> (Action)EditorSelectWord
-nnoremap <BS> (Action)EditorUnSelectWord
-vnoremap <C-Space> (Action)EditorSelectWord
-vnoremap <BS> (Action)EditorUnSelectWord
+map <C-Space> <Action>(EditorSelectWord)
+map <BS> <Action>(EditorUnSelectWord)
+vmap <C-Space> <Action>(EditorSelectWord)
+vmap <BS> <Action>(EditorUnSelectWord)
 
 " Completion
-inoremap <C-Space> (Action)CodeCompletion
-inoremap <C-S-Space> (Action)SmartTypeCompletion
-inoremap <C-S-Enter> (Action)EditorCompleteStatement
+imap <C-Space> <Action>(CodeCompletion)
+imap <C-S-Space> <Action>(SmartTypeCompletion)
+imap <C-S-Enter> <Action>(EditorCompleteStatement)
 
 """ -------------------------------
 """ PLUGINS SHORTCUTS
@@ -167,12 +165,9 @@ inoremap <C-S-Enter> (Action)EditorCompleteStatement
 " flash
 map s <Action>(flash.search)
 " nerdtree
-map <leader>e :silent! NERDTree<CR>
-map <leader>E :silent! NERDTreeFind<CR>
+map <leader>e :NERDTree<CR>
 " Enable vim-commentary for quick commenting
 autocmd FileType * nmap <leader>/ :Commentary<CR>
-" which-key help
-nnoremap <leader>w :WhichKey '<Space>'<CR>
 
 """ -------------------------------
 """ surround
@@ -206,30 +201,33 @@ nmap gsn <Plug>(SurroundUpdateNLines)
 """ -------------------------------
 
 """ -------------------------------
-""" - a: AI (GitHub Copilot)
+""" - a: AI (CodeGPT)
 """ -------------------------------
 
-map <leader>ac <Action>(GithubCopilot.CompletionsPopup)
-map <leader>ai <Action>(GithubCopilot.InlineChat)
-map <leader>ao <Action>(GithubCopilot.OpenChat)
-map <leader>an <Action>(GithubCopilot.Completions.Next)
-map <leader>aN <Action>(GithubCopilot.Completions.Prev)
-map <leader>ad <Action>(GithubCopilot.Disable)
-map <leader>ae <Action>(GithubCopilot.Enable)
-map <leader>aa <Action>(GithubCopilot.ApplyCompletion)
+map <leader>ae <Action>(CodeGPT.ContextMenuEditCodeAction) 
+map <leader>an <Action>(CodeGPT.NewChat) 
+map <leader>as <Action>(CodeGPT.AddSelectionToContext) 
+map <leader>ai <Action>(CodeGPT.AskQuestion) 
+map <leader>ad <Action>(codegpt.Document) 
+map <leader>ar <Action>(codegpt.Refactor) 
+map <leader>ax <Action>(codegpt.Explain) 
+map <leader>am <Action>(CodeGPT.TriggerEditorPopup) 
+map <leader>a+ <Action>(CodeGPT.TriggerEditorPopup) 
 
 """ WHICH-KEY DESCRIPTIONS
 
-let g:WhichKeyDesc_ai               = "<leader>a [A]I (GitHub Copilot)"
+let g:WhichKeyDesc_ai               = "<leader>a [A]I (CodeGPT)"
 
-let g:WhichKeyDesc_ai_completions   = "<leader>ac [C]ompletions (Show Copilot Completions)"
-let g:WhichKeyDesc_ai_inline_chat   = "<leader>ai [I]nline Chat (Open Copilot Inline Chat)"
-let g:WhichKeyDesc_ai_open_chat     = "<leader>ao [O]pen Chat (Open Copilot Full Chat)"
-let g:WhichKeyDesc_ai_next          = "<leader>an [N]ext (Next Copilot Completion)"
-let g:WhichKeyDesc_ai_prev          = "<leader>aN [P]revious (Previous Copilot Completion)"
-let g:WhichKeyDesc_ai_disable       = "<leader>ad [D]isable (Disable Copilot Completions)"
-let g:WhichKeyDesc_ai_enable        = "<leader>ae [E]nable (Enable Copilot Completions)"
-let g:WhichKeyDesc_ai_apply         = "<leader>aa [A]pply (Apply Completion to Editor)"
+let g:WhichKeyDesc_ai_edit          = "<leader>ae [E]dit (Edit code with AI)"
+let g:WhichKeyDesc_ai_new_chat      = "<leader>an [N]ew Chat (Start a new AI chat)"
+let g:WhichKeyDesc_ai_selection     = "<leader>as [S]election (Add selection to chat)"
+let g:WhichKeyDesc_ai_inline        = "<leader>ai [I]nline (Ask inline question)"
+let g:WhichKeyDesc_ai_document      = "<leader>ad [D]ocument (Generate documentation)"
+let g:WhichKeyDesc_ai_refactor      = "<leader>ar [R]efactor (Refactor code with AI)"
+let g:WhichKeyDesc_ai_explain       = "<leader>ax [X]plain (Explain selected code)"
+let g:WhichKeyDesc_ai_menu          = "<leader>am [M]enu (Open AI actions menu)"
+let g:WhichKeyDesc_ai_menu2         = "<leader>a+ Menu (Open AI actions menu)"
+
 
 """ -------------------------------
 """ - c: code
@@ -250,6 +248,7 @@ map <leader>cN <Action>(NewDir)
 map <leader>cS <Action>(SurroundWith)
 map <leader>cO <Action>(OverrideMethods)
 map <leader>cR <Action>(ReplaceInPath)
+map <leader>cQ <Action>(ToggleRenderedDocPresentation)
 " style
 map <leader>co <Action>(OptimizeImports)
 map <leader>cr <Action>(RearrangeCode)
@@ -272,6 +271,7 @@ let g:WhichKeyDesc_code_action_new_dir   = "<leader>cN [N]ew Directory"
 let g:WhichKeyDesc_code_action_surround  = "<leader>cS [S]urround With"
 let g:WhichKeyDesc_code_action_override  = "<leader>cO [O]verride Methods"
 let g:WhichKeyDesc_code_action_replace   = "<leader>cR [R]eplace in Path"
+let g:WhichKeyDesc_code_action_togdoc    = "<leader>cQ Toggle Rendered Javadoc"
 let g:WhichKeyDesc_code_style_optimize   = "<leader>co [O]ptimize Imports"
 let g:WhichKeyDesc_code_style_rearrange  = "<leader>cr [R]earrange Code"
 let g:WhichKeyDesc_code_style_reformat   = "<leader>cf Re[f]ormat Code"
@@ -378,7 +378,7 @@ nmap <leader>hN <Action>(HarpoonerPreviousFileAction)
 let g:WhichKeyDesc_harpoon           = "<leader>h [H]arpoon"
 
 let g:WhichKeyDesc_harpoon_menu      = "<leader>hm Harpoon [M]enu"
-let g:WhichKeyDesc_harpoon_menu      = "<leader>h+ Harpoon Menu"
+let g:WhichKeyDesc_harpoon_menu2     = "<leader>h+ Harpoon Menu"
 let g:WhichKeyDesc_harpoon_add       = "<leader>ha [A]dd File to Harpoon"
 let g:WhichKeyDesc_harpoon_next      = "<leader>hn [N]ext Harpoon File"
 let g:WhichKeyDesc_harpoon_prev      = "<leader>hN Previous Harpoon File"
@@ -397,6 +397,7 @@ map <leader>mS <Action>(NewScratchFile)
 map <leader>mn <Action>(MarkNotificationsAsRead)
 map <leader>mc <Action>(ClearAllNotifications)
 map <leader>ms <Action>(osmedile.intellij.stringmanip.PopupChoiceAction)
+map <leader>mr <Action>(ExitRestart)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -406,6 +407,7 @@ let g:WhichKeyDesc_misc_scratch          = "<leader>mS New [S]cratch File"
 let g:WhichKeyDesc_misc_notifications    = "<leader>mn Mark [N]otifications as Read"
 let g:WhichKeyDesc_misc_clear_notif      = "<leader>mc [C]lear All Notifications"
 let g:WhichKeyDesc_misc_string_manip     = "<leader>ms [S]tring Manipulation"
+let g:WhichKeyDesc_misc_restart          = "<leader>mr [R]estart IntelliJ"
 
 """ -------------------------------
 """ - p: project
@@ -457,7 +459,7 @@ map <leader>rv <Action>(IntroduceVariable)
 let g:WhichKeyDesc_refactor             = "<leader>r [R]efactor"
 
 let g:WhichKeyDesc_refactor_menu        = "<leader>rr [R]efactor Menu"
-let g:WhichKeyDesc_refactor_menu        = "<leader>r+ Refactor Menu"
+let g:WhichKeyDesc_refactor_menu2       = "<leader>r+ Refactor Menu"
 let g:WhichKeyDesc_refactor_param_func  = "<leader>rP Introduce [P]arameter (Functional)"
 let g:WhichKeyDesc_refactor_rename_file = "<leader>rR [R]ename File"
 let g:WhichKeyDesc_refactor_superclass  = "<leader>rS Extract [S]uperclass"
@@ -564,9 +566,7 @@ let g:WhichKeyDesc_view_zen_mode   = "<leader>vz [Z]en Mode"
 """ - x: execute
 """ -------------------------------
 
-map <leader>xt <Action>(RunTest)
-map <leader>xT <Action>(RunTestFile)
-map <leader>xA <Action>(RunAllTests)
+map <leader>xt <Action>(RunClass)
 map <leader>xm <Action>(MavenHelper.QuickRunRootMavenGoal)
 map <leader>xr <Action>(Run)
 map <leader>xR <Action>(Rerun)
@@ -577,8 +577,6 @@ map <leader>xd <Action>(Debug)
 let g:WhichKeyDesc_execute       = "<leader>x e[X]ecute"
 
 let g:WhichKeyDesc_execute_test        = "<leader>xt [T]est (Run Single Test)"
-let g:WhichKeyDesc_execute_test_file   = "<leader>xT [T]est File (Run All in File)"
-let g:WhichKeyDesc_execute_test_all    = "<leader>xA [A]ll Tests (Run Entire Suite)"
 let g:WhichKeyDesc_execute_maven       = "<leader>xm [M]aven (Quick Run Goal)"
 let g:WhichKeyDesc_execute_run         = "<leader>xr [R]un"
 let g:WhichKeyDesc_execute_rerun       = "<leader>xR [R]erun"
@@ -640,3 +638,11 @@ let g:WhichKeyDesc_fold_recursive_expand    = "<leader>zre [R]ecursive Expand (E
 let g:WhichKeyDesc_fold_tool_collapse_all  = "<leader>ztC [T]ool Collapse All (Collapse All)"
 let g:WhichKeyDesc_fold_tool_expand_all    = "<leader>ztE [T]ool Expand All (Expand All)"
 let g:WhichKeyDesc_fold_tool_expand_node   = "<leader>ztn [N]ode Expand (Expand Tree Node)"
+
+""" -------------------------------------------------------------------
+" which-key hiding some bindings 
+let g:WhichKeyDesc_hide_d_override = "<leader>d"
+let g:WhichKeyDesc_hide_n_override = "<leader>n"
+let g:WhichKeyDesc_hide_e_override = "<leader>e"
+let g:WhichKeyDesc_hide_space_override = "<leader><Space>"
+
