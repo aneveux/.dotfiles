@@ -42,7 +42,7 @@ set ex " Enable extended Vim functionality in IntelliJ
 let mapleader = " "
 let maplocalleader = " "
 
-set scrolloff=10
+set scrolloff=999
 set nu
 set number relativenumber
 set showmode
@@ -83,7 +83,7 @@ set virtualedit=onemore
 set ideamarks " use `m`+letter to create a bookmark. `'`+letter to jump to it. F11 to delete.
 set matchpairs+=<:>
 set keymodel+=startsel
-set selectmode=key,ideaselection
+set selectmode=key
 
 """ -------------------------------------------------------------------
 """
@@ -108,9 +108,6 @@ nnoremap ]] <Action>(MethodDown)
 " Popup navigation
 inoremap <C-j> <Action>(PopupMenu-selectNext)
 inoremap <C-k> <Action>(PopupMenu-selectPrev)
-
-nnoremap j gj
-nnoremap k gk
 
 " Word navigation in CamelCase and snake_case
 map W [w

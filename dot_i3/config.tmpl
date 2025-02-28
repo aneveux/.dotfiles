@@ -51,13 +51,7 @@ bindsym $mod+Shift+c reload
 
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-bindsym $mod+period exec "source $HOME/.keyboard ; notify-send keyboard reloaded"
-
-# switch to workspace with urgent window automatically
-# for_window [urgent=latest] focus
-
-# i3-input for i3 commands interpretation
-bindsym $mod+colon exec i3-input -P ":"
+bindsym $mod+period exec "$HOME/.keyboard"
 
 # ---------------------------------------------------
 # Look'n'Feel
