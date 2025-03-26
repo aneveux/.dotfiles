@@ -107,7 +107,7 @@ nnoremap ]] <Action>(MethodDown)
 
 " Popup navigation
 inoremap <C-j> <Action>(PopupMenu-selectNext)
-inoremap <C-k> <Action>(PopupMenu-selectPrev)
+inoremap <C-k> <Action>(PopupMenu-selectPrevious)
 
 " Word navigation in CamelCase and snake_case
 map W [w
