@@ -198,33 +198,29 @@ nmap gsn <Plug>(SurroundUpdateNLines)
 """ -------------------------------
 
 """ -------------------------------
-""" - a: AI (CodeGPT)
+""" - a: AI (Copilot)
 """ -------------------------------
 
-map <leader>ae <Action>(CodeGPT.ContextMenuEditCodeAction) 
-map <leader>an <Action>(CodeGPT.NewChat) 
-map <leader>as <Action>(CodeGPT.AddSelectionToContext) 
-map <leader>ai <Action>(CodeGPT.AskQuestion) 
-map <leader>ad <Action>(codegpt.Document) 
-map <leader>ar <Action>(codegpt.Refactor) 
-map <leader>ax <Action>(codegpt.Explain) 
-map <leader>am <Action>(CodeGPT.TriggerEditorPopup) 
-map <leader>a+ <Action>(CodeGPT.TriggerEditorPopup) 
+map <leader>ai <Action>(copilot.chat.inline)
+map <leader>ac <Action>(copilot.newChatSession)
+map <leader>ae <Action>(copilot.newEditSession)
+map <leader>as <Action>(copilot.chat.show)
+map <leader>ao<Action>(copilot.enableCopilot)
+map <leader>aO <Action>(copilot.disableCopilot)
+map <leader>aC <Action>(copilot.requestCompletions)
+
 
 """ WHICH-KEY DESCRIPTIONS
 
 let g:WhichKeyDesc_ai               = "<leader>a [A]I (CodeGPT)"
 
-let g:WhichKeyDesc_ai_edit          = "<leader>ae [E]dit (Edit code with AI)"
-let g:WhichKeyDesc_ai_new_chat      = "<leader>an [N]ew Chat (Start a new AI chat)"
-let g:WhichKeyDesc_ai_selection     = "<leader>as [S]election (Add selection to chat)"
 let g:WhichKeyDesc_ai_inline        = "<leader>ai [I]nline (Ask inline question)"
-let g:WhichKeyDesc_ai_document      = "<leader>ad [D]ocument (Generate documentation)"
-let g:WhichKeyDesc_ai_refactor      = "<leader>ar [R]efactor (Refactor code with AI)"
-let g:WhichKeyDesc_ai_explain       = "<leader>ax [X]plain (Explain selected code)"
-let g:WhichKeyDesc_ai_menu          = "<leader>am [M]enu (Open AI actions menu)"
-let g:WhichKeyDesc_ai_menu2         = "<leader>a+ Menu (Open AI actions menu)"
-
+let g:WhichKeyDesc_ai_newchat       = "<leader>ac new [C]hat session"
+let g:WhichKeyDesc_ai_newedit       = "<leader>ae new [E]dit session"
+let g:WhichKeyDesc_ai_showchat      = "<leader>as [S]how chat"
+let g:WhichKeyDesc_ai_copiloton     = "<leader>ao Completions [o]n"
+let g:WhichKeyDesc_ai_copilotoff    = "<leader>aO Completions [O]ff"
+let g:WhichKeyDesc_ai_completions   = "<leader>aC [C]omplete with AI"
 
 """ -------------------------------
 """ - c: code
