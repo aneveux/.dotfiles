@@ -143,6 +143,10 @@ eval "$(atuin init zsh)"
 
 eval "$(navi widget zsh)"
 
+# mods 
+
+eval "$(mods completion zsh)"
+
 # prompt
 
 eval "$(starship init zsh)"

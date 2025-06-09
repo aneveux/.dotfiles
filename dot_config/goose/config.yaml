@@ -1,0 +1,34 @@
+OPENAI_HOST: https://api.openai.com
+GOOSE_PROVIDER: openai
+OPENAI_BASE_PATH: v1/chat/completions
+extensions:
+  computercontroller:
+    bundled: true
+    display_name: Computer Controller
+    enabled: true
+    name: computercontroller
+    timeout: 300
+    type: builtin
+  developer:
+    bundled: true
+    display_name: Developer Tools
+    enabled: true
+    name: developer
+    timeout: 300
+    type: builtin
+  jetbrains:
+    bundled: true
+    display_name: JetBrains
+    enabled: false
+    name: jetbrains
+    timeout: 300
+    type: builtin
+  memory:
+    bundled: true
+    display_name: Memory
+    enabled: true
+    name: memory
+    timeout: 300
+    type: builtin
+GOOSE_MODEL: gpt-4o
+GOOSE_MODE: approve
