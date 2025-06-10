@@ -1,6 +1,5 @@
-OPENAI_HOST: https://api.openai.com
-GOOSE_PROVIDER: openai
 OPENAI_BASE_PATH: v1/chat/completions
+GOOSE_PROVIDER: openai
 extensions:
   computercontroller:
     bundled: true
@@ -30,5 +29,6 @@ extensions:
     name: memory
     timeout: 300
     type: builtin
+OPENAI_HOST: https://api.openai.com
+GOOSE_MODE: auto
 GOOSE_MODEL: gpt-4o
-GOOSE_MODE: approve
