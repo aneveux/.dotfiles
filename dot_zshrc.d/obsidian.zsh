@@ -6,6 +6,13 @@ sync_notes() {
   
   cd "$notes_dir" || { echo "❌ Failed to cd to $notes_dir"; return 1; }
 
+  echo "⏳ Pulling latest changes..."
+  if ! git pull --rebase; then
+    echo "⚠️ Failed to pull latest changes, aborting sync."
+    cd "$cur_dir"
+    return 1
+  fi
+
   if git diff --quiet && git diff --cached --quiet; then
     echo "😴 No changes to commit in $notes_dir."
     cd "$cur_dir"
