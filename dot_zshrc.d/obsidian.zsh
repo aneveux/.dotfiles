@@ -65,7 +65,3 @@ syncn() {
   echo "🎉 Obsidian sync complete!"
 }
 
-if [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ -n "$ZSH_EVAL_CONTEXT" ]]; then
-  unset -f _sync_from_cloud _pull_git _push_git _sync_to_cloud
-fi
-
