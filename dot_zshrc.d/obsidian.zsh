@@ -4,7 +4,18 @@ OBSIDIAN_DIRECTORY="$HOME/notes"
 NEXTCLOUD_OBSIDIAN_DIRECTORY="$HOME/Nextcloud/notes"
 CURRENT_DIRECTORY="$PWD"
 
+_ensure_nextcloud_dir() {
+  if [[ ! -d "$NEXTCLOUD_OBSIDIAN_DIRECTORY" ]]; then
+    echo "📁 Nextcloud notes directory does not exist. Creating..."
+    mkdir -p "$NEXTCLOUD_OBSIDIAN_DIRECTORY" || {
+      echo "❌ Failed to create $NEXTCLOUD_OBSIDIAN_DIRECTORY"
+      return 1
+    }
+  fi
+}
+
 _sync_from_cloud() {
+  _ensure_nextcloud_dir || return 1
   echo "☁️  Syncing from Nextcloud to Obsidian..."
   rsync -av --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
 }
@@ -53,6 +64,7 @@ _push_git() {
 }
 
 _sync_to_cloud() {
+  _ensure_nextcloud_dir || return 1
   echo "📤 Syncing Obsidian to Nextcloud..."
   rsync -av --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
 }
