@@ -52,22 +52,26 @@ _git_pull_rebase() {
   return 0
 }
 
-_rsync_from_nextcloud() {
+_rsync_from_nextcloud_and_check_git_changes() {
   _ensure_nextcloud_dir || return 1
 
-  echo "☁️  Syncing from Nextcloud to local (safe mode)..."
+  echo "☁️  Syncing from Nextcloud to local..."
 
-  # Create a temp file list of what rsync would change
-  changes=$(rsync -nrv --update --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/" | grep -v '^\.\/$')
+  # Perform the actual sync
+  rsync -av --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
 
-  if [[ -n "$changes" ]]; then
-    echo "⚠️  Files would be updated from Nextcloud:"
-    echo "$changes"
-    echo "🛑 Aborting sync so you can review changes manually."
+  # Check if this changed anything in Git
+  cd "$OBSIDIAN_DIRECTORY" || { echo "❌ Failed to cd to $OBSIDIAN_DIRECTORY"; return 1; }
+
+  if [[ -n $(git status --porcelain) ]]; then
+    echo "⚠️ Changes detected after syncing from Nextcloud:"
+    git status --short
+    echo "🛑 Aborting so you can review these changes manually."
     return 4
   fi
 
-  echo "✅ No incoming changes from Nextcloud."
+  echo "✅ No changes from Nextcloud."
+  cd "$CURRENT_DIRECTORY"
   return 0
 }
 
@@ -102,7 +106,7 @@ syncn() {
 
   _git_commit_local_changes || return 1
   _git_pull_rebase || return 2
-  _rsync_from_nextcloud || return 3
+  _rsync_from_nextcloud_and_check_git_changes || return 3
   _rsync_to_nextcloud || return 4
   _git_push || return 5
 
