@@ -17,7 +17,7 @@ _ensure_nextcloud_dir() {
 _sync_from_cloud() {
   _ensure_nextcloud_dir || return 1
   echo "☁️  Syncing from Nextcloud to Obsidian..."
-  rsync -a --update --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
+  rsync -av --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
 }
 
 _pull_git() {
@@ -67,7 +67,7 @@ _push_git() {
 _sync_to_cloud() {
   _ensure_nextcloud_dir || return 1
   echo "📤 Syncing Obsidian to Nextcloud..."
-  rsync -a --delete --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
+  rsync -av --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
 }
 
 syncn() {
