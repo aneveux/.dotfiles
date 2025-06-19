@@ -1,8 +1,11 @@
 #!/bin/bash 
 
+# === CONFIGURATION ===
 OBSIDIAN_DIRECTORY="$HOME/notes"
 NEXTCLOUD_OBSIDIAN_DIRECTORY="$HOME/Nextcloud/notes"
 CURRENT_DIRECTORY="$PWD"
+
+# === HELPERS ===
 
 _ensure_nextcloud_dir() {
   if [[ ! -d "$NEXTCLOUD_OBSIDIAN_DIRECTORY" ]]; then
@@ -14,67 +17,96 @@ _ensure_nextcloud_dir() {
   fi
 }
 
-_sync_from_cloud() {
-  _ensure_nextcloud_dir || return 1
-  echo "☁️  Syncing from Nextcloud to Obsidian..."
-  rsync -av --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
-}
-
-_pull_git() {
-  echo "⏳ Pulling latest changes from Git..."
+_git_commit_local_changes() {
   cd "$OBSIDIAN_DIRECTORY" || { echo "❌ Failed to cd to $OBSIDIAN_DIRECTORY"; return 1; }
 
-  if ! git pull --rebase; then
-    echo "⚠️ Git pull failed, aborting sync."
-    cd "$CURRENT_DIRECTORY"
-    return 2
+  git add -A
+
+  if [[ -z $(git status --porcelain) ]]; then
+    echo "😴 No local changes to commit."
+  else
+    if git commit -m "📝 Local changes before pulling $(date '+%Y-%m-%d %H:%M:%S')"; then
+      echo "✅ Local changes committed."
+    else
+      echo "⚠️ Failed to commit local changes."
+      cd "$CURRENT_DIRECTORY"
+      return 2
+    fi
   fi
 
   cd "$CURRENT_DIRECTORY"
   return 0
 }
 
-_push_git() {
+_git_pull_rebase() {
   cd "$OBSIDIAN_DIRECTORY" || { echo "❌ Failed to cd to $OBSIDIAN_DIRECTORY"; return 1; }
 
-  # adding here to ensure catching deleted files 
-  git add -A 
-
-  if [[ -z $(git status --porcelain) ]]; then
-    echo "😴 No changes to commit."
-    cd "$CURRENT_DIRECTORY"
-    return 0
+  echo "⏳ Pulling latest from GitHub (rebase)..."
+  if ! git pull --rebase; then
+    echo "❌ Git pull resulted in conflicts. Resolve them manually."
+    return 3
   fi
 
-  if git commit -m "📝 Quick obsidian notes update $(date '+%Y-%m-%d %H:%M:%S')"; then
-    if git push; then
-      echo "✅ Notes pushed to Git successfully!"
-    else
-      echo "⚠️ Commit done but failed to push."
-      cd "$CURRENT_DIRECTORY"
-      return 3
-    fi
-  else
-    echo "⚠️ Nothing committed."
-    cd "$CURRENT_DIRECTORY"
+  echo "✅ Git pull successful."
+  cd "$CURRENT_DIRECTORY"
+  return 0
+}
+
+_rsync_from_nextcloud() {
+  _ensure_nextcloud_dir || return 1
+
+  echo "☁️  Syncing from Nextcloud to local (safe mode)..."
+
+  # Create a temp file list of what rsync would change
+  changes=$(rsync -nrv --update --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/" | grep -v '^\.\/$')
+
+  if [[ -n "$changes" ]]; then
+    echo "⚠️  Files would be updated from Nextcloud:"
+    echo "$changes"
+    echo "🛑 Aborting sync so you can review changes manually."
     return 4
   fi
 
+  echo "✅ No incoming changes from Nextcloud."
+  return 0
+}
+
+_rsync_to_nextcloud() {
+  _ensure_nextcloud_dir || return 1
+
+  echo "📤 Syncing to Nextcloud (repository is source of truth)..."
+  rsync -av --delete --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
+  echo "✅ Sync to Nextcloud complete."
+  return 0
+}
+
+_git_push() {
+  cd "$OBSIDIAN_DIRECTORY" || { echo "❌ Failed to cd to $OBSIDIAN_DIRECTORY"; return 1; }
+
+  echo "🚀 Pushing to GitHub..."
+  if git push; then
+    echo "✅ Git push successful!"
+  else
+    echo "⚠️ Git push failed. Please resolve manually."
+    return 5
+  fi
+
   cd "$CURRENT_DIRECTORY"
   return 0
 }
 
-_sync_to_cloud() {
-  _ensure_nextcloud_dir || return 1
-  echo "📤 Syncing Obsidian to Nextcloud..."
-  rsync -av --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
-}
+# === MAIN SYNC FUNCTION ===
 
 syncn() {
-  _sync_from_cloud || return 1
-  _pull_git || return 2
-  _push_git || return 3
-  _sync_to_cloud || return 4
+  echo "🚀 Starting Obsidian sync..."
+
+  _git_commit_local_changes || return 1
+  _git_pull_rebase || return 2
+  _rsync_from_nextcloud || return 3
+  _rsync_to_nextcloud || return 4
+  _git_push || return 5
+
   echo "🎉 Obsidian sync complete!"
+  return 0
 }
 
