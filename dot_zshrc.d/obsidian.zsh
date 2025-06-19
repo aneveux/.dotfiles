@@ -17,7 +17,7 @@ _ensure_nextcloud_dir() {
 _sync_from_cloud() {
   _ensure_nextcloud_dir || return 1
   echo "☁️  Syncing from Nextcloud to Obsidian..."
-  rsync -av --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
+  rsync -a --update --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
 }
 
 _pull_git() {
@@ -37,13 +37,14 @@ _pull_git() {
 _push_git() {
   cd "$OBSIDIAN_DIRECTORY" || { echo "❌ Failed to cd to $OBSIDIAN_DIRECTORY"; return 1; }
 
-  if git diff --quiet && git diff --cached --quiet; then
+  # adding here to ensure catching deleted files 
+  git add -A 
+
+  if [[ -z $(git status --porcelain) ]]; then
     echo "😴 No changes to commit."
     cd "$CURRENT_DIRECTORY"
     return 0
   fi
-
-  git add -A
 
   if git commit -m "📝 Quick obsidian notes update $(date '+%Y-%m-%d %H:%M:%S')"; then
     if git push; then
@@ -66,7 +67,7 @@ _push_git() {
 _sync_to_cloud() {
   _ensure_nextcloud_dir || return 1
   echo "📤 Syncing Obsidian to Nextcloud..."
-  rsync -av --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
+  rsync -a --delete --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
 }
 
 syncn() {
