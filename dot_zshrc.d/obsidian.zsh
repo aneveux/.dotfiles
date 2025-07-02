@@ -58,7 +58,7 @@ _rsync_from_nextcloud_and_check_git_changes() {
   echo "☁️  Syncing from Nextcloud to local..."
 
   # Perform the actual sync
-  rsync -av --exclude='.git' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
+  rsync -av --exclude='.git' --exclude='.obsidian/workspace.json' "$NEXTCLOUD_OBSIDIAN_DIRECTORY/" "$OBSIDIAN_DIRECTORY/"
 
   # Check if this changed anything in Git
   cd "$OBSIDIAN_DIRECTORY" || { echo "❌ Failed to cd to $OBSIDIAN_DIRECTORY"; return 1; }
@@ -79,7 +79,7 @@ _rsync_to_nextcloud() {
   _ensure_nextcloud_dir || return 1
 
   echo "📤 Syncing to Nextcloud (repository is source of truth)..."
-  rsync -av --delete --exclude='.git' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
+  rsync -av --delete --exclude='.git' --exclude='.obsidian/workspace.json' "$OBSIDIAN_DIRECTORY/" "$NEXTCLOUD_OBSIDIAN_DIRECTORY/"
   echo "✅ Sync to Nextcloud complete."
   return 0
 }
