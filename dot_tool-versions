@@ -17,3 +17,4 @@ pnpm 8.15.1
 nodejs 21.6.1
 bun 1.0.26
 quarkus 3.10.0
+stern 1.32.0
