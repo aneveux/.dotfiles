@@ -194,6 +194,9 @@ enter_accept = true
 #   "vi"
 # ]
 
+[theme]
+name = "catppuccin-mocha-blue"
+
 [keys]
 # Defaults to true. If disabled, using the up/down key won't exit the TUI when scrolled past the first/last entry.
 # scroll_exits = false
