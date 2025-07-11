@@ -27,6 +27,7 @@ plugins=(
     git
     jira
     vi-mode
+    mise
 )
 
 # global options 
