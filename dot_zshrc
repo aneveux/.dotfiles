@@ -33,6 +33,26 @@ fi
 source $ZINIT_HOME/zinit.zsh
 
 #==============================================================================
+# ⚡  Zsh options, key-bindings, history
+#==============================================================================
+
+HYPHEN_INSENSITIVE=yes
+HIST_STAMPS="yyyy-mm-dd"
+
+# nice defaults ---------------------------------------------------------------
+setopt auto_cd interactivecomments extended_glob print_exit_value
+setopt append_history inc_append_history share_history
+setopt hist_ignore_dups hist_ignore_space notify
+setopt complete_in_word
+setopt no_list_ambiguous
+setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
+
+unsetopt correct correct_all            # no automatic spelling correction
+
+# key-bindings ----------------------------------------------------------------
+bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
+
+#==============================================================================
 # ⚡  Core plugins & completions
 #==============================================================================
 
@@ -75,31 +95,11 @@ eval "$(starship init zsh)"
 eval "$(mods     completion zsh)"
 
 #==============================================================================
-# ⚡  Zsh options, key-bindings, history
-#==============================================================================
-
-HYPHEN_INSENSITIVE=yes
-HIST_STAMPS="yyyy-mm-dd"
-
-# nice defaults ---------------------------------------------------------------
-setopt auto_cd interactivecomments extended_glob print_exit_value
-setopt append_history inc_append_history share_history
-setopt hist_ignore_dups hist_ignore_space notify
-setopt complete_in_word
-setopt no_list_ambiguous
-setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
-
-unsetopt correct correct_all            # no automatic spelling correction
-
-# key-bindings ----------------------------------------------------------------
-bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
-
-#==============================================================================
 # ⚡  Modular configuration
 #==============================================================================
 
-for zf in "$HOME/.zshrc.d/"*.zsh(Nm-1);      do source "$zf"; done
-for zf in "$HOME/local/zshrc.d/"*.zsh(Nm-1); do source "$zf"; done
+for zf in "$HOME/.zshrc.d/"*.zsh(N);      do source "$zf"; done
+for zf in "$HOME/local/zshrc.d/"*.zsh(N); do source "$zf"; done
 
 #==============================================================================
 # ⚡  Carapace completions
