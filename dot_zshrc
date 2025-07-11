@@ -33,8 +33,8 @@ fi
 source $ZINIT_HOME/zinit.zsh
 
 # async self-update once per day (does not block prompt)
-zinit ice lucid atload"zinit self-update &!" wait"0" silent
-zinit light zdharma-continuum/null # dummy – just to run the ice
+zinit ice lucid silent atload"zinit self-update -q &!" wait"0"
+zinit light zdharma-continuum/null
 
 #==============================================================================
 # ⚡  Core plugins & completions
@@ -50,7 +50,7 @@ zinit wait lucid for \
 zinit ice depth=1 wait"2" lucid blockf
 zinit light jeffreytse/zsh-vi-mode
 
-zinit ice wait"3" atload'source fzf-tab.zsh'
+zinit ice wait"3" silent atload'source fzf-tab.zsh'
 zinit light Aloxaf/fzf-tab
 
 # lean OMZ snippets -----------------------------------------------------------
@@ -101,8 +101,8 @@ bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 bindkey -M vicmd '^J' accept-line
 
 # Ctrl+R searches in Atuin
-bindkey -M vicmd '^R' _atuin_search
-bindkey -M viins '^R' _atuin_search
+bindkey -M vicmd '^R' atuin-search-widget
+bindkey -M viins '^R' atuin-search-widget
 
 #==============================================================================
 # ⚡  Modular configuration
