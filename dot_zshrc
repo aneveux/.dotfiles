@@ -32,20 +32,6 @@ if [[ ! -f $ZINIT_HOME/zinit.zsh ]]; then
 fi
 source $ZINIT_HOME/zinit.zsh
 
-# async self-update once per day (does not block prompt)
-zinit ice lucid silent atload"zinit self-update -q &!" wait"0"
-zinit light zdharma-continuum/null
-
-#==============================================================================
-# ⚡  Custom tools (loaded through eval)
-#==============================================================================
-
-# These each add <10 ms but could be done through zinit if desired
-eval "$(zoxide init zsh --cmd cd)"
-eval "$(atuin   init zsh)"
-eval "$(starship init zsh)"
-eval "$(mods     completion zsh)"
-
 #==============================================================================
 # ⚡  Core plugins & completions
 #==============================================================================
@@ -79,6 +65,16 @@ zinit ice as=command from=gh-r lucid cp \
 zinit light jdx/mise
 
 #==============================================================================
+# ⚡  Custom tools (loaded through eval)
+#==============================================================================
+
+# These each add <10 ms but could be done through zinit if desired
+eval "$(zoxide init zsh --cmd cd)"
+eval "$(atuin   init zsh)"
+eval "$(starship init zsh)"
+eval "$(mods     completion zsh)"
+
+#==============================================================================
 # ⚡  Zsh options, key-bindings, history
 #==============================================================================
 
@@ -99,10 +95,6 @@ bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 
 # vi-mode + autocomplete enter key
 bindkey -M vicmd '^J' accept-line
-
-# Ctrl+R searches in Atuin
-bindkey -M viins '^R' atuin-search-widget
-bindkey -M vicmd '^R' atuin-search-widget
 
 #==============================================================================
 # ⚡  Modular configuration
