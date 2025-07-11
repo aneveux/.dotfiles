@@ -1,147 +1,184 @@
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_CUSTOM=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}
+#==============================================================================
+# ⚡  Early initialisation
+#==============================================================================
 
-source "$HOME/.exports"
-source "$HOME/.aliases"
-source "$HOME/.keyboard"
+# user-specific fragments ------------------------------------------------------
+[[ -f $HOME/.exports  ]] && source $HOME/.exports
+[[ -f $HOME/.aliases  ]] && source $HOME/.aliases
+[[ -f $HOME/.keyboard ]] && source $HOME/.keyboard
 
-# path
+# PATH ------------------------------------------------------------------------
+typeset -U path PATH          # keep both arrays unique
 
-typeset -U path
-gobins=$(go env GOPATH)/bin
-path=(${KREW_ROOT:-$HOME/.krew}/bin ~/bin ~/.local/bin ~/.cargo/bin ${gobins} $path[@])
-fpath+=${ZSH_CUSTOM}/plugins/zsh-completions/src
+# helper: append directory to $path only if it exists
+_append_if_dir() { [[ -d $1 ]] && path+="$1" }
 
-# oh-my-zsh
+# language/tool-specific bins
+local gobins=${$(go env GOPATH 2>/dev/null):-$HOME/go}/bin
+_append_if_dir ${KREW_ROOT:-$HOME/.krew}/bin
+_append_if_dir $HOME/bin
+_append_if_dir $HOME/.local/bin
+_append_if_dir $HOME/.cargo/bin
+_append_if_dir $gobins
 
-zstyle ':omz:update' mode reminder 
-zstyle ':omz:update' frequency 7
+#==============================================================================
+# ⚡  Zinit bootstrap
+#==============================================================================
 
-source $ZSH/oh-my-zsh.sh
+export ZINIT_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git
+if [[ ! -f $ZINIT_HOME/zinit.zsh ]]; then
+  mkdir -p $ZINIT_HOME
+  git clone --depth 1 https://github.com/zdharma-continuum/zinit $ZINIT_HOME
+fi
+source $ZINIT_HOME/zinit.zsh
 
-plugins=(
-    colored-man-pages
-    extract
-    safe-paste
-    tmux
-    git
-    jira
-    vi-mode
-    mise
-)
+# async self-update once per day (does not block prompt)
+zinit ice lucid atload"zinit self-update &!" wait"0" silent
+zinit light zdharma-continuum/null # dummy – just to run the ice
 
-# global options 
+#==============================================================================
+# ⚡  Core plugins & completions
+#==============================================================================
 
-HYPHEN_INSENSITIVE="true"
+zinit wait lucid for \
+    zdharma-continuum/fast-syntax-highlighting \
+  blockf \
+    zsh-users/zsh-completions \
+  atload"!_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions
+
+zinit ice wait"2" lucid blockf
+zinit light zsh-users/zsh-vi-mode
+
+zinit ice wait"3" atload'source fzf-tab.zsh'
+zinit light Aloxaf/fzf-tab
+
+# lean OMZ snippets -----------------------------------------------------------
+zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+zinit snippet OMZ::plugins/extract/extract.plugin.zsh
+zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
+
+# mise ------------------------------------------------------------------------
+zinit ice as=command from=gh-r lucid cp id-as=usage
+zinit light jdx/usage
+
+zinit ice as=command from=gh-r lucid cp \
+          id-as=mise mv="mise* -> mise" \
+          atclone"./mise* completion zsh > _mise" \
+          atload'eval "$(mise activate zsh)"'
+zinit light jdx/mise
+
+#==============================================================================
+# ⚡  Custom tools (loaded through eval)
+#==============================================================================
+
+# These each add <10 ms but could be done through zinit if desired
+eval "$(zoxide init zsh --cmd cd)"
+eval "$(atuin   init zsh)"
+eval "$(starship init zsh)"
+eval "$(mods     completion zsh)"
+
+#==============================================================================
+# ⚡  Zsh options, key-bindings, history
+#==============================================================================
+
+HYPHEN_INSENSITIVE=yes
 HIST_STAMPS="yyyy-mm-dd"
 
-setopt auto_cd
-setopt interactivecomments
-setopt append_history
-setopt no_match
-unsetopt correct
-unsetopt correct_all
-setopt extended_glob
-setopt print_exit_value
-setopt COMPLETE_ALIASES
-setopt no_list_ambiguous
-setopt MENU_COMPLETE
-setopt complete_in_word
-setopt IGNORE_EOF # disable default ctrl+d
+# nice defaults ---------------------------------------------------------------
+setopt auto_cd interactivecomments extended_glob print_exit_value
+setopt append_history inc_append_history share_history
+setopt hist_ignore_dups hist_ignore_space notify
+setopt no_match no_list_ambiguous COMPLETE_ALIASES MENU_COMPLETE complete_in_word
+setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
 
-bindkey '^D' clear-screen
+unsetopt correct correct_all            # no automatic spelling correction
 
-# sourcing .zshrc.d
+# key-bindings ----------------------------------------------------------------
+bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 
-zshrcd="$HOME/.zshrc.d"
-if [ -d "$zshrcd" ]; then
-    zfiles=("$zshrcd/"*.zsh)
-    for zf in $zfiles; do
-        [ -r $zf ] && . $zf
-    done
-fi
+# vi-mode + autocomplete enter key
+bindkey -M vicmd '^J' accept-line
 
-# sourcing local zsh if exists
+# Ctrl+R searches in Atuin
+bindkey -M vicmd '^R' _atuin_search
+bindkey -M viins '^R' _atuin_search
 
-localzshrcd="$HOME/local/zshrc.d"
-if [ -d "$localzshrcd" ]; then 
-    localzfiles=("$localzshrcd/"*.zsh)
-    for localzf in $localzfiles; do 
-        [ -r $localzf ] && . $localzf
-    done
-fi 
+#==============================================================================
+# ⚡  Modular configuration
+#==============================================================================
 
-# mise-en-place 
+for zf in "$HOME/.zshrc.d/"*.zsh(Nm-1);      do source "$zf"; done
+for zf in "$HOME/local/zshrc.d/"*.zsh(Nm-1); do source "$zf"; done
 
-eval "$(/usr/bin/mise activate zsh)"
+#==============================================================================
+# ⚡  Carapace completions
+#==============================================================================
 
-# generating completions 
+zinit ice wait"1" lucid
+zinit light rsteube/carapace-bin
 
-[[ ! -d ~/.zfunc ]] && mkdir ~/.zfunc 
+fpath+=$HOME/.config/carapace
+eval "$(carapace _carapace)"
 
-[[ ! -f ~/.zfunc/_atuin ]] && atuin gen-completions --shell zsh --out-dir ~/.zfunc
-[[ ! -f ~/.zfunc/_op ]] && op completion zsh > ~/.zfunc/_op
+#==============================================================================
+# ⚡  3rd-party completion directories
+#==============================================================================
 
-fpath+=(~/.zfunc)
+# generated completion files
+mkdir -p ~/.zfunc
+fpath+=~/.zfunc
 
-# which op &> /dev/null && eval "$(op completion zsh)" && compdef _op op
+# keep these two snippets up-to-date ------------------------------------------
+zinit ice wait compile atpull"atuin gen-completions --shell zsh --out-dir ~/.zfunc"
+zinit light ajeetdsouza/none   # placeholder to run the ice
 
-# initialize completions
+zinit ice wait compile atpull"op completion zsh > ~/.zfunc/_op"
+zinit light onepassword/none   # placeholder
 
-autoload -Uz compinit promptinit
-compinit -u
-promptinit
+#==============================================================================
+# ⚡  compinit (single call)
+#==============================================================================
 
+autoload -Uz compinit
+compinit -u -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+
+# Completion styling ----------------------------------------------------------
 zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path .zcache
-zstyle ':completion:*' menu select
+zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcache"
+zstyle ':completion:*' menu no
+#zstyle ':completion:*' menu select
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' matcher-list \
+      'm:{a-zA-Z}={A-Za-z}' \
+      'r:|[._-]=* r:|=*' \
+      'l:|=* r:|=*'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
-# fzf 
-# fzf-tab needs to be loaded after compinit, 
-# but before plugins which will wrap widgets, such as zsh-autosuggestions
+#==============================================================================
+# ⚡  FZF & fzf-tab configuration
+#==============================================================================
 
-export FZF_DEFAULT_OPTS=" \
---color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
---color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} \
+  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+  --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+export FZF_COMPLETION_TRIGGER='**'
 
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
-zstyle ':fzf-tab:*' switch-group ',' '.'
-zstyle ':fzf-tab:*' show-group none
-zstyle ':fzf-tab:*' single-group header
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:*'             fzf-flags   --color=fg:1,fg+:2 --bind=tab:accept
+zstyle ':fzf-tab:*'             switch-group '<' '>'
+zstyle ':fzf-tab:*'             show-group none
+zstyle ':fzf-tab:*'             single-group header
+zstyle ':fzf-tab:*'             fzf-command ftb-tmux-popup
 
-source $ZSH/custom/plugins/fzf-tab/fzf-tab.zsh
+#==============================================================================
+# ⚡  Autocomplete (after compinit)
+#==============================================================================
 
-# autosuggestions and syntax highlighting
-
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-source ${ZSH_CUSTOM}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ${ZSH_CUSTOM}/resources/zsh-syntax-highlighting/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh
-source ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# zoxide 
-
-eval "$(zoxide init zsh --cmd cd)"
-
-# atuin history 
-
-eval "$(atuin init zsh)"
-
-# navi widget 
-
-eval "$(navi widget zsh)"
-
-# mods 
-
-eval "$(mods completion zsh)"
-
-# prompt
-
-eval "$(starship init zsh)"
+zinit ice wait"5" lucid
+zinit light marlonrichert/zsh-autocomplete
 
