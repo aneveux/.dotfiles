@@ -37,6 +37,16 @@ zinit ice lucid silent atload"zinit self-update -q &!" wait"0"
 zinit light zdharma-continuum/null
 
 #==============================================================================
+# ⚡  Custom tools (loaded through eval)
+#==============================================================================
+
+# These each add <10 ms but could be done through zinit if desired
+eval "$(zoxide init zsh --cmd cd)"
+eval "$(atuin   init zsh)"
+eval "$(starship init zsh)"
+eval "$(mods     completion zsh)"
+
+#==============================================================================
 # ⚡  Core plugins & completions
 #==============================================================================
 
@@ -47,7 +57,7 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
-zinit ice depth=1 wait"2" lucid blockf
+zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
 
 zinit ice wait"3" silent atload'source fzf-tab.zsh'
@@ -67,16 +77,6 @@ zinit ice as=command from=gh-r lucid cp \
           atclone"./mise* completion zsh > _mise" \
           atload'eval "$(mise activate zsh)"'
 zinit light jdx/mise
-
-#==============================================================================
-# ⚡  Custom tools (loaded through eval)
-#==============================================================================
-
-# These each add <10 ms but could be done through zinit if desired
-eval "$(zoxide init zsh --cmd cd)"
-eval "$(atuin   init zsh)"
-eval "$(starship init zsh)"
-eval "$(mods     completion zsh)"
 
 #==============================================================================
 # ⚡  Zsh options, key-bindings, history
