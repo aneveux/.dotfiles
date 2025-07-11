@@ -1,4 +1,5 @@
-alias l='eza --header --icons'
-alias ll='eza --group --long --header --all --icons'
-alias ls='eza --header --icons'
-alias lll='eza --header --tree'
+alias l='eza --color=auto --header --icons=always'
+alias ll='eza --color=auto --group-directories-first --long --header --all --icons=always'
+alias ls='eza --color=auto --header'
+alias lll='eza --color=auto --header --tree --icons=always'
+
