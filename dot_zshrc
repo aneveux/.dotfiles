@@ -101,9 +101,8 @@ bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 bindkey -M vicmd '^J' accept-line
 
 # Ctrl+R searches in Atuin
-bindkey -M vicmd '^R' _atuin_search
-bindkey -M viins '^R' _atuin_search
-ZSH_HIGHLIGHT_WIDGETS[_atuin_search]=history-incremental-search-backward
+bindkey -M viins '^R' atuin-search-widget
+bindkey -M vicmd '^R' atuin-search-widget
 
 #==============================================================================
 # ⚡  Modular configuration
