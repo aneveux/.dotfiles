@@ -33,26 +33,6 @@ fi
 source $ZINIT_HOME/zinit.zsh
 
 #==============================================================================
-# ⚡  Zsh options, key-bindings, history
-#==============================================================================
-
-HYPHEN_INSENSITIVE=yes
-HIST_STAMPS="yyyy-mm-dd"
-
-# nice defaults ---------------------------------------------------------------
-setopt auto_cd interactivecomments extended_glob print_exit_value
-setopt append_history inc_append_history share_history
-setopt hist_ignore_dups hist_ignore_space notify
-setopt complete_in_word
-setopt no_list_ambiguous
-setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
-
-unsetopt correct correct_all            # no automatic spelling correction
-
-# key-bindings ----------------------------------------------------------------
-bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
-
-#==============================================================================
 # ⚡  Core plugins & completions
 #==============================================================================
 
@@ -95,11 +75,24 @@ eval "$(starship init zsh)"
 eval "$(mods     completion zsh)"
 
 #==============================================================================
-# ⚡  Modular configuration
+# ⚡  Zsh options, key-bindings, history
 #==============================================================================
 
-for zf in "$HOME/.zshrc.d/"*.zsh(N);      do source "$zf"; done
-for zf in "$HOME/local/zshrc.d/"*.zsh(N); do source "$zf"; done
+HYPHEN_INSENSITIVE=yes
+HIST_STAMPS="yyyy-mm-dd"
+
+# nice defaults ---------------------------------------------------------------
+setopt auto_cd interactivecomments extended_glob print_exit_value
+setopt append_history inc_append_history share_history
+setopt hist_ignore_dups hist_ignore_space notify
+setopt complete_in_word
+setopt no_list_ambiguous
+setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
+
+unsetopt correct correct_all            # no automatic spelling correction
+
+# key-bindings ----------------------------------------------------------------
+bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 
 #==============================================================================
 # ⚡  3rd-party completion directories
@@ -115,6 +108,16 @@ zinit light zdharma-continuum/null # dummy – just to run the ice
 
 zinit ice wait compile silent atpull"op completion zsh > ~/.zfunc/_op"
 zinit light zdharma-continuum/null # dummy – just to run the ice
+
+#==============================================================================
+# ⚡  Carapace completions
+#==============================================================================
+
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' 
+export CARAPACE_EXCLUDES='ls,cat,mv'
+export CARAPACE_MATCH=1
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
 
 #==============================================================================
 # ⚡  compinit (single call)
@@ -139,15 +142,6 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 #==============================================================================
-# ⚡  Carapace completions
-#==============================================================================
-
-export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
-eval "$(carapace _carapace)"
-
-#==============================================================================
 # ⚡  FZF & fzf-tab configuration
 #==============================================================================
 
@@ -164,3 +158,9 @@ zstyle ':fzf-tab:*'             show-group none
 zstyle ':fzf-tab:*'             single-group header
 zstyle ':fzf-tab:*'             fzf-command ftb-tmux-popup
 
+#==============================================================================
+# ⚡  Modular configuration
+#==============================================================================
+
+for zf in "$HOME/.zshrc.d/"*.zsh(N);      do source "$zf"; done
+for zf in "$HOME/local/zshrc.d/"*.zsh(N); do source "$zf"; done
