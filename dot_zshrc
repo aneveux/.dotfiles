@@ -109,6 +109,9 @@ zinit light zdharma-continuum/null # dummy – just to run the ice
 zinit ice wait compile silent atpull"op completion zsh > ~/.zfunc/_op"
 zinit light zdharma-continuum/null # dummy – just to run the ice
 
+zinit ice wait compile silent atpull"chezmoi completion zsh --output=~/.zfunc/_chezmoi"
+zinit light zdharma-continuum/null # dummy – just to run the ice
+
 #==============================================================================
 # ⚡  Carapace completions
 #==============================================================================
