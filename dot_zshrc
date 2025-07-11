@@ -110,7 +110,6 @@ ensure_file() {
   fi
 }
 
-ensure_file ~/.zfunc/_op op completion zsh > ~/.zfunc/_op
 ensure_file ~/.zfunc/_chezmoi chezmoi completion zsh --output=~/.zfunc/_chezmoi
 ensure_file ~/.zfunc/atuin.zsh atuin gen-completions --shell zsh --out-dir ~/.zfunc
 
