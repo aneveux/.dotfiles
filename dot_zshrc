@@ -11,10 +11,12 @@
 typeset -U path PATH          # keep both arrays unique
 
 # helper: append directory to $path only if it exists
-_append_if_dir() { [[ -d $1 ]] && path+="$1" }
+_append_if_dir() { [[ -d "$1" ]] && path+="$1" }
 
 # language/tool-specific bins
-local gobins=${$(go env GOPATH 2>/dev/null):-$HOME/go}/bin
+gobins="${$(go env GOPATH 2>/dev/null)}/bin"
+[[ -d $gobins ]] || gobins="$HOME/go/bin"
+
 _append_if_dir ${KREW_ROOT:-$HOME/.krew}/bin
 _append_if_dir $HOME/bin
 _append_if_dir $HOME/.local/bin
@@ -25,7 +27,7 @@ _append_if_dir $gobins
 # ⚡  Zinit bootstrap
 #==============================================================================
 
-export ZINIT_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git
+export ZINIT_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit
 if [[ ! -f $ZINIT_HOME/zinit.zsh ]]; then
   mkdir -p $ZINIT_HOME
   git clone --depth 1 https://github.com/zdharma-continuum/zinit $ZINIT_HOME
@@ -87,6 +89,7 @@ setopt append_history inc_append_history share_history
 setopt hist_ignore_dups hist_ignore_space notify
 setopt complete_in_word
 setopt no_list_ambiguous
+setopt no_beep
 setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
 
 unsetopt correct correct_all            # no automatic spelling correction
@@ -105,7 +108,7 @@ fpath+=~/.zfunc
 ensure_file() {
   local file=$1
   shift
-  if [[ ! -f $file ]]; then
+  if [[ ! -f "$file" ]]; then
     "$@"
   fi
 }
