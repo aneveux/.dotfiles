@@ -85,8 +85,8 @@ HIST_STAMPS="yyyy-mm-dd"
 setopt auto_cd interactivecomments extended_glob print_exit_value
 setopt append_history inc_append_history share_history
 setopt hist_ignore_dups hist_ignore_space notify
-setopt COMPLETE_ALIASES MENU_COMPLETE complete_in_word
-setopt no_list_ambiguous no_match
+setopt complete_in_word
+setopt no_list_ambiguous
 setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
 
 unsetopt correct correct_all            # no automatic spelling correction
