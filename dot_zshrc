@@ -47,8 +47,8 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
-zinit ice wait"2" lucid blockf
-zinit light zsh-users/zsh-vi-mode
+zinit ice depth=1 wait"2" lucid blockf
+zinit light jeffreytse/zsh-vi-mode
 
 zinit ice wait"3" atload'source fzf-tab.zsh'
 zinit light Aloxaf/fzf-tab
@@ -131,10 +131,10 @@ fpath+=~/.zfunc
 
 # keep these two snippets up-to-date ------------------------------------------
 zinit ice wait compile atpull"atuin gen-completions --shell zsh --out-dir ~/.zfunc"
-zinit light ajeetdsouza/none   # placeholder to run the ice
+zinit light zdharma-continuum/null # dummy – just to run the ice
 
 zinit ice wait compile atpull"op completion zsh > ~/.zfunc/_op"
-zinit light onepassword/none   # placeholder
+zinit light zdharma-continuum/null # dummy – just to run the ice
 
 #==============================================================================
 # ⚡  compinit (single call)
