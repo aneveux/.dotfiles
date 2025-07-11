@@ -101,8 +101,9 @@ bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 bindkey -M vicmd '^J' accept-line
 
 # Ctrl+R searches in Atuin
-bindkey -M vicmd '^R' atuin-search-widget
-bindkey -M viins '^R' atuin-search-widget
+bindkey -M vicmd '^R' _atuin_search
+bindkey -M viins '^R' _atuin_search
+ZSH_HIGHLIGHT_WIDGETS[_atuin_search]=history-incremental-search-backward
 
 #==============================================================================
 # ⚡  Modular configuration
@@ -130,10 +131,10 @@ mkdir -p ~/.zfunc
 fpath+=~/.zfunc
 
 # keep these two snippets up-to-date ------------------------------------------
-zinit ice wait compile atpull"atuin gen-completions --shell zsh --out-dir ~/.zfunc"
+zinit ice wait compile silent atpull"atuin gen-completions --shell zsh --out-dir ~/.zfunc"
 zinit light zdharma-continuum/null # dummy – just to run the ice
 
-zinit ice wait compile atpull"op completion zsh > ~/.zfunc/_op"
+zinit ice wait compile silent atpull"op completion zsh > ~/.zfunc/_op"
 zinit light zdharma-continuum/null # dummy – just to run the ice
 
 #==============================================================================
