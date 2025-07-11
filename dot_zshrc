@@ -93,9 +93,6 @@ unsetopt correct correct_all            # no automatic spelling correction
 # key-bindings ----------------------------------------------------------------
 bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 
-# vi-mode + autocomplete enter key
-bindkey -M vicmd '^J' accept-line
-
 #==============================================================================
 # ⚡  Modular configuration
 #==============================================================================
@@ -166,11 +163,4 @@ zstyle ':fzf-tab:*'             switch-group '<' '>'
 zstyle ':fzf-tab:*'             show-group none
 zstyle ':fzf-tab:*'             single-group header
 zstyle ':fzf-tab:*'             fzf-command ftb-tmux-popup
-
-#==============================================================================
-# ⚡  Autocomplete (after compinit)
-#==============================================================================
-
-zinit ice wait"5" lucid
-zinit light marlonrichert/zsh-autocomplete
 
