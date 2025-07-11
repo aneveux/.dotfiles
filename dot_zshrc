@@ -70,6 +70,10 @@ if [ -d "$localzshrcd" ]; then
     done
 fi 
 
+# mise-en-place 
+
+eval "$(~/.local/bin/mise activate zsh)"
+
 # asdf
 
 if [ -f "$HOME/.asdf/asdf.sh" ]; then
