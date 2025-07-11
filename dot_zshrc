@@ -102,16 +102,6 @@ for zf in "$HOME/.zshrc.d/"*.zsh(N);      do source "$zf"; done
 for zf in "$HOME/local/zshrc.d/"*.zsh(N); do source "$zf"; done
 
 #==============================================================================
-# ⚡  Carapace completions
-#==============================================================================
-
-zinit ice wait"1" lucid
-zinit light rsteube/carapace-bin
-
-fpath+=$HOME/.config/carapace
-eval "$(carapace _carapace)"
-
-#==============================================================================
 # ⚡  3rd-party completion directories
 #==============================================================================
 
@@ -147,6 +137,15 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+#==============================================================================
+# ⚡  Carapace completions
+#==============================================================================
+
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
+eval "$(carapace _carapace)"
 
 #==============================================================================
 # ⚡  FZF & fzf-tab configuration
