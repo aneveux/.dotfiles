@@ -85,7 +85,8 @@ HIST_STAMPS="yyyy-mm-dd"
 setopt auto_cd interactivecomments extended_glob print_exit_value
 setopt append_history inc_append_history share_history
 setopt hist_ignore_dups hist_ignore_space notify
-setopt no_match no_list_ambiguous COMPLETE_ALIASES MENU_COMPLETE complete_in_word
+setopt COMPLETE_ALIASES MENU_COMPLETE complete_in_word
+setopt no_list_ambiguous no_match
 setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
 
 unsetopt correct correct_all            # no automatic spelling correction
@@ -158,7 +159,7 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} \
 export FZF_COMPLETION_TRIGGER='**'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-zstyle ':fzf-tab:*'             fzf-flags   --color=fg:1,fg+:2 --bind=tab:accept
+zstyle ':fzf-tab:*'             fzf-flags --layout=reverse --info=inline --color=fg:1,fg+:2 --bind=tab:accept
 zstyle ':fzf-tab:*'             switch-group '<' '>'
 zstyle ':fzf-tab:*'             show-group none
 zstyle ':fzf-tab:*'             single-group header
