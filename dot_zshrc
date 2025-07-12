@@ -34,6 +34,10 @@ if [[ ! -f $ZINIT_HOME/zinit.zsh ]]; then
 fi
 source $ZINIT_HOME/zinit.zsh
 
+# Let Zinit manage compinit
+zinit cdclear
+zinit compinit -u -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+
 #==============================================================================
 # ⚡  Core plugins & completions
 #==============================================================================
@@ -129,9 +133,6 @@ source <(carapace _carapace)
 #==============================================================================
 # ⚡  compinit (single call)
 #==============================================================================
-
-autoload -Uz compinit
-compinit -u -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
 
 # Completion styling ----------------------------------------------------------
 zstyle ':completion::complete:*' use-cache on
