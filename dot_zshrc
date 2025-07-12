@@ -36,7 +36,7 @@ source $ZINIT_HOME/zinit.zsh
 
 # Let Zinit manage compinit
 zinit cdclear
-zinit compinit -u -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+zinit silent compinit -u -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
 
 #==============================================================================
 # ⚡  Core plugins & completions
