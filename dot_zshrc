@@ -35,7 +35,11 @@ fi
 source $ZINIT_HOME/zinit.zsh
 
 autoload -Uz compinit
-compinit -u -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+if [[ ! -s ${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION} ]]; then
+  compinit -C -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+else
+  compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+fi
 
 #==============================================================================
 # ⚡  Core plugins & completions
@@ -119,6 +123,8 @@ ensure_file() {
 ensure_file ~/.zfunc/_chezmoi chezmoi completion zsh --output=~/.zfunc/_chezmoi
 ensure_file ~/.zfunc/atuin.zsh atuin gen-completions --shell zsh --out-dir ~/.zfunc
 
+typeset -U fpath
+
 #==============================================================================
 # ⚡  Carapace completions
 #==============================================================================
@@ -127,7 +133,9 @@ export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
 export CARAPACE_EXCLUDES='ls,cat,mv'
 export CARAPACE_MATCH=1
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-source <(carapace _carapace)
+
+zinit ice wait"2" silent atload'source <(carapace _carapace)'
+zinit load rsteube/carapace-bin
 
 #==============================================================================
 # ⚡  compinit (single call)
