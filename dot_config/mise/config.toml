@@ -1,6 +1,5 @@
 [tools]
 awscli = "latest"
-bun = "latest"
 cosign = "latest"
 gradle = "latest"
 groovy = "latest"
