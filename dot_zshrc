@@ -34,6 +34,10 @@ if [[ ! -f $ZINIT_HOME/zinit.zsh ]]; then
 fi
 source $ZINIT_HOME/zinit.zsh
 
+# generated completion files
+mkdir -p ~/.zfunc
+fpath+=~/.zfunc
+
 autoload -Uz compinit
 if [[ ! -s ${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION} ]]; then
   compinit -C -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
@@ -108,10 +112,6 @@ bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
 #==============================================================================
 # ⚡  3rd-party completion directories
 #==============================================================================
-
-# generated completion files
-mkdir -p ~/.zfunc
-fpath+=~/.zfunc
 
 ensure_file() {
   local file=$1
