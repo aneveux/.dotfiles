@@ -68,9 +68,10 @@ zinit ice as=command from=gh-r lucid cp id-as=usage
 zinit light jdx/usage
 
 zinit ice as=command from=gh-r lucid cp \
-          id-as=mise mv="mise* -> mise" \
-          atclone"./mise* completion zsh > _mise" \
-          atload'eval "$(mise activate zsh)"'
+  id-as=mise mv="mise* -> mise" \
+  atclone"./mise* completion zsh > ~/.zfunc/_mise" \
+  atpull="%atclone" \
+  atload'eval "$(mise activate zsh)"'
 zinit light jdx/mise
 
 #==============================================================================
