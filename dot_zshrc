@@ -130,7 +130,7 @@ typeset -U fpath
 #==============================================================================
 
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' 
-export CARAPACE_EXCLUDES='ls,cat,mv'
+export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln'
 export CARAPACE_MATCH=1
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 
