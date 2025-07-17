@@ -142,7 +142,7 @@ restore_native_completion_for_carapace_excludes() {
 }
 
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' 
-export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln'
+export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm'
 export CARAPACE_MATCH=1
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 
