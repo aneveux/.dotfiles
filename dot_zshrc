@@ -65,7 +65,6 @@ zinit light Aloxaf/fzf-tab
 # lean OMZ snippets -----------------------------------------------------------
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/extract/extract.plugin.zsh
-zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
 
 # mise ------------------------------------------------------------------------
 zinit ice as=command from=gh-r lucid cp id-as=usage
