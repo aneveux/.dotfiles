@@ -184,8 +184,7 @@ zstyle ':fzf-tab:*'             fzf-flags --layout=reverse --info=inline --color
 zstyle ':fzf-tab:*'             switch-group '<' '>'
 zstyle ':fzf-tab:*'             show-group none
 zstyle ':fzf-tab:*'             single-group header
-zstyle ':fzf-tab:*'             fzf-command ftb-tmux-popup
-zstyle ':fzf-tab:*'             popup-size '90% 40%'
+zstyle ':fzf-tab:*'             fzf-command fzf
 
 #==============================================================================
 # ⚡  Modular configuration
