@@ -158,8 +158,7 @@ restore_native_completion_for_carapace_excludes
 # Completion styling ----------------------------------------------------------
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcache"
-zstyle ':completion:*' menu no
-#zstyle ':completion:*' menu select
+zstyle ':completion:*' menu select
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*' matcher-list \
       'm:{a-zA-Z}={A-Za-z}' \
@@ -186,6 +185,7 @@ zstyle ':fzf-tab:*'             switch-group '<' '>'
 zstyle ':fzf-tab:*'             show-group none
 zstyle ':fzf-tab:*'             single-group header
 zstyle ':fzf-tab:*'             fzf-command ftb-tmux-popup
+zstyle ':fzf-tab:*'             popup-size '90% 40%'
 
 #==============================================================================
 # ⚡  Modular configuration
