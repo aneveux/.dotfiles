@@ -1,0 +1,105 @@
+# System utilities
+curl        # Data transfer tool
+gnupg       # GPG encryption
+openvpn     # VPN client
+rsync       # File synchronization
+7zip        # Archive manager
+xclip       # Clipboard manager
+numlockx    # Enable numlock on startup
+blueman     # Bluetooth manager
+feh         # Lightweight image viewer
+imagemagick # Image manipulation
+ffmpeg      # Video/Audio processing
+playerctl   # Media player controller
+vlc         # Media player
+
+# CLI tools
+bat       # cat with syntax highlighting
+fd        # fast find
+fzf       # fuzzy finder
+eza       # modern ls
+ripgrep   # fast grep
+jq        # JSON processor
+yq        # YAML processor
+ncdu      # Disk usage analyzer
+htop      # Process viewer
+gotop     # activity monitor
+lnav      # Log file navigator
+most      # Pager
+tldr      # Simplified man pages
+zoxide    # Smarter cd
+navi      # Interactive cheatsheet
+yazi      # TUI file manager
+atuin     # Shell history manager
+gum       # Terminal UI components
+mods      # AI tool integration
+sesh-bin  # Session manager
+cbonsai   # useless but fun, bonsai tree in shell
+crush-bin # ai coding agent by charmbracelet
+
+# Development tools
+git                    # Version control
+git-delta              # Git diff viewer
+git-secrets            # Prevent committing secrets
+github-cli             # GitHub CLI
+lazygit                # TUI git client
+lazydocker             # TUI docker client
+docker                 # Container runtime
+docker-credential-pass # Docker credential helper
+jdk-openjdk            # Java JDK
+hugo                   # Static site generator
+luarocks               # Lua package manager
+mise                   # Tool version manager
+
+# Shell & terminal
+zsh                     # Z shell
+zsh-autosuggestions     # Autosuggestions for zsh
+zsh-completions         # Extra completions
+zsh-syntax-highlighting # Syntax highlighting
+kitty                   # GPU terminal
+kitty-shell-integration
+kitty-terminfo
+tmux       # Terminal multiplexer
+tmuxinator # Tmux session manager
+dmenu      # Application launcher
+rofi       # Alternative app launcher
+chezmoi    # Dotfile manager
+
+# Desktop environment
+i3-wm        # Window manager
+i3lock-color # Screen locker
+dunst        # Notification daemon
+polybar      # Status bar
+picom        # Compositor
+redshift     # Adjust screen color
+xautolock    # Idle locker
+
+# Applications
+discord           # Chat
+slack-desktop     # Chat
+obsidian          # Notes
+spotify           # Music
+nextcloud-client  # Cloud sync
+jetbrains-toolbox # JetBrains IDE manager
+flameshot         # Screenshot tool
+chromium          # Browser
+firefox           # Browser
+
+# Fonts & themes
+adobe-source-code-pro-fonts
+noto-fonts
+noto-fonts-emoji
+ttf-jetbrains-mono
+ttf-juliamono
+ttf-nerd-fonts-symbols
+ttf-nerd-fonts-symbols-common
+catppuccin-cursors-mocha
+catppuccin-gtk-theme-mocha
+epapirus-icon-theme
+papirus-icon-theme
+x11-emoji-picker-git
+
+# Updaters & meta tools
+topgrade-bin # Auto-update everything
+yay          # AUR helper
+bluetui      # TUI for bluetooth management

@@ -1,270 +1,186 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# --- Colors and symbols (fallback if gum not available) ---
-bold=$(tput bold 2>/dev/null || echo "")
-reset=$(tput sgr0 2>/dev/null || echo "")
-red=$(tput setaf 1 2>/dev/null || echo "")
-green=$(tput setaf 2 2>/dev/null || echo "")
-blue=$(tput setaf 4 2>/dev/null || echo "")
+# Global variables
+APPLY_MODE=false
+DISTRO_ID=""
+PACKAGE_MANAGER=""
+PACKAGES_FILE="$HOME/packages.txt"
 
-ok="✔"
-err="✖"
-run="➜"
-
-# --- Mode selection ---
-APPLY=false
-if [[ "${1:-}" == "--apply" ]]; then
-  APPLY=true
-fi
-
-# --- Detect package manager ---
-if command -v yay &>/dev/null; then
-  PKG="yay -S --needed --noconfirm"
-elif command -v pacman &>/dev/null; then
-  PKG="sudo pacman -S --needed --noconfirm"
-else
-  echo "${red}${err} Error:${reset} No supported package manager found (pacman/yay required)"
-  exit 1
-fi
-
-# --- Section printing (gum or ascii) ---
-if command -v gum &>/dev/null; then
-  section() {
-    gum style \
-      --border normal \
-      --margin "1 0" \
-      --padding "0 2" \
-      --border-foreground cyan \
-      "${1}"
-  }
-else
-  section() {
-    local title=$1
-    local line
-    line=$(printf "%*s" $((${#title} + 4)) "" | tr " " "-")
-    echo
-    echo "+${line}+"
-    echo "|  ${title}  |"
-    echo "+${line}+"
-  }
-fi
-
-# Check if a package is already installed
-is_installed() {
-  pacman -Qq "$1" &>/dev/null
+# Parse command line arguments
+parse_arguments() {
+  if [[ "${1:-}" == "--apply" ]]; then
+    APPLY_MODE=true
+  fi
 }
 
-# Run a command, skipping already-installed pkgs
-run_cmd() {
-  local all_pkgs=("$@")
-  local to_install=()
-
-  # filter out installed packages only if applying
-  if $APPLY; then
-    for pkg in "${all_pkgs[@]}"; do
-      if ! is_installed "$pkg"; then
-        to_install+=("$pkg")
-      fi
-    done
-  else
-    # in dry-run, show full command
-    to_install=("${all_pkgs[@]}")
+# Detect OS distribution and set appropriate package manager
+detect_os_and_package_manager() {
+  if [[ ! -f /etc/os-release ]]; then
+    echo "Error: Cannot detect OS - /etc/os-release not found"
+    exit 1
   fi
 
-  local cmd="$PKG ${to_install[*]}"
+  source /etc/os-release
+  DISTRO_ID="$ID"
 
-  if ((${#to_install[@]} == 0)); then
-    echo " ${green}${ok}${reset} All packages already installed"
-    return 0
-  fi
-
-  # Correct dry-run/apply label
-  local mode="[dry-run]"
-  if $APPLY; then
-    mode="[apply]"
-  fi
-  echo " ${blue}${run}${reset} ${bold}$mode $cmd${reset}"
-
-  if $APPLY; then
-    if command -v gum &>/dev/null; then
-      if gum spin --spinner line --title "Installing..." -- \
-        bash -c "$cmd"; then
-        echo "   ${green}${ok}${reset} Done"
-      else
-        echo "   ${red}${err}${reset} Failed"
-      fi
+  case "$DISTRO_ID" in
+  ubuntu | debian)
+    PACKAGE_MANAGER="apt"
+    ;;
+  manjaro | arch)
+    if command -v yay &>/dev/null; then
+      PACKAGE_MANAGER="yay"
     else
-      if eval "$cmd"; then
-        echo "   ${green}${ok}${reset} Done"
-      else
-        echo "   ${red}${err}${reset} Failed"
-      fi
+      PACKAGE_MANAGER="pacman"
     fi
-  fi
+    ;;
+  *)
+    echo "Error: Unsupported OS: $DISTRO_ID"
+    exit 1
+    ;;
+  esac
 }
 
-banner() {
-  local msg="🚀 Installing tools (APPLY=${APPLY:-false})"
+# Read package list from file, filtering out comments and empty lines
+read_package_list() {
+  local packages=()
 
-  if command -v gum &>/dev/null; then
-    # Fancy gum banner
-    gum style \
-      --border double \
-      --margin "1 0" \
-      --padding "1 3" \
-      --align center \
-      --border-foreground magenta \
-      "$msg"
+  if [[ ! -f "$PACKAGES_FILE" ]]; then
+    echo "Error: Package file '$PACKAGES_FILE' not found"
+    exit 1
+  fi
+
+  while IFS= read -r line; do
+    # Skip empty lines and lines starting with #
+    [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+
+    # Extract package name (first word)
+    local package_name
+    package_name=$(echo "$line" | awk '{print $1}')
+    [[ -n "$package_name" ]] && packages+=("$package_name")
+  done <"$PACKAGES_FILE"
+
+  echo "${packages[@]}"
+}
+
+# Check if a package is available in apt repositories
+is_package_available_in_apt() {
+  local package_name="$1"
+  apt-cache show "$package_name" &>/dev/null
+}
+
+# Filter packages for Ubuntu: separate available vs unavailable packages
+filter_ubuntu_packages() {
+  local -a all_packages=("$@")
+  local -a available_packages=()
+  local -a unavailable_packages=()
+
+  echo "Checking package availability in apt repositories..."
+
+  for package in "${all_packages[@]}"; do
+    if is_package_available_in_apt "$package"; then
+      available_packages+=("$package")
+    else
+      unavailable_packages+=("$package")
+    fi
+  done
+
+  # Return results via global arrays (bash limitation workaround)
+  AVAILABLE_PACKAGES=("${available_packages[@]}")
+  UNAVAILABLE_PACKAGES=("${unavailable_packages[@]}")
+}
+
+# Install packages on Arch-based distributions
+install_arch_packages() {
+  local -a packages=("$@")
+  local install_command
+
+  case "$PACKAGE_MANAGER" in
+  yay)
+    install_command="yay -S --needed --noconfirm ${packages[*]}"
+    ;;
+  pacman)
+    install_command="sudo pacman -S --needed --noconfirm ${packages[*]}"
+    ;;
+  esac
+
+  if $APPLY_MODE; then
+    echo "Installing ${#packages[@]} packages with $PACKAGE_MANAGER..."
+    eval "$install_command"
   else
-    # ASCII fallback
-    local line
-    line=$(printf "%*s" $((${#msg} + 4)) "" | tr " " "=")
-    echo
-    echo "$line"
-    echo "| $msg |"
-    echo "$line"
+    echo "[DRY RUN] Would run: $install_command"
   fi
 }
 
-# --- System utilities ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-SYSTEM=(
-  curl        # Data transfer tool
-  gnupg       # GPG encryption
-  openvpn     # VPN client
-  rsync       # File synchronization
-  7zip        # Archive manager
-  xclip       # Clipboard manager
-  numlockx    # Enable numlock on startup
-  blueman     # Bluetooth manager
-  feh         # Lightweight image viewer
-  imagemagick # Image manipulation
-  ffmpeg      # Video/Audio processing
-  playerctl   # Media player controller
-  vlc         # Media player
-)
+# Handle Ubuntu package installation with availability checking
+handle_ubuntu_packages() {
+  local -a packages=("$@")
 
-# --- CLI tools ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-CLI=(
-  bat       # cat with syntax highlighting
-  fd        # fast find
-  fzf       # fuzzy finder
-  eza       # modern ls
-  ripgrep   # fast grep
-  jq        # JSON processor
-  yq        # YAML processor
-  ncdu      # Disk usage analyzer
-  htop      # Process viewer
-  gotop     # activity monitor
-  lnav      # Log file navigator
-  most      # Pager
-  tldr      # Simplified man pages
-  zoxide    # Smarter cd
-  navi      # Interactive cheatsheet
-  yazi      # TUI file manager
-  atuin     # Shell history manager
-  gum       # Terminal UI components
-  mods      # AI tool integration
-  sesh-bin  # Session manager
-  cbonsai   # useless but fun, bonsai tree in shell
-  crush-bin # ai coding agent by charmbracelet
-)
+  # Global arrays to store filtered results
+  declare -a AVAILABLE_PACKAGES=()
+  declare -a UNAVAILABLE_PACKAGES=()
 
-# --- Development tools ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-DEV=(
-  git                    # Version control
-  git-delta              # Git diff viewer
-  git-secrets            # Prevent committing secrets
-  github-cli             # GitHub CLI
-  lazygit                # TUI git client
-  lazydocker             # TUI docker client
-  docker                 # Container runtime
-  docker-credential-pass # Docker credential helper
-  jdk-openjdk            # Java JDK
-  hugo                   # Static site generator
-  luarocks               # Lua package manager
-  mise                   # Tool version manager
-)
+  filter_ubuntu_packages "${packages[@]}"
 
-# --- Shell & terminal ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-SHELL=(
-  zsh                     # Z shell
-  zsh-autosuggestions     # Autosuggestions for zsh
-  zsh-completions         # Extra completions
-  zsh-syntax-highlighting # Syntax highlighting
-  kitty                   # GPU terminal
-  kitty-shell-integration
-  kitty-terminfo
-  tmux       # Terminal multiplexer
-  tmuxinator # Tmux session manager
-  dmenu      # Application launcher
-  rofi       # Alternative app launcher
-  chezmoi    # Dotfile manager
-)
+  if $APPLY_MODE; then
+    # Apply mode: install available packages, list unavailable ones
+    if [[ ${#AVAILABLE_PACKAGES[@]} -gt 0 ]]; then
+      echo "Installing ${#AVAILABLE_PACKAGES[@]} packages from apt..."
+      sudo apt update
+      sudo apt install -y "${AVAILABLE_PACKAGES[@]}"
+    fi
 
-# --- Desktop environment ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-DESKTOP=(
-  i3-wm        # Window manager
-  i3lock-color # Screen locker
-  dunst        # Notification daemon
-  polybar      # Status bar
-  picom        # Compositor
-  redshift     # Adjust screen color
-  xautolock    # Idle locker
-  flameshot    # Screenshot tool
-  chromium     # Browser
-  firefox      # Browser
-)
+    if [[ ${#UNAVAILABLE_PACKAGES[@]} -gt 0 ]]; then
+      echo ""
+      echo "The following packages are not available in apt and need manual installation:"
+      printf "  - %s\n" "${UNAVAILABLE_PACKAGES[@]}"
+    fi
+  else
+    # Dry run mode: show what would be installed and what's not available
+    echo "[DRY RUN] Package availability check results:"
+    echo ""
 
-# --- Applications ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-APPS=(
-  discord           # Chat
-  slack-desktop     # Chat
-  obsidian          # Notes
-  spotify           # Music
-  nextcloud-client  # Cloud sync
-  jetbrains-toolbox # JetBrains IDE manager
-)
+    if [[ ${#AVAILABLE_PACKAGES[@]} -gt 0 ]]; then
+      echo "Would install ${#AVAILABLE_PACKAGES[@]} packages from apt:"
+      printf "  ✓ %s\n" "${AVAILABLE_PACKAGES[@]}"
+    fi
 
-# --- Fonts & themes ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-FONTS=(
-  adobe-source-code-pro-fonts
-  noto-fonts
-  noto-fonts-emoji
-  ttf-jetbrains-mono
-  ttf-juliamono
-  ttf-nerd-fonts-symbols
-  ttf-nerd-fonts-symbols-common
-  catppuccin-cursors-mocha
-  catppuccin-gtk-theme-mocha
-  epapirus-icon-theme
-  papirus-icon-theme
-  x11-emoji-picker-git
-)
+    if [[ ${#UNAVAILABLE_PACKAGES[@]} -gt 0 ]]; then
+      echo ""
+      echo "Not available in apt (${#UNAVAILABLE_PACKAGES[@]} packages):"
+      printf "  ✗ %s\n" "${UNAVAILABLE_PACKAGES[@]}"
+    fi
 
-# --- Updaters & meta tools ---
-# shellcheck disable=SC2034  # Appears unused but used via eval
-EXTRAS=(
-  topgrade-bin # Auto-update everything
-  yay          # AUR helper
-  bluetui      # TUI for bluetooth management
-)
+    echo ""
+    echo "Run with --apply to install available packages"
+  fi
+}
 
-banner
+# Main execution function
+main() {
+  parse_arguments "$@"
+  detect_os_and_package_manager
 
-# --- Install all categories ---
-for category in SYSTEM CLI DEV SHELL DESKTOP APPS FONTS EXTRAS; do
-  section "$category"
-  mapfile -t pkgs < <(eval "printf '%s\n' \${${category}[@]}")
-  run_cmd "${pkgs[@]}"
-done
+  # Read all packages from file
+  local -a all_packages
+  IFS=' ' read -ra all_packages <<<"$(read_package_list)"
 
-section "All tools installed!"
-echo " ${green}${ok}${reset} ${bold}Everything is ready 🎉${reset}"
+  echo "Detected OS: $DISTRO_ID"
+  echo "Package manager: $PACKAGE_MANAGER"
+  echo "Total packages to process: ${#all_packages[@]}"
+  echo ""
+
+  # Handle packages based on distribution
+  case "$DISTRO_ID" in
+  ubuntu | debian)
+    handle_ubuntu_packages "${all_packages[@]}"
+    ;;
+  manjaro | arch)
+    install_arch_packages "${all_packages[@]}"
+    ;;
+  esac
+}
+
+# Run main function with all arguments
+main "$@"
