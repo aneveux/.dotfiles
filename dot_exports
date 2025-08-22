@@ -19,8 +19,5 @@ export GITHUB_USERNAME='aneveux'
 export WORKSPACE="$HOME/projects"
 export PROJECTS="$WORKSPACE"
 
-# TODO: Remove when fixed
-export MISE_DISABLE_BACKENDS=aqua
-
 export GPG_TTY=$TTY
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
