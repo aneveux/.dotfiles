@@ -192,3 +192,13 @@ zstyle ':fzf-tab:*'             fzf-command fzf
 
 for zf in "$HOME/.zshrc.d/"*.zsh(N);      do source "$zf"; done
 for zf in "$HOME/local/zshrc.d/"*.zsh(N); do source "$zf"; done
+
+#==============================================================================
+# ⚡  Non-interactive shell configuration 
+#==============================================================================
+
+# Unplug zoxide in Non-interactive shells
+if [[ $- != *i* ]]; then
+    unfunction cd 2>/dev/null
+    alias cd='builtin cd'
+fi
