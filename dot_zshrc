@@ -163,28 +163,12 @@ zstyle ':fzf-tab:*'             fzf-command fzf
 # ⚡  Carapace completions
 #==============================================================================
 
-# ⚙️ Restore native completions for commands excluded from Carapace
-restore_native_completion_for_carapace_excludes() {
-  local cmd
-
-  for cmd in ${(s:,:)CARAPACE_EXCLUDES}; do
-    # Remove any carapace-provided completion function
-    unfunction "_$cmd" 2>/dev/null
-
-    # Assign a default Zsh file-based completion
-    compdef _gnu_generic "$cmd" 2>/dev/null || compdef _files "$cmd"
-  done
-}
-
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' 
-#export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm'
 export CARAPACE_MATCH=1
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 
 zinit ice wait"2" silent atload'source <(carapace _carapace)'
-
-restore_native_completion_for_carapace_excludes
 
 #==============================================================================
 # ⚡  Modular configuration
