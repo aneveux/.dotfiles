@@ -1,6 +1,5 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- ⚡ custom keymaps
+-- ⚡ default: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua--
 
 -- Position cursor at the middle of the screen after scrolling half page
 vim.keymap.set("n", "<C-d>", "<C-d>zz") -- Scroll down half a page and center the cursor
@@ -16,7 +15,7 @@ vim.keymap.set(
   '<Esc>:%bdelete|edit #|normal`"<Return>',
   { desc = "Delete other buffers but the current one" }
 )
---
+
 -- window management
 vim.keymap.set("n", "<leader>sv", "<C-w>v", { desc = "[S]plit [V]ertically" }) -- split window vertically
 vim.keymap.set("n", "<leader>sh", "<C-w>s", { desc = "[S]plit [H]orizontally" }) -- split window horizontally
