@@ -1,6 +1,7 @@
 [tools]
 awscli = "latest"
 cosign = "latest"
+go = "latest"
 groovy = "latest"
 helm = "latest"
 helmfile = "latest"
