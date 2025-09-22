@@ -2,7 +2,7 @@
 # Any customization should be done in ~/.gtkrc-2.0.mine instead.
 
 include "/home/antoine/.gtkrc-2.0.mine"
-gtk-theme-name="Catppuccin-Mocha-B"
+gtk-theme-name="Catppuccin-Sky-Dark"
 gtk-icon-theme-name="ePapirus-Dark"
 gtk-font-name="Cantarell 11"
 gtk-cursor-theme-name="catppuccin-mocha-flamingo-cursors"
