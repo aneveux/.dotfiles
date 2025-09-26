@@ -19,6 +19,7 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 
 alias mux='tmuxinator'
+alias slides='presenterm'
 
 # sourcing the script so it can be used to `cd` in directories
 alias clone='. "$HOME/bin/clone"'
