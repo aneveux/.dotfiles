@@ -59,6 +59,11 @@ mkdir -p ~/.config/gtk-4.0
 cp ~/.themes/Dracula/gtk-4.0/gtk.css ~/.config/gtk-4.0/
 cp ~/.themes/Dracula/gtk-4.0/gtk-dark.css ~/.config/gtk-4.0/
 
+# Copy Kvantum theme
+echo "🎭 Installing Kvantum theme..."
+mkdir -p ~/.config/Kvantum
+cp -r ~/.themes/Dracula/kde/kvantum/Dracula ~/.config/Kvantum/
+
 # Download and install icon theme
 echo "📥 Downloading Dracula icon theme..."
 cd "$TEMP_DIR"
