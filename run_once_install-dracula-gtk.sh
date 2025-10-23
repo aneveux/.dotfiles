@@ -64,6 +64,13 @@ echo "🎭 Installing Kvantum theme..."
 mkdir -p ~/.config/Kvantum
 cp -r ~/.themes/Dracula/kde/kvantum/Dracula ~/.config/Kvantum/
 
+# Install cursor theme
+echo "🖱️  Installing Dracula cursor theme..."
+mkdir -p ~/.local/share/icons
+cp -r ~/.themes/Dracula/kde/cursors/Dracula-cursors ~/.local/share/icons/
+echo "⚙️  Setting cursor theme via gsettings..."
+gsettings set org.gnome.desktop.interface cursor-theme "Dracula-cursors"
+
 # Download and install icon theme
 echo "📥 Downloading Dracula icon theme..."
 cd "$TEMP_DIR"
