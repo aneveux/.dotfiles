@@ -3,9 +3,9 @@
     follow = mouse
 
     width = 400
-    height = 150
+    height = 300
     origin = top-right
-    offset = 10x38
+    offset = 10x50
     scale = 0
     notification_limit = 0
 
@@ -19,14 +19,14 @@
 
     shrink = no
 
-    transparency = 10
+    transparency = 15
 
     separator_height = 2
     padding = 20
     horizontal_padding = 20
     frame_width = 2
-    frame_color = "#89B4FA"
-    separator_color = "#161320"
+    frame_color = "#282a36"
+    separator_color = frame
 
     sort = yes
 
@@ -91,17 +91,17 @@
     close_all = ctrl+shift+space
 
 [urgency_low]
-  background = "#1E1E2E"
-  foreground = "#CDD6F4"
+  background = "#282a36"
+  foreground = "#6272a4"
   timeout = 5
 
 [urgency_normal]
-  background = "#1E1E2E"
-  foreground = "#CDD6F4"
+  background = "#282a36"
+  foreground = "#bd93f9"
   timeout = 10
 
 [urgency_critical]
-  background = "#1E1E2E"
-  foreground = "#CDD6F4"
-  frame_color = "#FE6400"
+  background = "#ff5555"
+  foreground = "#f8f8f2"
+  frame_color = "#ff5555"
   timeout = 20
