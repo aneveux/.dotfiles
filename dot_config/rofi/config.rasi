@@ -13,7 +13,7 @@ configuration {
 
     fixed-num-lines: true;
     show-icons: true;
-    icon-theme: "Dracula";
+    icon-theme: "Papirus-Dark";
 
     drun-display-format: "{icon} {name}";
     location: 0;
@@ -47,4 +47,4 @@ configuration {
 
 }
 
-@theme "dracula"
+@theme "catppuccin"
