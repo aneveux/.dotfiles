@@ -6,10 +6,16 @@ echo "🐱 Installing Catppuccin GTK theme..."
 
 # Check for required commands
 GIT_CMD=$(command -v git)
+CURL_CMD=$(command -v curl)
 FLATPAK_CMD=$(command -v flatpak)
 
 if [ -z "$GIT_CMD" ]; then
   echo "❌ Error: git is not installed."
+  exit 1
+fi
+
+if [ -z "$CURL_CMD" ]; then
+  echo "❌ Error: curl is not installed."
   exit 1
 fi
 
@@ -45,6 +51,38 @@ chmod +x install.sh
 
 echo "✅ Catppuccin GTK theme installed successfully!"
 
+# Install Catppuccin icons for Papirus
+echo "🎨 Installing Catppuccin icons for Papirus..."
+
+PAPIRUS_FOLDERS_DIR="$TOOLS_DIR/papirus-folders"
+
+# Clone or update papirus-folders repository
+if [ -d "$PAPIRUS_FOLDERS_DIR" ]; then
+  echo "📦 papirus-folders repository already exists, pulling latest changes..."
+  cd "$PAPIRUS_FOLDERS_DIR"
+  git pull
+else
+  echo "📥 Cloning papirus-folders repository..."
+  git clone https://github.com/catppuccin/papirus-folders.git "$PAPIRUS_FOLDERS_DIR"
+fi
+
+cd "$PAPIRUS_FOLDERS_DIR"
+
+# Copy Catppuccin icons to Papirus theme directory
+echo "📋 Copying Catppuccin icons to /usr/share/icons/Papirus/..."
+sudo cp -r src/* /usr/share/icons/Papirus
+
+# Download papirus-folders script
+echo "📥 Downloading papirus-folders script..."
+curl -LO https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-folders/master/papirus-folders
+chmod +x ./papirus-folders
+
+# Apply Catppuccin Mocha Blue color scheme to Papirus-Dark
+echo "🎨 Applying cat-mocha-blue color scheme to Papirus-Dark..."
+./papirus-folders -C cat-mocha-blue --theme Papirus-Dark
+
+echo "✅ Catppuccin icons installed successfully!"
+
 # Apply theme settings with gsettings
 GSETTINGS_CMD=$(command -v gsettings)
 
@@ -59,6 +97,9 @@ if [ -n "$GSETTINGS_CMD" ]; then
 
   # Set color scheme to prefer dark mode (GTK4 and modern apps)
   gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+
+  # Set icon theme to Papirus-Dark
+  gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 
   echo "✅ Theme settings applied!"
 else
@@ -95,6 +136,7 @@ else
 fi
 
 echo ""
-echo "🎉 All done! The Catppuccin GTK theme is now installed."
+echo "🎉 All done! The Catppuccin GTK theme and icons are now installed."
 echo "   Theme location: ~/.themes/Catppuccin-Dark-blue"
+echo "   Icon theme: Papirus-Dark with Catppuccin Mocha Blue folders"
 echo "   You may need to log out and log back in for all changes to take effect."
