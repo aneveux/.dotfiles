@@ -83,6 +83,36 @@ echo "🎨 Applying cat-mocha-blue color scheme to Papirus-Dark..."
 
 echo "✅ Catppuccin icons installed successfully!"
 
+# Install Catppuccin Qt5ct and Qt6ct themes
+echo "🎨 Installing Catppuccin Qt5ct/Qt6ct themes..."
+
+QT5CT_DIR="$TOOLS_DIR/qt5ct"
+
+# Clone or update qt5ct repository
+if [ -d "$QT5CT_DIR" ]; then
+  echo "📦 qt5ct repository already exists, pulling latest changes..."
+  cd "$QT5CT_DIR"
+  git pull
+else
+  echo "📥 Cloning qt5ct repository..."
+  git clone https://github.com/catppuccin/qt5ct.git "$QT5CT_DIR"
+fi
+
+cd "$QT5CT_DIR"
+
+# Create Qt5ct and Qt6ct color directories
+mkdir -p ~/.config/qt5ct/colors
+mkdir -p ~/.config/qt6ct/colors
+
+# Copy Catppuccin Mocha Blue theme
+echo "📋 Copying Catppuccin Mocha Blue theme to Qt5ct/Qt6ct..."
+cp themes/catppuccin-mocha-blue.conf ~/.config/qt5ct/colors/
+cp themes/catppuccin-mocha-blue.conf ~/.config/qt6ct/colors/
+
+echo "✅ Catppuccin Qt5ct/Qt6ct themes installed successfully!"
+echo "ℹ️  To apply: Open qt5ct or qt6ct, select 'custom' as palette provider,"
+echo "   then select 'catppuccin-mocha-blue' from the dropdown and hit apply."
+
 # Apply theme settings with gsettings
 GSETTINGS_CMD=$(command -v gsettings)
 
@@ -136,7 +166,11 @@ else
 fi
 
 echo ""
-echo "🎉 All done! The Catppuccin GTK theme and icons are now installed."
-echo "   Theme location: ~/.themes/Catppuccin-Dark-blue"
+echo "🎉 All done! Catppuccin theme installation complete!"
+echo "   GTK theme: ~/.themes/Catppuccin-Dark-blue"
 echo "   Icon theme: Papirus-Dark with Catppuccin Mocha Blue folders"
-echo "   You may need to log out and log back in for all changes to take effect."
+echo "   Qt themes: ~/.config/qt5ct/colors/ and ~/.config/qt6ct/colors/"
+echo ""
+echo "📝 Next steps:"
+echo "   - Log out and log back in for all changes to take effect"
+echo "   - Open qt5ct or qt6ct to apply the Qt theme (select 'custom' palette)"
