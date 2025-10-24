@@ -1,7 +1,7 @@
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 
-export GTK_THEME='Dracula'
+export GTK_THEME='Catppuccin-Blue-Dark:dark'
 
 export MANPAGER='most'
 export PAGER='most'
