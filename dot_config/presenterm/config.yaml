@@ -9,3 +9,6 @@ defaults:
 options:
   incremental_lists: true
   end_slide_shorthand: true
+
+speaker_notes:
+  always_publish: true
