@@ -70,10 +70,8 @@ zinit snippet OMZ::plugins/extract/extract.plugin.zsh
 zinit ice as=command from=gh-r lucid cp id-as=usage
 zinit light jdx/usage
 
-zinit ice as=command from=gh-r lucid cp \
-          id-as=mise mv="mise* -> mise" \
-          atclone"./mise* completion zsh > _mise" \
-          atload'eval "$(mise activate zsh)"'
+zinit ice as=command from=gh-r lucid cp id-as=mise mv="mise* -> mise" \
+    atload'eval "$(mise activate zsh)"'
 zinit light jdx/mise
 
 #==============================================================================
@@ -169,6 +167,7 @@ zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 
 zinit ice wait"2" silent atload'source <(carapace _carapace)'
+compdef _carapace kubectl
 
 #==============================================================================
 # ⚡  Modular configuration
