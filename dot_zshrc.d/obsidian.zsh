@@ -5,11 +5,19 @@ WORKSPACE_REL=".obsidian/workspace.json"
 _has_gum() { command -v gum >/dev/null 2>&1 }
 _log() {
   local level="$1"; shift
+  local gum_level
+  case "$level" in
+    ok|success) gum_level="info" ;;
+    warn|warning) gum_level="warn" ;;
+    error|err) gum_level="error" ;;
+    debug|info|fatal|none) gum_level="$level" ;;
+    *) gum_level="info" ;;
+  esac
   if _has_gum; then
-    gum log --structured --level "$level" "$@"
+    gum log --structured --level "$gum_level" "$@"
   else
     local msg="$1"; shift
-    printf "[%s] %s\n" "${level:u}" "$msg"
+    printf "[%s] %s\n" "${gum_level:u}" "$msg"
   fi
 }
 _run() {
