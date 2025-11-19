@@ -203,3 +203,5 @@ gradle-app.setting
 # ASDF
 
 .tool-versions
+
+.factorypath
