@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+main() {
+    local main_branch
+    local jira_issue
+    local issue_key
+    local issue_title
+    local branch_summary
+    local branch_name
+    local repo_name
+
+    gum log --level info "Preparing Jira Issue Workflow"
+
+    main_branch=$(detect_main_branch)
+    gum spin --spinner dot --title "Switching to ${main_branch} branch..." -- git checkout "${main_branch}"
+
+    gum spin --spinner dot --title "Pulling latest changes..." -- git pull
+
+    if command -v gh &> /dev/null && gh poi --help &> /dev/null 2>&1; then
+        gum spin --spinner dot --title "Cleaning up old branches..." -- gh poi || true
+    fi
+
+    jira_issue=$(select_jira_issue)
+
+    if [[ -z "${jira_issue}" ]]; then
+        gum log --level error "No issue selected. Exiting."
+        exit 1
+    fi
+
+    issue_key=$(echo "${jira_issue}" | awk '{print $1}')
+    issue_title=$(echo "${jira_issue}" | cut -d' ' -f2-)
+
+    gum log --level info "Selected issue: ${issue_key}"
+    gum log --level info "${issue_title}"
+
+    branch_summary=$(generate_branch_summary "${issue_title}")
+    branch_name="${issue_key}-${branch_summary}"
+
+    if git show-ref --verify --quiet "refs/heads/${branch_name}"; then
+        gum log --level info "Branch ${branch_name} already exists, switching to it"
+        git checkout "${branch_name}"
+    else
+        gum confirm "Create and switch to branch: ${branch_name}?" || exit 0
+        git checkout -b "${branch_name}"
+        gum log --level info "Created and switched to branch: ${branch_name}"
+    fi
+
+    if [[ -z "${TMUX:-}" ]]; then
+        repo_name=$(get_repo_name)
+        if tmux has-session -t "${repo_name}" 2>/dev/null; then
+            gum log --level info "Attaching to existing tmux session: ${repo_name}"
+            tmux attach-session -t "${repo_name}"
+        else
+            gum log --level info "Creating new tmux session: ${repo_name}"
+            tmux new-session -s "${repo_name}"
+        fi
+    else
+        gum log --level info "Already in tmux session: $(tmux display-message -p '#S')"
+    fi
+}
+
+detect_main_branch() {
+    local default_branch
+
+    if command -v gh &> /dev/null; then
+        default_branch=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo "")
+
+        if [[ -n "${default_branch}" ]]; then
+            echo "${default_branch}"
+            return
+        fi
+    fi
+
+    if git show-ref --verify --quiet refs/heads/main; then
+        echo "main"
+    elif git show-ref --verify --quiet refs/heads/master; then
+        echo "master"
+    else
+        git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+    fi
+}
+
+select_jira_issue() {
+    local issues
+
+    gum spin --spinner dot --title "Fetching Jira issues from filter 37994..." -- \
+        jira issue list -q "filter=37994" --plain --no-headers --columns key,summary > /tmp/jira_issues.txt || {
+            gum log --level error "Failed to fetch Jira issues"
+            exit 1
+        }
+
+    if [[ ! -s /tmp/jira_issues.txt ]]; then
+        gum log --level error "No issues found in filter 37994"
+        exit 1
+    fi
+
+    issues=$(cat /tmp/jira_issues.txt | fzf --height=40% --border --prompt="Select Jira issue: " --preview="echo {}" --preview-window=down:3:wrap)
+    rm -f /tmp/jira_issues.txt
+
+    echo "${issues}"
+}
+
+generate_branch_summary() {
+    local title="${1}"
+    local summary
+
+    if [[ -z "${OPENAI_API_KEY:-}" ]]; then
+        export OPENAI_API_KEY=$(pass openai)
+    fi
+
+    summary=$(echo "${title}" | gum spin --spinner dot --title "Generating branch name summary..." -- \
+        mods 'Generate a 2-3 word kebab-case summary of this Jira title. Output only the summary, no quotes, no explanations. Use lowercase and hyphens only.')
+
+    summary=$(echo "${summary}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+
+    echo "${summary}"
+}
+
+get_repo_name() {
+    basename "$(git rev-parse --show-toplevel)"
+}
+
+main "$@"
