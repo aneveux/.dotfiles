@@ -132,9 +132,22 @@ gum spin --spinner dot --title "Installing git secrets..." -- sh -c "
 SESSION_NAME=$(echo "$REPOSITORY_NAME" | tr '.' '-')
 
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-  gum log --structured --level info "Attaching to existing tmux session: $SESSION_NAME"
-  tmux attach-session -t "$SESSION_NAME"
+  gum log --structured --level info "Switching to existing tmux session: $SESSION_NAME"
+  if [ -n "$TMUX" ]; then
+    # Already in tmux, switch client
+    tmux switch-client -t "$SESSION_NAME"
+  else
+    # Not in tmux, attach normally
+    tmux attach-session -t "$SESSION_NAME"
+  fi
 else
   gum log --structured --level info "Creating new tmux session: $SESSION_NAME"
-  tmux new-session -s "$SESSION_NAME" -c "$WORKSPACE/$REPOSITORY_NAME"
+  if [ -n "$TMUX" ]; then
+    # Already in tmux, create session in background and switch to it
+    tmux new-session -d -s "$SESSION_NAME" -c "$WORKSPACE/$REPOSITORY_NAME"
+    tmux switch-client -t "$SESSION_NAME"
+  else
+    # Not in tmux, create and attach normally
+    tmux new-session -s "$SESSION_NAME" -c "$WORKSPACE/$REPOSITORY_NAME"
+  fi
 fi

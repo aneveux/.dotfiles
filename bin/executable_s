@@ -47,17 +47,27 @@ main() {
         gum log --level info "Created and switched to branch: ${branch_name}"
     fi
 
-    if [[ -z "${TMUX:-}" ]]; then
-        repo_name=$(get_repo_name)
-        if tmux has-session -t "${repo_name}" 2>/dev/null; then
-            gum log --level info "Attaching to existing tmux session: ${repo_name}"
-            tmux attach-session -t "${repo_name}"
+    repo_name=$(get_repo_name)
+
+    if tmux has-session -t "${repo_name}" 2>/dev/null; then
+        gum log --level info "Switching to existing tmux session: ${repo_name}"
+        if [[ -n "${TMUX:-}" ]]; then
+            # Already in tmux, switch client
+            tmux switch-client -t "${repo_name}"
         else
-            gum log --level info "Creating new tmux session: ${repo_name}"
-            tmux new-session -s "${repo_name}"
+            # Not in tmux, attach normally
+            tmux attach-session -t "${repo_name}"
         fi
     else
-        gum log --level info "Already in tmux session: $(tmux display-message -p '#S')"
+        gum log --level info "Creating new tmux session: ${repo_name}"
+        if [[ -n "${TMUX:-}" ]]; then
+            # Already in tmux, create session in background and switch to it
+            tmux new-session -d -s "${repo_name}"
+            tmux switch-client -t "${repo_name}"
+        else
+            # Not in tmux, create and attach normally
+            tmux new-session -s "${repo_name}"
+        fi
     fi
 }
 
