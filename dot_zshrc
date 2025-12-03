@@ -184,3 +184,5 @@ if [[ $- != *i* ]]; then
     unfunction cd 2>/dev/null
     alias cd='builtin cd'
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
