@@ -421,8 +421,8 @@ workspace $WS10 output $MAIN
 workspace $WS6 output $LEFT
 
 # Brightness
-bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
-bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+bindsym $mod+F7 exec --no-startup-id brightnessctl set +10%
+bindsym $mod+F6 exec --no-startup-id brightnessctl set 10%-
 # Volume control
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
