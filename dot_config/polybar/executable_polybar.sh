@@ -9,7 +9,7 @@
 
   outputs=$(xrandr --query | grep " connected " | cut -d" " -f1)
   primary=$(xrandr --query | grep " primary " | cut -d" " -f1)
-  tray_output='{{ .main_monitor }}'
+  tray_output='DP-2-3'
   bar_config='main'
 
   for m in $outputs; do
