@@ -1,5 +1,5 @@
 configuration {
-    font: "JetbrainsMono Nerd Font 12";
+    font: "Iosevka Nerd Font 10";
 
     modi: "combi,window,drun";
     combi-modi: "window,drun";
