@@ -17,7 +17,7 @@
     accent: #b4befe;
 
     width: 600;
-    font: "Iosevka Nerd Font 10";
+    font: "Iosevka Nerd Font 12";
 }
 
 element-text, element-icon , mode-switcher {
