@@ -6,8 +6,8 @@
   button:		#1B1E25;
   background-color:	@bg;
   text-color:		@fg;
-  iconfont: "FiraCode Nerd Font 13";
-  font: "FiraCode Nerd Font 13";
+  iconfont: "Iosevka Nerd Font 10";
+  font: "Iosevka Nerd Font 10";
 }
 
 window {
@@ -46,7 +46,7 @@ element {
 element-text {
   margin:		5px 18px 5px 18px;
   padding:		0px 0px 0px 0px;
-  font:			"FiraCode Nerd Font 40";
+  font:			"Iosevka Nerd Font 40";
   background-color:	inherit;
   text-color:		inherit;
 }
