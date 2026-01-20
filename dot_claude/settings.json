@@ -9,5 +9,36 @@
     "code-simplifier@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/scripts/PreBashLinuxCommands.js"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/scripts/PreBashCdOutsideWorkspace.js"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/scripts/PreBashKillPort.js"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/scripts/Stop.js"
+          }
+        ]
+      }
+    ]
+  }
 }
