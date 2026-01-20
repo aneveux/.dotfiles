@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(date /t)",
+      "Bash(echo:*)",
+      "Bash(git branch:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git remote -v)",
+      "Bash(git show:*)",
+      "Bash(git status)",
+      "Bash(hostname)",
+      "Bash(netstat:*)",
+      "Bash(node -v)",
+      "Bash(npm -v)",
+      "Bash(npm audit:*)",
+      "Bash(npm list:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run check)",
+      "Bash(npm run clean:*)",
+      "Bash(npm run format)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run test:*)",
+      "Bash(npx -v)",
+      "Bash(npx tsc:*)",
+      "Bash(nslookup:*)",
+      "Bash(ping:*)",
+      "Bash(set)",
+      "Bash(tasklist:*)",
+      "Bash(time /t)",
+      "Bash(tracert:*)",
+      "Bash(tree:*)",
+      "Bash(type:*)",
+      "Bash(where:*)",
+      "Bash(whoami)",
+      "Bash(mvn clean)",
+      "Bash(mvn test)",
+      "Bash(mvn verify)"
+    ],
+    "deny": [
+    ],
+    "ask": []
+  }
+}
