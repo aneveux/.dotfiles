@@ -17,16 +17,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/scripts/PreBashLinuxCommands.js"
-          },
-          {
-            "type": "command",
             "command": "node .claude/scripts/PreBashCdOutsideWorkspace.js"
           },
-          {
-            "type": "command",
-            "command": "node .claude/scripts/PreBashKillPort.js"
-          }
         ]
       }
     ],
