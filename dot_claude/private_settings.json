@@ -12,7 +12,6 @@
   },
   "alwaysThinkingEnabled": true,
   "hooks": {
-
     "SessionStart": [
       {
         "hooks": [
@@ -22,7 +21,7 @@
           }
         ]
       }
-    ],  
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -30,6 +29,15 @@
           {
             "type": "command",
             "command": "node .claude/scripts/PreBashCdOutsideWorkspace.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/antoine/.claude/hooks/rtk-rewrite.sh"
           }
         ]
       }
