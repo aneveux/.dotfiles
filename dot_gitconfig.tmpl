@@ -186,7 +186,7 @@
 	hyperlinks-file-link-format = "idea://open?file={path}&line={line}"
 	features = catppuccin-mocha unobtrusive-line-numbers decorations
 
-{{ if eq .chezmoi.hostname "flower" }}
+{{ if eq .machine "flower" }}
 [secrets]
 	providers = opscore security run git-secrets-provider -q
 {{ end }}
