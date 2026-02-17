@@ -27,7 +27,46 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/antoine/.claude/hooks/rtk-rewrite.sh"
+            "command": "~/.claude/hooks/rtk-rewrite.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/repo-integrity-scanner.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/unicode-injection-detector.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/prompt-injection-detector.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/security-check.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/dangerous-actions-blocker.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/session-logger.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/output-validator.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/output-secrets-scanner.sh"
           }
         ]
       }
