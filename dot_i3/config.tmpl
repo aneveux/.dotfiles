@@ -497,7 +497,7 @@ bindsym $mod+Shift+BackSpace exec ~/.i3/lock.sh
 # Autostart Services
 # --------------
 
-{{ if eq .chezmoi.hostname "flower" }}
+{{ if eq .data.machine "flower" }}
 bindsym $mod+Shift+m exec ~/.i3/dualscreen.sh
 bindsym $mod+m exec ~/.i3/laptop.sh
 bindsym $mod+p exec ~/.i3/jira.sh
