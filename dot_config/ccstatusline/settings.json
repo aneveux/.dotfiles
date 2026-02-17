@@ -50,11 +50,21 @@
         "type": "git-changes",
         "backgroundColor": "bgGreen"
       }
+    ],
+    [
+      {
+        "id": "8b92c419-a3b3-4aff-b7bb-b69b06ded324",
+        "type": "custom-command",
+        "backgroundColor": "bgBrightBlack",
+        "commandPath": "npx -y cc-safety-net --statusline"
+      }
     ]
   ],
   "flexMode": "full-minus-40",
   "compactThreshold": 60,
   "colorLevel": 3,
+  "defaultSeparator": " | ",
+  "defaultPadding": " ",
   "inheritSeparatorColors": true,
   "globalBold": false,
   "powerline": {
@@ -71,9 +81,7 @@
     "endCaps": [
       ""
     ],
-    "autoAlign": true,
-    "theme": "catppuccin"
-  },
-  "defaultSeparator": " | ",
-  "defaultPadding": " "
+    "theme": "catppuccin",
+    "autoAlign": true
+  }
 }
