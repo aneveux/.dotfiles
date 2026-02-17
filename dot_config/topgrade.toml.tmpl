@@ -1,7 +1,7 @@
 [misc]
 [commands]
 "local" = "git -C $HOME/local pull"
-{{ if eq .chezmoi.hostname "flower" }}
+{{ if eq .machine "flower" }}
 "OpsCore" = "opscore update"
 "OpsCoreSecurity" = "opscore security update"
 "Shinobi" = "shinobi update"
