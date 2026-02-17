@@ -1,18 +1,5 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "npx -y ccstatusline@latest",
-    "padding": 0
-  },
-  "enabledPlugins": {
-    "code-review@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "cloudbees-context@cloudbees-marketplace": true,
-    "safety-net@cc-marketplace": true
-  },
-  "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
+  "model": "us.anthropic.claude-opus-4-6-v1",
   "hooks": {
     "SessionStart": [
       {
@@ -46,5 +33,19 @@
       }
     ]
   },
-  "model": "us.anthropic.claude-opus-4-6-v1"
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "cloudbees-context@cloudbees-marketplace": true,
+    "safety-net@cc-marketplace": true,
+    "claude-md-management@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true,
+  "skipDangerousModePermissionPrompt": true
 }
