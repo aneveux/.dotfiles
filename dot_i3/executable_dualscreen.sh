@@ -18,15 +18,16 @@ if echo "$dp_line" | grep -q "connected [0-9]"; then
     # External monitor is active → switch to laptop only
     xrandr \
         --output "$dp_name" --off \
-        --output eDP-1 --primary --mode 1920x1200 --rate 59.95 --pos 0x0 --scale 1x1
+        --output eDP-1 --primary --mode 1920x1200 --rate 59.95 --pos 0x0
 else
     # External monitor connected but inactive → enable dual display
     # Run external at native 2560x1440 for stability, no fractional scaling
     xrandr \
-        --output "$dp_name" --mode 2560x1440 --rate 59.95 --pos 0x0 \
-        --output eDP-1 --primary --mode 1920x1200 --rate 59.95 --pos 2560x0 --scale 1x1
+        --output "$dp_name" --mode 3840x2400 --rate 59.95 --pos 0x0 \
+        --output eDP-1 --primary --mode 1920x1200 --rate 59.95 --pos 3840x0
 fi
 
 # Give X a moment to settle, then restart i3 to pick up new layout
 sleep 1
 i3-msg restart
+
