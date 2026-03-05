@@ -17,17 +17,13 @@ Output: Conversational output only (no file creation) - ends with "What do you t
 </objective>
 
 <execution_context>
-@~/.claude/get-shit-done/workflows/list-phase-assumptions.md
+@/home/antoine/.claude/get-shit-done/workflows/list-phase-assumptions.md
 </execution_context>
 
 <context>
 Phase number: $ARGUMENTS (required)
 
-**Load project state first:**
-@.planning/STATE.md
-
-**Load roadmap:**
-@.planning/ROADMAP.md
+Project state and roadmap are loaded in-workflow using targeted reads.
 </context>
 
 <process>
