@@ -87,3 +87,9 @@ claude-debug.log
 
 # Eclipse leftovers (occasionally leaks into mixed teams)
 .factorypath
+
+# =========================================================================== #
+# ⚡ QUICKFLOW
+# =========================================================================== #
+
+.work
