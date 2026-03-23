@@ -1,6 +1,6 @@
 [tools]
 awscli = "latest"
-claude = { version = "2.1.62", bin = "claude", platforms = """
+claude = { version = "latest", bin = "claude", platforms = """
 [linux-arm64]
 url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{version}/linux-arm64/claude"
 
@@ -18,6 +18,7 @@ bin = "claude.exe"
 url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{version}/win32-x64/claude.exe"
 """, version_list_url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest" }
 cosign = "latest"
+fzf = "latest"
 go = "latest"
 groovy = "latest"
 helm = "latest"
