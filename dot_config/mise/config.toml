@@ -37,6 +37,7 @@ pnpm = "latest"
 quarkus = "latest"
 shellcheck = "latest"
 stern = "latest"
+television = "latest"
 terraform = "latest"
 usage = "latest"
 
