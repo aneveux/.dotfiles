@@ -50,6 +50,16 @@
             "command": "~/.claude/hooks/dangerous-actions-blocker.sh"
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/home/antoine/.claude/hooks/gsd-prompt-guard.js\"",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -69,6 +79,16 @@
             "command": "~/.claude/hooks/output-secrets-scanner.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/home/antoine/.claude/hooks/gsd-context-monitor.js\"",
+            "timeout": 10
+          }
+        ],
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task"
       }
     ]
   },
@@ -78,12 +98,33 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "code-review@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
     "cloudbees-context@cloudbees-marketplace": true,
     "safety-net@cc-marketplace": true,
-    "claude-md-management@claude-plugins-official": true
+    "cloudbees-docs-dev@cloudbees-dev-marketplace": true,
+    "skill-creator@claude-plugins-official": true,
+    "antoine-voice@claude-secret-garden": true,
+    "bark@claude-garden": true,
+    "trellis@claude-garden": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "claude-garden": {
+      "source": {
+        "source": "directory",
+        "path": "/home/antoine/projects/claude-garden"
+      }
+    },
+    "claude-secret-garden": {
+      "source": {
+        "source": "directory",
+        "path": "/home/antoine/projects/claude-secret-garden"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true
