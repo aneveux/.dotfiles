@@ -1,0 +1,13 @@
+# Television channel for Jira Epic selection
+# Used by ~/local/zshrc.d/create-jira.zsh
+
+[metadata]
+name = "jira-epics"
+description = "Open Jira Epics for ticket creation"
+requirements = ["jira"]
+
+[source]
+command = "jira issue list --jql 'project = BEE AND type = Epic AND resolution IS EMPTY' --plain --columns KEY,SUMMARY --no-headers"
+
+[preview]
+command = "jira issue view '{split:\t:0}' --plain"

@@ -1,0 +1,13 @@
+# Television channel for GitHub repository selection
+# Used by ~/bin/clone workflow
+
+[metadata]
+name = "gh-repos-org"
+description = "GitHub repositories from configured organizations"
+requirements = ["gh"]
+
+[source]
+command = "cat ${XDG_CACHE_HOME:-$HOME/.cache}/clone/repos-* 2>/dev/null || echo 'Run clone --refresh first'"
+
+[preview]
+command = "gh repo view '{}' --json description,stargazerCount,primaryLanguage --jq '\"Stars: \" + (.stargazerCount|tostring) + \" | Lang: \" + (.primaryLanguage.name // \"?\") + \"\\n\" + (.description // \"No description\")'"

@@ -56,6 +56,10 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
+function zvm_after_init() {
+  eval "$(tv init zsh)"
+}
+
 zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
 
@@ -141,14 +145,13 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 #==============================================================================
-# ⚡  FZF & fzf-tab configuration
+# ⚡  fzf-tab configuration (fzf kept for fzf-tab + tmux-fzf-links)
 #==============================================================================
 
 export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} \
   --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
   --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
   --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
-export FZF_COMPLETION_TRIGGER='**'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:*'             fzf-flags --layout=reverse --info=inline --color=fg:1,fg+:2 --bind=tab:accept

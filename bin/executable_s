@@ -95,19 +95,7 @@ detect_main_branch() {
 select_jira_issue() {
     local issues
 
-    gum spin --spinner dot --title "Fetching Jira issues from filter 37994..." -- \
-        jira issue list -q "filter=37994" --plain --no-headers --columns key,summary > /tmp/jira_issues.txt || {
-            gum log --level error "Failed to fetch Jira issues"
-            exit 1
-        }
-
-    if [[ ! -s /tmp/jira_issues.txt ]]; then
-        gum log --level error "No issues found in filter 37994"
-        exit 1
-    fi
-
-    issues=$(cat /tmp/jira_issues.txt | fzf --height=40% --border --prompt="Select Jira issue: " --preview="echo {}" --preview-window=down:3:wrap)
-    rm -f /tmp/jira_issues.txt
+    issues=$(tv jira-issues)
 
     echo "${issues}"
 }

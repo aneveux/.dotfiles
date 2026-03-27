@@ -147,7 +147,7 @@ enter = "confirm_selection"
 # Preview panel control
 # --------------------
 ctrl-d = "scroll_preview_half_page_down"
-ctrl-u = "scroll_preview_half_page_up"
+ctrl-b = "scroll_preview_half_page_up"
 ctrl-f = "cycle_previews"
 
 # Data operations
@@ -241,8 +241,27 @@ fallback_channel = "files"
   "git push",
 ]
 "git-log" = ["git log", "git show"]
-"docker-images" = ["docker run"]
+"docker-images" = ["docker run", "docker rmi"]
 "git-repos" = ["nvim", "code", "hx", "git clone"]
+"k8s-contexts" = ["kubectl config use-context"]
+"k8s-pods" = ["kubectl logs", "kubectl exec", "kubectl describe pod"]
+"k8s-deployments" = ["kubectl describe deployment", "kubectl scale"]
+"docker-containers" = ["docker exec", "docker logs", "docker stop", "docker rm"]
+"ssh-hosts" = ["ssh", "scp"]
+"man-pages" = ["man"]
+"make-targets" = ["make"]
+"npm-scripts" = ["npm run"]
+"tldr" = ["tldr"]
+"gh-prs" = ["gh pr"]
+"gh-issues" = ["gh issue"]
+"docker-compose" = ["docker-compose", "docker compose"]
+"docker-networks" = ["docker network"]
+"docker-volumes" = ["docker volume"]
+"aws-profiles" = ["aws configure"]
+"aws-buckets" = ["aws s3"]
+"git-stash" = ["git stash"]
+"git-tags" = ["git tag"]
+"git-worktrees" = ["git worktree"]
 
 
 [shell_integration.keybindings]
@@ -251,4 +270,4 @@ fallback_channel = "files"
 "smart_autocomplete" = "ctrl-t"
 # controls which keybinding should trigger tv
 # for command history
-"command_history" = "ctrl-r"
+# "command_history" = "ctrl-r"  # atuin handles history

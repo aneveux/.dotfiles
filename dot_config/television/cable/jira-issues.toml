@@ -1,0 +1,21 @@
+# Television channel for Jira issue selection
+# Used by ~/bin/s workflow
+
+[metadata]
+name = "jira-issues"
+description = "Jira issues from saved filter"
+requirements = ["jira"]
+
+[source]
+command = "jira issue list -q 'filter=37994' --plain --no-headers --columns key,summary"
+
+[preview]
+command = "jira issue view '{split:\t:0}' --plain"
+
+[keybindings]
+enter = "actions:open-browser"
+
+[actions.open-browser]
+description = "Open issue in browser"
+command = "jira open '{split:\t:0}'"
+mode = "execute"
