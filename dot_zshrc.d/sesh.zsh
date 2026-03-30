@@ -11,6 +11,6 @@ function sesh-sessions() {
 }
 
 zle     -N             sesh-sessions
-bindkey -M emacs '^p' sesh-sessions
-bindkey -M vicmd '^p' sesh-sessions
-bindkey -M viins '^p' sesh-sessions
+zvm_bindkey viins '^o' sesh-sessions
+zvm_bindkey vicmd '^o' sesh-sessions
+bindkey -M emacs '^o' sesh-sessions
