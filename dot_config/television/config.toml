@@ -81,7 +81,7 @@ border_type = "rounded"
 
 [ui.preview_panel]
 # Preview panel size (percentage of screen width/height)
-size = 65
+size = 50
 #header = ""
 #footer = ""
 scrollbar = true
