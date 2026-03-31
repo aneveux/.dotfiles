@@ -81,14 +81,14 @@
         ]
       },
       {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
         "hooks": [
           {
             "type": "command",
             "command": "node \"/home/antoine/.claude/hooks/gsd-context-monitor.js\"",
             "timeout": 10
           }
-        ],
-        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task"
+        ]
       }
     ]
   },
@@ -104,7 +104,9 @@
     "skill-creator@claude-plugins-official": true,
     "antoine-voice@claude-secret-garden": true,
     "bark@claude-garden": true,
-    "trellis@claude-garden": true
+    "trellis@claude-garden": true,
+    "graft@claude-garden": true,
+    "vine@claude-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
