@@ -48,6 +48,15 @@
         "backgroundColor": "bgBrightBlack",
         "commandPath": "npx -y cc-safety-net --statusline"
       }
+    ],
+    [
+      {
+        "id": "f7a1d3e9-4c82-4b1f-9e6a-8d2f5c0b7a34",
+        "type": "custom-command",
+        "backgroundColor": "bgBrightBlack",
+        "commandPath": "bash -c 'if [ \"$MANAGED_SETTINGS\" = \"true\" ] || [ -f /etc/claude-code/managed-settings.json ]; then echo \"🔒 managed settings\"; else echo \"🔓 personal settings\"; fi'",
+        "maxWidth": 20
+      }
     ]
   ],
   "flexMode": "full-minus-40",

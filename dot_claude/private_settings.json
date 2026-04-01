@@ -108,7 +108,8 @@
     "graft@claude-garden": true,
     "vine@claude-garden": true,
     "jdtls-lsp@claude-plugins-official": true,
-    "jira-stats@claude-secret-garden": true
+    "jira-stats@claude-secret-garden": true,
+    "qf-inbox@claude-secret-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
