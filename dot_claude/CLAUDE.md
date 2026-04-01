@@ -1,68 +1,51 @@
-# Personal Claude Memory
+# Claude Code — Antoine's Preferences
 
-## Communication Style
+## Identity
 
-- Be concise and direct
-- Use code examples over explanations
-- Challenge my assumptions when needed
+Antoine Neveux — Staff Software Engineer at CloudBees
+Email: antoine@neveux.me | Work: aneveux@cloudbees.com
+GitHub: aneveux | Timezone: Europe/Paris | Languages: French (native), English
+
+## Communication
+
+- Concise and direct — code examples over explanations
+- Challenge my assumptions — don't be a yes man
 - Don't over-explain obvious things
-- Use `/humanizer` skill when producing documentation or communication material
+- Use `antoine-voice` skill for produced communication (Slack, emails, docs, PRs, READMEs). Fallback: `/humanizer`
+- Claude's own conversational responses stay natural and direct
 
-## Development Preferences
+## Code Philosophy
 
-### Languages & Frameworks
-- Primary: Java, Bash, Quarkus, JavaScript
-- Secondary: Kotlin, Go
-- Preferred test framework: JUnit 5, AssertJ, Mockito
+- Functional programming, early returns, small functions
+- Meaningful variable names over comments — no unnecessary comments
+- Always: type definitions, error handling, tests for critical paths
+- No over-engineering, no ignored errors
+- Production-grade: proper logging, modern patterns
 
-### Code Style
-- Prefer functional programming
-- Use early returns
-- Keep functions small
-- Meaningful variable names over comments
+## Workflow Modes
 
-### Tools
-- Editor: nvim
-- Terminal: Kitty with tmux
-- Version control: Git
-- Operating System: Linux (Ubuntu or Manjaro)
+- **Writing code**: write it directly with types and error handling
+- **Reviewing**: logic and security first, style secondary, flag edge cases
+- **Debugging**: show investigation, explain reasoning, suggest multiple solutions
 
-## Workflow Preferences
+## Environment
 
-### When Writing Code
-- Always include type definitions
-- Add error handling
-- Write tests for critical paths
+nvim • Kitty + tmux • Linux (Ubuntu/Manjaro) • chezmoi (dotfiles) • Git
+Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
 
-### When Reviewing
-- Focus on logic and security first
-- Style suggestions are secondary
-- Point out potential edge cases
+## Automation Patterns
 
-### When Debugging
-- Show me the investigation process
-- Explain your reasoning
-- Suggest multiple solutions if applicable
+- Jira ticket mentioned (e.g. BEE-1234, SECO-5678) → CloudBees Jira tickets
+  `jira issue view BEE-1234` (TUI) | `--plain` (no TUI) | `--raw` (all fields) | `--comments N` (fetch N comments)
+- Git repo like `cloudbees/xxx` or `jenkinsci/xxx` → `gh repo clone`
+- Commits, PRs, reviews, worktrees → use `qf` (~/projects/quickflow)
+- Terminal workflows → use tmux
 
-## Common Shortcuts
+## Learning
 
-- 
-
-## Pet Peeves
-
-- Don't add unnecessary comments
-- Don't over-engineer simple solutions
-- Don't ignore error handling
-
-## Learning Goals
-
-- Learning Go
-
-## Notes
-
-- 
+- Go — adopt mentor approach when explaining Go concepts
+- Frontend — not an expert, mentor approach (see stacks/frontend.md)
 
 ## Token Management
 
 @RTK.md
-
