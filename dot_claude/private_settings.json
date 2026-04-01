@@ -107,7 +107,8 @@
     "trellis@claude-garden": true,
     "graft@claude-garden": true,
     "vine@claude-garden": true,
-    "jdtls-lsp@claude-plugins-official": true
+    "jdtls-lsp@claude-plugins-official": true,
+    "jira-stats@claude-secret-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
