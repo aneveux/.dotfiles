@@ -27,11 +27,6 @@
         "id": "bee06656-6018-4e01-a3dc-80d72337d486",
         "type": "session-cost",
         "backgroundColor": "bgBrightRed"
-      },
-      {
-        "id": "b45a7274-abbf-4013-9a1f-e266e8a8a65f",
-        "type": "session-usage",
-        "backgroundColor": "bgRed"
       }
     ],
     [
