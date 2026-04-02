@@ -39,6 +39,7 @@ Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
   `jira issue view BEE-1234` (TUI) | `--plain` (no TUI) | `--raw` (all fields) | `--comments N` (fetch N comments)
 - Git repo like `cloudbees/xxx` or `jenkinsci/xxx` → `gh repo clone`
 - Commits, PRs, reviews, worktrees → use `qf` (~/projects/quickflow)
+- Local code reviews (localreview.nvim) → use `/thorn:reviews` to find and process `.reviews.json` files
 - Terminal workflows → use tmux
 
 ## Learning
