@@ -11,16 +11,6 @@
         ]
       }
     ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/claudeception-activator.sh"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -109,7 +99,8 @@
     "vine@claude-garden": true,
     "jdtls-lsp@claude-plugins-official": true,
     "jira-stats@claude-secret-garden": true,
-    "qf-inbox@claude-secret-garden": true
+    "qf-inbox@claude-secret-garden": true,
+    "thorn@claude-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
