@@ -94,3 +94,4 @@ claude-debug.log
 
 .work/
 *.reviews.json
+.worktrees/
