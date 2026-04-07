@@ -100,7 +100,8 @@
     "jdtls-lsp@claude-plugins-official": true,
     "jira-stats@claude-secret-garden": true,
     "qf-inbox@claude-secret-garden": true,
-    "thorn@claude-garden": true
+    "thorn@claude-garden": true,
+    "bloom@claude-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
