@@ -20,7 +20,7 @@ C-a + v    Enter copy mode (vi)  #copy #mode #scroll #search #select
 C-a + d    Detach from session  #session #detach #exit #leave
 C-a + r    Reload tmux config  #reload #config #refresh #source
 C-a + T    Open todo file in nvim  #todo #edit #open #tasks
-C-a + Tab    TV fuzzy picker  #tv #fzf #picker #search #open
+C-a + Tab    TV window picker (all sessions)  #tv #fzf #picker #search #open #window #jump
 C-a + b    Send prefix to nested session  #nested #prefix #inner #remote
 C-a + 0-9    Select window by number  #window #switch #jump #number
 
