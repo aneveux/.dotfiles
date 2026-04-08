@@ -3,6 +3,7 @@ alias vim='nvim'
 alias d='docker'
 alias g='git'
 alias k='kubectl'
+alias cm='chezmoi'
 
 alias mv='mv -v'
 alias rm='rm -iv'
