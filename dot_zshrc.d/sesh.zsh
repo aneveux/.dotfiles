@@ -1,12 +1,12 @@
 function sesh-sessions() {
-  exec </dev/tty
   if [[ -n "${TMUX:-}" ]]; then
+    exec </dev/tty
     tv sesh
+    zle reset-prompt > /dev/null 2>&1 || true
   else
-    tmux new-session -s _sesh_picker 'tv sesh; exit'
-    tmux kill-session -t _sesh_picker 2>/dev/null
+    BUFFER="tmux new-session 'tv sesh'"
+    zle accept-line
   fi
-  zle reset-prompt > /dev/null 2>&1 || true
 }
 
 zle     -N             sesh-sessions
