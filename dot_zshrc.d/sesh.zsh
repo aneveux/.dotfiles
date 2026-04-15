@@ -1,6 +1,10 @@
 function sesh-sessions() {
   exec </dev/tty
-  tv sesh
+  local selected
+  selected=$(tv sesh) || { zle reset-prompt > /dev/null 2>&1 || true; return; }
+  if [[ -n "$selected" ]]; then
+    sesh connect "$selected"
+  fi
   zle reset-prompt > /dev/null 2>&1 || true
 }
 
