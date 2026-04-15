@@ -1,13 +1,7 @@
 function sesh-sessions() {
-  {
-    exec </dev/tty
-    exec <&1
-    local session
-    session=$(tv sesh)
-    zle reset-prompt > /dev/null 2>&1 || true
-    [[ -z "$session" ]] && return
-    sesh connect $session
-  }
+  exec </dev/tty
+  tv sesh
+  zle reset-prompt > /dev/null 2>&1 || true
 }
 
 zle     -N             sesh-sessions
