@@ -92,6 +92,6 @@ claude-debug.log
 # ⚡ QUICKFLOW
 # =========================================================================== #
 
-.work/
+.quickflow/
 *.reviews.json
 .worktrees/
