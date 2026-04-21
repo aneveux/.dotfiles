@@ -41,6 +41,7 @@ Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
 - Commits, PRs, reviews, worktrees → use `qf` (~/projects/quickflow)
 - Local code reviews (localreview.nvim) → use `/thorn:reviews` to find and process `.reviews.json` files
 - Terminal workflows → use tmux
+- Stash workflow (e.g. "address stash", "stash findings", "review stash") → read `STASH.md` + `.stash/items.json` in project root, present open items by priority, offer to address them
 
 ## Learning
 
