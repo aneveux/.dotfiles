@@ -95,3 +95,4 @@ claude-debug.log
 .quickflow/
 *.reviews.json
 .worktrees/
+.stash/items.json.lock
