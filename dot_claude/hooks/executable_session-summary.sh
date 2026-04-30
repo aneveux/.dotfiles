@@ -43,6 +43,8 @@
 #   FEATURES=0|1    - Features used (default: 1)
 #   THINKING=0|1    - Thinking blocks (default: 0)
 #   CONTEXT=0|1     - Context estimate (default: 0)
+#   EMOJI=0|1       - Emoji prefixes (default: 1)
+#   STATS=0|1       - Weekly stats from log (default: 1)
 #   SECTIONS=<csv>  - Section order (comma-separated)
 #
 # Place in: .claude/hooks/session-summary.sh
@@ -70,7 +72,9 @@ _DEFAULT_RATIO=1
 _DEFAULT_FEATURES=1
 _DEFAULT_THINKING=0
 _DEFAULT_CONTEXT=0
-_DEFAULT_SECTIONS="meta,duration,tools,errors,files,features,git,loc,models,cache,cost,rtk,ratio,thinking,context"
+_DEFAULT_EMOJI=1
+_DEFAULT_STATS=1
+_DEFAULT_SECTIONS="meta,duration,tools,errors,files,features,git,loc,models,cache,cost,rtk,ratio,thinking,context,stats"
 
 # Load config file (if exists), then overlay env vars
 load_config() {
@@ -86,13 +90,15 @@ load_config() {
 	FEATURES_ENABLED="$_DEFAULT_FEATURES"
 	THINKING_ENABLED="$_DEFAULT_THINKING"
 	CONTEXT_ENABLED="$_DEFAULT_CONTEXT"
+	EMOJI_ENABLED="$_DEFAULT_EMOJI"
+	STATS_ENABLED="$_DEFAULT_STATS"
 	SECTION_ORDER="$_DEFAULT_SECTIONS"
 
 	# Layer 2: config file
 	if [[ -f "$CONFIG_FILE" ]]; then
 		local val
-		val=$(bash -c "source '$CONFIG_FILE' 2>/dev/null && echo \"\${LOG_DIR:-}|\${SKIP:-}|\${FILES:-}|\${RTK:-}|\${GIT:-}|\${ERRORS:-}|\${LOC:-}|\${RATIO:-}|\${FEATURES:-}|\${THINKING:-}|\${CONTEXT:-}|\${SECTIONS:-}\"")
-		IFS='|' read -r _cf_log _cf_skip _cf_files _cf_rtk _cf_git _cf_errors _cf_loc _cf_ratio _cf_features _cf_thinking _cf_context _cf_sections <<<"$val"
+		val=$(bash -c "source '$CONFIG_FILE' 2>/dev/null && echo \"\${LOG_DIR:-}|\${SKIP:-}|\${FILES:-}|\${RTK:-}|\${GIT:-}|\${ERRORS:-}|\${LOC:-}|\${RATIO:-}|\${FEATURES:-}|\${THINKING:-}|\${CONTEXT:-}|\${SECTIONS:-}|\${EMOJI:-}|\${STATS:-}\"")
+		IFS='|' read -r _cf_log _cf_skip _cf_files _cf_rtk _cf_git _cf_errors _cf_loc _cf_ratio _cf_features _cf_thinking _cf_context _cf_sections _cf_emoji _cf_stats <<<"$val"
 		[[ -n "$_cf_log" ]] && LOG_DIR="$_cf_log"
 		[[ -n "$_cf_skip" ]] && SKIP="$_cf_skip"
 		[[ -n "$_cf_files" ]] && FILES_ENABLED="$_cf_files"
@@ -104,6 +110,8 @@ load_config() {
 		[[ -n "$_cf_features" ]] && FEATURES_ENABLED="$_cf_features"
 		[[ -n "$_cf_thinking" ]] && THINKING_ENABLED="$_cf_thinking"
 		[[ -n "$_cf_context" ]] && CONTEXT_ENABLED="$_cf_context"
+		[[ -n "$_cf_emoji" ]] && EMOJI_ENABLED="$_cf_emoji"
+		[[ -n "$_cf_stats" ]] && STATS_ENABLED="$_cf_stats"
 		[[ -n "$_cf_sections" ]] && SECTION_ORDER="$_cf_sections"
 	fi
 
@@ -119,6 +127,8 @@ load_config() {
 	[[ -n "${SESSION_SUMMARY_FEATURES:-}" ]] && FEATURES_ENABLED="$SESSION_SUMMARY_FEATURES"
 	[[ -n "${SESSION_SUMMARY_THINKING:-}" ]] && THINKING_ENABLED="$SESSION_SUMMARY_THINKING"
 	[[ -n "${SESSION_SUMMARY_CONTEXT:-}" ]] && CONTEXT_ENABLED="$SESSION_SUMMARY_CONTEXT"
+	[[ -n "${SESSION_SUMMARY_EMOJI:-}" ]] && EMOJI_ENABLED="$SESSION_SUMMARY_EMOJI"
+	[[ -n "${SESSION_SUMMARY_STATS:-}" ]] && STATS_ENABLED="$SESSION_SUMMARY_STATS"
 	[[ -n "${SESSION_SUMMARY_SECTIONS:-}" ]] && SECTION_ORDER="$SESSION_SUMMARY_SECTIONS"
 
 	# Auto-detect RTK availability
@@ -146,6 +156,7 @@ is_section_enabled() {
 	features) [[ "$FEATURES_ENABLED" == "1" ]] ;;
 	thinking) [[ "$THINKING_ENABLED" == "1" ]] ;;
 	context) [[ "$CONTEXT_ENABLED" == "1" ]] ;;
+	stats) [[ "$STATS_ENABLED" == "1" ]] ;;
 	*) return 1 ;;
 	esac
 }
@@ -166,10 +177,18 @@ if [[ -z "${NO_COLOR:-}" ]]; then
 	GREEN=$'\033[32m'
 	YELLOW=$'\033[33m'
 	RED=$'\033[31m'
+	MAGENTA=$'\033[35m'
+	BLUE=$'\033[34m'
+	WHITE=$'\033[97m'
 	RESET=$'\033[0m'
 else
-	BOLD='' DIM='' CYAN='' GREEN='' YELLOW='' RED='' RESET=''
+	BOLD='' DIM='' CYAN='' GREEN='' YELLOW='' RED='' MAGENTA='' BLUE='' WHITE='' RESET=''
 fi
+
+# Emoji helper: returns emoji if enabled, empty otherwise
+e() {
+	[[ "$EMOJI_ENABLED" == "1" ]] && echo "$1 " || echo ""
+}
 
 # Pricing table (per million tokens, as of 2026-02)
 # Used as fallback if ccusage is unavailable
@@ -565,7 +584,7 @@ extract_session_data() {
                 .tool_errors += 1 |
                 if $err_on == 1 then
                     ((.pending_tools[$err.tool_use_id] // "unknown") as $tool_name |
-                    (($err.content // ($err.output // "")) | tostring | if length > 80 then .[:77] + "..." else . end) as $msg |
+                    (($err.content // ($err.output // "")) | if type == "array" then [.[] | select(.type == "text") | .text] | join("\n") else tostring end | split("\n") | map(select(length > 0)) | .[0] // "" | if length > 80 then .[:77] + "..." else . end) as $msg |
                     .error_details += [{tool: $tool_name, message: $msg}])
                 else . end
             )) |
@@ -683,9 +702,9 @@ render_meta() {
 	local session_name
 	session_name=$(echo "$_SM" | jq -r '.summary // "Unnamed session"')
 	local out=""
-	out+="${DIM}ID:${RESET}       ${_SID:0:16}..."$'\n'
-	out+="${DIM}Name:${RESET}     $session_name"$'\n'
-	out+="${DIM}Branch:${RESET}   $_BRANCH"
+	out+="$(e 🔖)${DIM}ID:${RESET}       ${_SID:0:16}..."$'\n'
+	out+="$(e 📋)${DIM}Name:${RESET}     ${WHITE}$session_name${RESET}"$'\n'
+	out+="$(e 🌿)${DIM}Branch:${RESET}   ${CYAN}$_BRANCH${RESET}"
 	echo "$out"
 }
 
@@ -696,8 +715,16 @@ render_duration() {
 	local turn_label="turns"
 	[[ $_TURNS -eq 1 ]] && turn_label="turn"
 
-	local line="${DIM}Duration:${RESET} Wall ${wall_str} | Active ${active_str} | ${_TURNS} ${turn_label}"
-	[[ -n "$_EXIT_REASON" ]] && line+=" | Exit: ${_EXIT_REASON}"
+	local line="$(e ⏱️)${DIM}Duration:${RESET} Wall ${BOLD}${wall_str}${RESET} ${DIM}|${RESET} Active ${BOLD}${active_str}${RESET} ${DIM}|${RESET} ${_TURNS} ${turn_label}"
+	if [[ -n "$_EXIT_REASON" ]]; then
+		local exit_color="$DIM"
+		case "$_EXIT_REASON" in
+		user) exit_color="$GREEN" ;;
+		error) exit_color="$RED" ;;
+		context) exit_color="$YELLOW" ;;
+		esac
+		line+=" ${DIM}|${RESET} Exit: ${exit_color}${_EXIT_REASON}${RESET}"
+	fi
 	echo "$line"
 }
 
@@ -707,11 +734,18 @@ render_tools() {
 		local tool count
 		tool=$(echo "$tool_entry" | jq -r '.tool')
 		count=$(echo "$tool_entry" | jq -r '.count')
-		tools_line+="  ${CYAN}$tool:${RESET} $count"
+		tools_line+="  ${CYAN}$tool${DIM}:${RESET}$count"
 	done < <(echo "$_SD" | jq -c '.tools | to_entries[] | {tool: .key, count: .value}' | sort -t':' -k2 -rn | head -8)
 
+	local err_display
+	if [[ $_TOOL_ERRORS -gt 0 ]]; then
+		err_display="${GREEN}OK $_TOOL_OK${RESET} ${DIM}/${RESET} ${RED}ERR $_TOOL_ERRORS${RESET}"
+	else
+		err_display="${GREEN}all OK${RESET}"
+	fi
+
 	local out=""
-	out+="${DIM}Tool Calls:${RESET} $_TOOL_CALLS_TOTAL ${GREEN}(OK $_TOOL_OK / ERR $_TOOL_ERRORS)${RESET}"$'\n'
+	out+="$(e 🔧)${DIM}Tool Calls:${RESET} ${BOLD}$_TOOL_CALLS_TOTAL${RESET} (${err_display})"$'\n'
 	out+="$tools_line"
 	echo "$out"
 }
@@ -722,9 +756,8 @@ render_errors() {
 	[[ "$error_count" == "0" || "$error_count" == "null" ]] && return
 
 	local out=""
-	out+="${DIM}Errors:${RESET} ${RED}${error_count}${RESET}"
+	out+="$(e ❌)${DIM}Errors:${RESET} ${RED}${BOLD}${error_count}${RESET}"
 
-	# Group errors by tool, show count and first message
 	local grouped
 	grouped=$(echo "$_SD" | jq -r '
         .error_details | group_by(.tool) | .[] |
@@ -733,7 +766,7 @@ render_errors() {
         (.[0].message | gsub("\n"; " ")) as $msg |
         "  \($tool): \"\($msg)\" (x\($count))"
     ')
-	[[ -n "$grouped" ]] && out+=$'\n'"$grouped"
+	[[ -n "$grouped" ]] && out+=$'\n'"${RED}$grouped${RESET}"
 	echo "$out"
 }
 
@@ -768,11 +801,11 @@ render_files() {
 		parts+="$created_only created"
 	}
 
-	local out="${DIM}Files:${RESET} $parts"
+	local out="$(e 📁)${DIM}Files:${RESET} $parts"
 
 	local top_edited
 	top_edited=$(echo "$file_stats" | jq -r '.top_edited | map("\(.name) (\(.count) edits)") | join(", ")')
-	[[ -n "$top_edited" ]] && out+=$'\n'"  $top_edited"
+	[[ -n "$top_edited" ]] && out+=$'\n'"  ${DIM}$top_edited${RESET}"
 	echo "$out"
 }
 
@@ -825,7 +858,7 @@ render_features() {
 	fi
 
 	[[ -z "$parts" ]] && return
-	echo "${DIM}Features:${RESET} $parts"
+	echo "$(e ✨)${DIM}Features:${RESET} $parts"
 }
 
 render_git() {
@@ -840,7 +873,7 @@ render_git() {
 
 	local file_label="files"
 	[[ "$files" == "1" ]] && file_label="file"
-	echo "${DIM}Git:${RESET} ${GREEN}+${ins}${RESET} ${RED}-${del}${RESET} lines · ${files} ${file_label} changed"
+	echo "$(e 📊)${DIM}Git:${RESET} ${GREEN}+${ins}${RESET} ${RED}-${del}${RESET} lines ${DIM}·${RESET} ${files} ${file_label} changed"
 }
 
 render_loc() {
@@ -849,7 +882,7 @@ render_loc() {
 	loc_removed=$(echo "$_SD" | jq -r '.loc_removed // 0')
 
 	[[ "$loc_added" == "0" && "$loc_removed" == "0" ]] && return
-	echo "${DIM}Code:${RESET} ${GREEN}+${loc_added}${RESET} ${RED}-${loc_removed}${RESET} net (via Edit/Write)"
+	echo "$(e ✏️)${DIM}Code:${RESET} ${GREEN}+${loc_added}${RESET} ${RED}-${loc_removed}${RESET} net ${DIM}(via Edit/Write)${RESET}"
 }
 
 render_models() {
@@ -870,7 +903,7 @@ render_models() {
 	done < <(echo "$_SD" | jq -c '.models | to_entries[] | {model: .key, requests: .value.requests, input: .value.input, output: .value.output}')
 
 	local out=""
-	out+="${DIM}Model Usage${RESET}         Reqs    Input    Output"$'\n'
+	out+="$(e 🤖)${DIM}Model Usage          Reqs    Input    Output${RESET}"$'\n'
 	out+="$models_section"
 	echo -n "$out"
 }
@@ -883,12 +916,20 @@ render_cache() {
 	if [[ $cache_denominator -gt 0 ]]; then
 		cache_hit_rate=$(bc <<<"scale=0; $_TOTAL_CACHE_READ * 100 / $cache_denominator")
 	fi
-	echo "Cache: ${cache_hit_rate}% hit rate ($(format_number "$_TOTAL_CACHE_READ") read / $(format_number "$_TOTAL_CACHE_CREATE") created)"
+	local cache_color="$GREEN"
+	[[ "$cache_hit_rate" -lt 50 ]] && cache_color="$YELLOW"
+	[[ "$cache_hit_rate" -lt 20 ]] && cache_color="$RED"
+	echo "$(e 💾)${DIM}Cache:${RESET} ${cache_color}${cache_hit_rate}%${RESET} hit rate ${DIM}($(format_number "$_TOTAL_CACHE_READ") read / $(format_number "$_TOTAL_CACHE_CREATE") created)${RESET}"
 }
 
 render_cost() {
 	[[ -z "$_COST" || "$_COST" == "0" ]] && return
-	echo "Est. Cost: ${GREEN}\$$(printf "%.3f" "$_COST")${RESET}"
+	local cost_val
+	cost_val=$(printf "%.3f" "$_COST")
+	local cost_color="$GREEN"
+	(($(bc <<<"$_COST > 1"))) && cost_color="$YELLOW"
+	(($(bc <<<"$_COST > 5"))) && cost_color="$RED"
+	echo "$(e 💰)${DIM}Est. Cost:${RESET} ${cost_color}\$${cost_val}${RESET}"
 }
 
 render_rtk() {
@@ -906,11 +947,11 @@ render_rtk() {
 
 	local out=""
 	if [[ $rtk_tokens -gt 0 ]]; then
-		out="RTK Savings: $rtk_cmds cmds · ~$(format_number "$rtk_tokens") tokens saved (${est_prefix}${rtk_pct}%)"
+		out="$(e 🚀)${DIM}RTK Savings:${RESET} ${MAGENTA}$rtk_cmds${RESET} cmds ${DIM}·${RESET} ~${MAGENTA}$(format_number "$rtk_tokens")${RESET} tokens saved ${DIM}(${est_prefix}${rtk_pct}%)${RESET}"
 	else
-		out="RTK Savings: $rtk_cmds cmds rewritten"
+		out="$(e 🚀)${DIM}RTK Savings:${RESET} ${MAGENTA}$rtk_cmds${RESET} cmds rewritten"
 	fi
-	[[ -n "$rtk_commands" ]] && out+=$'\n'"  $rtk_commands"
+	[[ -n "$rtk_commands" ]] && out+=$'\n'"  ${DIM}$rtk_commands${RESET}"
 	echo "$out"
 }
 
@@ -933,8 +974,8 @@ render_ratio() {
 	local turn_label="turns"
 	[[ $turns -eq 1 ]] && turn_label="turn"
 
-	local out="${DIM}Turns:${RESET} ${turns} (${user_prompts} interactive · ${auto_turns} auto)"
-	[[ -n "$avg_sec" ]] && out+=" · Avg ${avg_sec}"
+	local out="$(e 💬)${DIM}Turns:${RESET} ${BOLD}${turns}${RESET} (${user_prompts} interactive ${DIM}·${RESET} ${auto_turns} auto)"
+	[[ -n "$avg_sec" ]] && out+=" ${DIM}·${RESET} Avg ${avg_sec}"
 	echo "$out"
 }
 
@@ -942,7 +983,7 @@ render_thinking() {
 	local thinking_blocks
 	thinking_blocks=$(echo "$_SD" | jq -r '.thinking_blocks // 0')
 	[[ "$thinking_blocks" == "0" ]] && return
-	echo "${DIM}Thinking:${RESET} ${thinking_blocks} blocks"
+	echo "$(e 🧠)${DIM}Thinking:${RESET} ${thinking_blocks} blocks"
 }
 
 render_context() {
@@ -955,7 +996,74 @@ render_context() {
 	local pct
 	pct=$(bc <<<"scale=0; $peak_input * 100 / $ctx_limit")
 
-	echo "${DIM}Context:${RESET} ~${pct}% peak (est.) · Model limit: $(format_number "$ctx_limit")"
+	local ctx_color="$GREEN"
+	[[ "$pct" -gt 60 ]] && ctx_color="$YELLOW"
+	[[ "$pct" -gt 85 ]] && ctx_color="$RED"
+	echo "$(e 📐)${DIM}Context:${RESET} ${ctx_color}~${pct}%${RESET} peak ${DIM}(est.) · Model limit: $(format_number "$ctx_limit")${RESET}"
+}
+
+render_stats() {
+	local log_file="$LOG_DIR/session-summaries.jsonl"
+	[[ ! -f "$log_file" ]] && return
+
+	local now_epoch
+	now_epoch=$(date +%s)
+	local week_ago_epoch=$((now_epoch - 7 * 86400))
+	local week_ago_ts
+	week_ago_ts=$(date -u -d "@$week_ago_epoch" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u -r "$week_ago_epoch" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null)
+
+	[[ -z "$week_ago_ts" ]] && return
+
+	local stats
+	stats=$(jq -s --arg since "$week_ago_ts" '
+		[.[] | select(.timestamp >= $since)] |
+		if length == 0 then null
+		else {
+			sessions: length,
+			total_cost: (map(.cost_usd // 0) | add),
+			total_turns: (map(.turns // 0) | add),
+			total_wall_ms: (map(.duration_wall_ms // 0) | add),
+			total_active_ms: (map(.duration_active_ms // 0) | add),
+			total_input: (map(.total_tokens.input // 0) | add),
+			total_output: (map(.total_tokens.output // 0) | add),
+			avg_cache_hit: (if (map(select(.cache_hit_rate != null)) | length) > 0 then (map(select(.cache_hit_rate != null) | .cache_hit_rate) | add / length) else 0 end),
+			total_tool_errors: (map(.tool_errors // 0) | add),
+			total_loc_added: (map(.loc.added // 0) | add),
+			total_loc_removed: (map(.loc.removed // 0) | add)
+		} end
+	' "$log_file" 2>/dev/null)
+
+	[[ -z "$stats" || "$stats" == "null" ]] && return
+
+	local sessions total_cost total_turns total_wall_ms total_active_ms
+	local total_input total_output avg_cache total_errors loc_added loc_removed
+	sessions=$(echo "$stats" | jq -r '.sessions')
+	total_cost=$(echo "$stats" | jq -r '.total_cost')
+	total_turns=$(echo "$stats" | jq -r '.total_turns')
+	total_wall_ms=$(echo "$stats" | jq -r '.total_wall_ms')
+	total_active_ms=$(echo "$stats" | jq -r '.total_active_ms')
+	total_input=$(echo "$stats" | jq -r '.total_input')
+	total_output=$(echo "$stats" | jq -r '.total_output')
+	avg_cache=$(echo "$stats" | jq -r '.avg_cache_hit | floor')
+	total_errors=$(echo "$stats" | jq -r '.total_tool_errors')
+	loc_added=$(echo "$stats" | jq -r '.total_loc_added')
+	loc_removed=$(echo "$stats" | jq -r '.total_loc_removed')
+
+	[[ "$sessions" == "0" ]] && return
+
+	local wall_str active_str cost_str
+	wall_str=$(format_duration "$total_wall_ms")
+	active_str=$(format_duration "$total_active_ms")
+	cost_str=$(printf "%.2f" "$total_cost")
+
+	local out=""
+	out+="$(e 📈)${DIM}Week Stats (${sessions} sessions):${RESET}"$'\n'
+	out+="  ${DIM}Time:${RESET} ${wall_str} wall ${DIM}/${RESET} ${active_str} active ${DIM}·${RESET} ${total_turns} turns"$'\n'
+	out+="  ${DIM}Tokens:${RESET} $(format_number "$total_input") in ${DIM}/${RESET} $(format_number "$total_output") out ${DIM}·${RESET} Cache ${avg_cache}%"$'\n'
+	out+="  ${DIM}Code:${RESET} ${GREEN}+${loc_added}${RESET} ${RED}-${loc_removed}${RESET}"
+	[[ "$total_errors" -gt 0 ]] && out+=" ${DIM}·${RESET} ${RED}${total_errors} errors${RESET}"
+	out+=" ${DIM}·${RESET} ${DIM}Cost:${RESET} \$${cost_str}"
+	echo "$out"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -992,12 +1100,12 @@ format_output() {
 		session_name=$(echo "$session_meta" | jq -r '.summary // "Unnamed session"')
 		local buf=""
 		buf+=$'\n'
-		buf+="${BOLD}═══ Session Summary ═══════════════════${RESET}"$'\n'
-		buf+="${DIM}ID:${RESET}     ${session_id:0:16}..."$'\n'
-		buf+="${DIM}Name:${RESET}   $session_name"$'\n'
-		buf+="${DIM}Branch:${RESET} $git_branch"$'\n'
-		buf+="${DIM}Status:${RESET} ${YELLOW}Empty session (no API requests)${RESET}"$'\n'
-		buf+="${BOLD}═══════════════════════════════════════${RESET}"$'\n'
+		buf+="${BOLD}${CYAN}═══ $(e 📊)Session Summary ═══════════════════${RESET}"$'\n'
+		buf+="$(e 🔖)${DIM}ID:${RESET}     ${session_id:0:16}..."$'\n'
+		buf+="$(e 📋)${DIM}Name:${RESET}   $session_name"$'\n'
+		buf+="$(e 🌿)${DIM}Branch:${RESET} ${CYAN}$git_branch${RESET}"$'\n'
+		buf+="$(e 💤)${DIM}Status:${RESET} ${YELLOW}Empty session (no API requests)${RESET}"$'\n'
+		buf+="${BOLD}${CYAN}═══════════════════════════════════════${RESET}"$'\n'
 		printf '%s\n' "$buf" >"$OUTPUT_TARGET"
 		return
 	fi
@@ -1042,7 +1150,7 @@ format_output() {
 	# Render sections in configured order
 	local buf=""
 	buf+=$'\n'
-	buf+="${BOLD}═══ Session Summary ═══════════════════${RESET}"$'\n'
+	buf+="${BOLD}${CYAN}═══ $(e 📊)Session Summary ═══════════════════${RESET}"$'\n'
 
 	local section_output
 	IFS=',' read -ra sections <<<"$SECTION_ORDER"
@@ -1056,7 +1164,7 @@ format_output() {
 		fi
 	done
 
-	buf+="${BOLD}═══════════════════════════════════════${RESET}"$'\n'
+	buf+="${BOLD}${CYAN}═══════════════════════════════════════${RESET}"$'\n'
 
 	printf '%s\n' "$buf" >"$OUTPUT_TARGET"
 }
