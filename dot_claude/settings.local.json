@@ -40,6 +40,12 @@
       "Bash(mvn verify)"
     ],
     "deny": [
+      "Read(.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/credentials*)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)"
     ],
     "ask": []
   }

@@ -54,6 +54,16 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/security-gate.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
             "command": "node \"/home/antoine/.claude/hooks/gsd-prompt-guard.js\"",
             "timeout": 5
           }
@@ -109,6 +119,16 @@
         ]
       },
       {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/auto-format.sh",
+            "async": true
+          }
+        ]
+      },
+      {
         "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
         "hooks": [
           {
@@ -125,6 +145,16 @@
             "type": "command",
             "command": "bash /home/antoine/.claude/hooks/gsd-phase-boundary.sh",
             "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/session-summary.sh"
           }
         ]
       }
@@ -174,5 +204,8 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  }
 }
