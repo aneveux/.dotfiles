@@ -15,7 +15,7 @@
 # Place in: .claude/hooks/session-logger.sh
 # Register in: .claude/settings.json under PostToolUse event
 
-set -e
+set -euo pipefail
 
 # Configuration
 LOG_DIR="${CLAUDE_LOG_DIR:-$HOME/.claude/logs}"
@@ -44,15 +44,15 @@ FILE_PATH=""
 COMMAND=""
 
 case "$TOOL_NAME" in
-    Read|Write|Edit)
-        FILE_PATH=$(echo "$TOOL_INPUT" | jq -r '.file_path // .path // ""')
-        ;;
-    Bash)
-        COMMAND=$(echo "$TOOL_INPUT" | jq -r '.command // ""' | head -c 200)
-        ;;
-    Grep|Glob)
-        FILE_PATH=$(echo "$TOOL_INPUT" | jq -r '.path // .pattern // ""')
-        ;;
+Read | Write | Edit)
+	FILE_PATH=$(echo "$TOOL_INPUT" | jq -r '.file_path // .path // ""')
+	;;
+Bash)
+	COMMAND=$(echo "$TOOL_INPUT" | jq -r '.command // ""' | head -c 200)
+	;;
+Grep | Glob)
+	FILE_PATH=$(echo "$TOOL_INPUT" | jq -r '.path // .pattern // ""')
+	;;
 esac
 
 # Estimate tokens (rough heuristic: ~4 chars per token)
@@ -60,10 +60,10 @@ TOKENS_INPUT=0
 TOKENS_OUTPUT=0
 
 if [[ "$ENABLE_TOKENS" == "true" ]]; then
-    INPUT_LEN=${#TOOL_INPUT}
-    OUTPUT_LEN=${#TOOL_OUTPUT}
-    TOKENS_INPUT=$((INPUT_LEN / 4))
-    TOKENS_OUTPUT=$((OUTPUT_LEN / 4))
+	INPUT_LEN=${#TOOL_INPUT}
+	OUTPUT_LEN=${#TOOL_OUTPUT}
+	TOKENS_INPUT=$((INPUT_LEN / 4))
+	TOKENS_OUTPUT=$((OUTPUT_LEN / 4))
 fi
 
 # Get project directory (if available)
@@ -71,16 +71,17 @@ PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 PROJECT_NAME=$(basename "$PROJECT_DIR")
 
 # Build log entry
-LOG_ENTRY=$(jq -n \
-    --arg timestamp "$TIMESTAMP" \
-    --arg session_id "$SESSION_ID" \
-    --arg tool "$TOOL_NAME" \
-    --arg file "$FILE_PATH" \
-    --arg command "$COMMAND" \
-    --arg project "$PROJECT_NAME" \
-    --argjson tokens_in "$TOKENS_INPUT" \
-    --argjson tokens_out "$TOKENS_OUTPUT" \
-    '{
+LOG_ENTRY=$(
+	jq -n \
+		--arg timestamp "$TIMESTAMP" \
+		--arg session_id "$SESSION_ID" \
+		--arg tool "$TOOL_NAME" \
+		--arg file "$FILE_PATH" \
+		--arg command "$COMMAND" \
+		--arg project "$PROJECT_NAME" \
+		--argjson tokens_in "$TOKENS_INPUT" \
+		--argjson tokens_out "$TOKENS_OUTPUT" \
+		'{
         timestamp: $timestamp,
         session_id: $session_id,
         tool: $tool,
@@ -96,7 +97,7 @@ LOG_ENTRY=$(jq -n \
 )
 
 # Append to log file
-echo "$LOG_ENTRY" >> "$LOG_FILE"
+echo "$LOG_ENTRY" >>"$LOG_FILE"
 
 # Always allow
 exit 0
