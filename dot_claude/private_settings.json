@@ -1,24 +1,9 @@
 {
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  },
   "model": "us.anthropic.claude-opus-4-6-v1",
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/hooks/gsd-check-update.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /home/antoine/.claude/hooks/gsd-session-state.sh"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -29,23 +14,16 @@
           },
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/pre-bash-security.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
             "command": "~/.claude/hooks/repo-integrity-scanner.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/unicode-injection-detector.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/prompt-injection-detector.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/security-check.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/dangerous-actions-blocker.sh"
           }
         ]
       },
@@ -56,53 +34,26 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/security-gate.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-bash-security.sh"
           }
         ]
       },
       {
-        "matcher": "Write|Edit",
+        "matcher": "WebFetch",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/home/antoine/.claude/hooks/gsd-prompt-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"/home/antoine/.claude/hooks/gsd-read-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"/home/antoine/.claude/hooks/gsd-workflow-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /home/antoine/.claude/hooks/gsd-validate-commit.sh",
-            "timeout": 5
+            "command": "bash ~/.claude/hooks/pre-bash-security.sh"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|Write|Edit|WebFetch",
         "hooks": [
           {
             "type": "command",
@@ -110,11 +61,7 @@
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/output-validator.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/output-secrets-scanner.sh"
+            "command": "bash ~/.claude/hooks/post-bash-security.sh"
           }
         ]
       },
@@ -125,26 +72,6 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/auto-format.sh",
             "async": true
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"/home/antoine/.claude/hooks/gsd-context-monitor.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /home/antoine/.claude/hooks/gsd-phase-boundary.sh",
-            "timeout": 5
           }
         ]
       }
@@ -181,7 +108,9 @@
     "thorn@claude-garden": true,
     "bloom@claude-garden": true,
     "frontend-design@claude-plugins-official": true,
-    "slack@claude-plugins-official": true
+    "slack@claude-plugins-official": true,
+    "seed@claude-garden": true,
+    "claude-stats@claude-secret-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -204,8 +133,5 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "env": {
-    "ENABLE_LSP_TOOL": "1"
-  }
+  "skipDangerousModePermissionPrompt": true
 }
