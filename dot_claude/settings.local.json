@@ -11,6 +11,7 @@
       "Bash(git remote -v)",
       "Bash(git show:*)",
       "Bash(git status)",
+      "Bash(git submodule status *)",
       "Bash(hostname)",
       "Bash(netstat:*)",
       "Bash(node -v)",
@@ -37,7 +38,15 @@
       "Bash(whoami)",
       "Bash(mvn clean)",
       "Bash(mvn test)",
-      "Bash(mvn verify)"
+      "Bash(mvn verify)",
+      "Bash(make test *)",
+      "Bash(make check *)",
+      "Bash(make format-check *)",
+      "Bash(./test/bats/bin/bats *)",
+      "Bash(test/bats/bin/bats *)",
+      "Bash(rtk grep *)",
+      "Bash(tv *)",
+      "Bash(command grep *)"
     ],
     "deny": [
       "Read(.env)",
