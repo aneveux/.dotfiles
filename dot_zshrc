@@ -14,14 +14,11 @@ typeset -U path PATH          # keep both arrays unique
 _append_if_dir() { [[ -d "$1" ]] && path+="$1" }
 
 # language/tool-specific bins
-gobins="${$(go env GOPATH 2>/dev/null)}/bin"
-[[ -d $gobins ]] || gobins="$HOME/go/bin"
-
 _append_if_dir ${KREW_ROOT:-$HOME/.krew}/bin
 _append_if_dir $HOME/bin
 _append_if_dir $HOME/.local/bin
 _append_if_dir $HOME/.cargo/bin
-_append_if_dir $gobins
+_append_if_dir $HOME/go/bin
 
 #==============================================================================
 # ⚡  Zinit bootstrap
@@ -39,7 +36,7 @@ mkdir -p ~/.zfunc
 fpath+=~/.zfunc
 
 autoload -Uz compinit
-if [[ ! -s ${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION} ]]; then
+if [[ -s ${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION} ]]; then
   compinit -C -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
 else
   compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
@@ -82,11 +79,11 @@ zinit light jdx/mise
 # ⚡  Custom tools (loaded through eval)
 #==============================================================================
 
-# These each add <10 ms but could be done through zinit if desired
-eval "$(zoxide init zsh --cmd cd)"
-eval "$(atuin   init zsh)"
+zinit ice wait"0" silent atload'eval "$(zoxide init zsh --cmd cd)"'
+zinit light zdharma-continuum/null
+zinit ice wait"0" silent atload'eval "$(atuin init zsh)"'
+zinit light zdharma-continuum/null
 eval "$(starship init zsh)"
-eval "$(mods     completion zsh)"
 
 #==============================================================================
 # ⚡  Zsh options, key-bindings, history
@@ -170,6 +167,7 @@ zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 
 zinit ice wait"2" silent atload'source <(carapace _carapace)'
+zinit light zdharma-continuum/null
 
 #==============================================================================
 # ⚡  Modular configuration

@@ -7,7 +7,6 @@ configuration {
     case-sensitive: false;
     sort: true;
     sorting-method: "levenshtein";
-    disable-history: true;
     matching: "fuzzy";
     tokenize: true;
 

@@ -20,6 +20,8 @@ C-a + v    Enter copy mode (vi)  #copy #mode #scroll #search #select
 C-a + d    Detach from session  #session #detach #exit #leave
 C-a + r    Reload tmux config  #reload #config #refresh #source
 C-a + T    Open todo file in nvim  #todo #edit #open #tasks
+C-a + S    Stash popup (tv + quickflow)  #stash #quickflow #popup #tv
+C-a + N    Quickflow inbox next  #quickflow #inbox #next #notification
 C-a + Tab    TV window picker (all sessions)  #tv #fzf #picker #search #open #window #jump
 C-a + b    Send prefix to nested session  #nested #prefix #inner #remote
 C-a + 0-9    Select window by number  #window #switch #jump #number
@@ -58,6 +60,14 @@ C-a s a    Last session via sesh (alternate)  #session #switch #last #back #alte
 C-a s x    Kill session (confirm)  #session #close #kill #delete
 C-a s d    Detach from session  #session #detach #exit #leave
 C-a s s    Session tree picker  #session #pick #tree #select #choose
+
+## Copy Mode (C-a v to enter)
+v    Begin selection  #copy #select #highlight
+C-v    Toggle rectangle selection  #copy #select #rectangle #block
+y    Yank to clipboard  #copy #yank #clipboard #paste
+Escape    Cancel copy mode  #copy #cancel #exit
+H    Start of line  #copy #navigate #home #line
+L    End of line  #copy #navigate #end #line
 
 ## Plugins
 C-a + C-f    Extrakto: extract text from pane  #plugin #extract #text #fzf #copy #grab
