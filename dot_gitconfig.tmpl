@@ -23,6 +23,13 @@
 
 [fetch]
 	prune = true
+	fsckobjects = true
+
+[transfer]
+	fsckobjects = true
+
+[receive]
+	fsckobjects = true
 
 [merge]
 	tool = nvimdiff
@@ -32,11 +39,21 @@
 	autostash = true
 	autosquash = true
 
+[rerere]
+	enabled = true
+	autoupdate = true
+
 [maintenance]
 	auto = true
 
 [submodule]
 	recurse = true 
+
+[column]
+	ui = auto
+
+[blame]
+	coloring = repeatedLines
 
 [diff]
 	indentHeuristic = true
@@ -50,7 +67,7 @@
 [core]
 	excludesfile = ~/.gitignore
 	editor = nvim
-	filemode = false
+	filemode = true
 	trustctime = false
 	autocrlf = input
 	pager = delta
@@ -133,8 +150,8 @@
 	fu = fetch upstream
 	po = push origin
 	lo = pull origin
-	mo = !git merge --no-ff origin/`git currentbranch`
-	uo = !git merge --ff-only origin/`git currentbranch`
+	mo = !git merge --no-ff origin/$(git currentbranch)
+	uo = !git merge --ff-only origin/$(git currentbranch)
 
 	# Review
 	rdiff = !git diff $1...$2 --no-merges
@@ -186,7 +203,7 @@
 	line-numbers = true
 	side-by-side = true
 	hyperlinks = true
-	hyperlinks-file-link-format = "idea://open?file={path}&line={line}"
+	hyperlinks-file-link-format = "file://{path}:{line}"
 	features = catppuccin-mocha unobtrusive-line-numbers decorations
 
 {{ if eq .machine "flower" }}

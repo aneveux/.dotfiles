@@ -169,6 +169,8 @@ zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'exter
 zinit ice wait"2" silent atload'source <(carapace _carapace)'
 zinit light zdharma-continuum/null
 
+zinit cdreplay -q
+
 #==============================================================================
 # ⚡  Modular configuration
 #==============================================================================
