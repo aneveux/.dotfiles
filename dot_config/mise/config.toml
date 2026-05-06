@@ -1,4 +1,5 @@
 [tools]
+aws = { version = "latest", symlink_bins = "true" }
 awscli = "latest"
 bun = "latest"
 claude = { version = "latest", bin = "claude", platforms = """

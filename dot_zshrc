@@ -53,15 +53,15 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
+zinit light Aloxaf/fzf-tab
+
 function zvm_after_init() {
   eval "$(tv init zsh)"
+  enable-fzf-tab
 }
 
 zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
-
-zinit ice wait"3" silent atload'source fzf-tab.zsh'
-zinit light Aloxaf/fzf-tab
 
 # lean OMZ snippets -----------------------------------------------------------
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
@@ -79,10 +79,8 @@ zinit light jdx/mise
 # ⚡  Custom tools (loaded through eval)
 #==============================================================================
 
-zinit ice wait"0" silent atload'eval "$(zoxide init zsh --cmd cd)"'
-zinit light zdharma-continuum/null
-zinit ice wait"0" silent atload'eval "$(atuin init zsh)"'
-zinit light zdharma-continuum/null
+eval "$(zoxide init zsh --cmd cd)"
+eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
 
 #==============================================================================
@@ -166,8 +164,7 @@ export CARAPACE_MATCH=1
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 
-zinit ice wait"2" silent atload'source <(carapace _carapace)'
-zinit light zdharma-continuum/null
+source <(carapace _carapace)
 
 zinit cdreplay -q
 
