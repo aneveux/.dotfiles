@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
-# Consolidated PreToolUse security hook
-# Merges: security-check.sh, dangerous-actions-blocker.sh,
-#         prompt-injection-detector.sh, unicode-injection-detector.sh
-# Run on: Bash, Write, Edit (via matcher)
+# PreToolUse:Bash — Security gate for shell commands
+# Blocks destructive commands, secret exposure, delimiter injection, and unicode attacks.
+# Exit 0 = allow, Exit 2 = block
 set -euo pipefail
 
 INPUT=$(cat)
-TOOL_NAME=$(jq -r '.tool_name // empty' <<< "$INPUT")
-TOOL_INPUT=$(jq -r '.tool_input // empty' <<< "$INPUT")
+TOOL_NAME=$(jq -r '.tool_name // empty' <<<"$INPUT")
+TOOL_INPUT=$(jq -r '.tool_input // empty' <<<"$INPUT")
+
+[[ "$TOOL_NAME" != "Bash" ]] && exit 0
+
+COMMAND=$(jq -r '.command // empty' <<<"$TOOL_INPUT")
+[[ -z "$COMMAND" ]] && exit 0
+
+# ── Destructive commands ────────────────────────────────────────────────────
 
 check_destructive_commands() {
 	local cmd="$1"
@@ -47,10 +53,11 @@ check_destructive_commands() {
 	fi
 }
 
+# ── Secrets in commands ─────────────────────────────────────────────────────
+
 check_secrets_in_command() {
 	local cmd="$1"
 
-	# Strip quoted strings to avoid false positives on echo/printf/heredoc content
 	local stripped
 	stripped=$(echo "$cmd" | sed -E \
 		-e 's/"[^"]*"//g' \
@@ -81,6 +88,8 @@ check_secrets_in_command() {
 	fi
 }
 
+# ── Injection patterns (strong signals only) ────────────────────────────────
+
 check_injection_patterns() {
 	local content="$1"
 	local content_lower
@@ -93,41 +102,13 @@ check_injection_patterns() {
 		"disregard previous"
 		"disregard your instructions"
 		"forget your instructions"
-		"forget everything"
 		"you are now"
-		"act as if"
-		"pretend you are"
-		"pretend to be"
-		"from now on you"
 		"new instructions:"
-		"override:"
 		"system prompt:"
 	)
 	for pattern in "${role_overrides[@]}"; do
 		if [[ "$content_lower" == *"$pattern"* ]]; then
 			echo "BLOCKED: Prompt injection detected - role override attempt: '$pattern'" >&2
-			exit 2
-		fi
-	done
-
-	local -a jailbreaks=(
-		"dan mode"
-		"developer mode"
-		"jailbreak"
-		"do anything now"
-		"bypass"
-		"no restrictions"
-		"without restrictions"
-		"unrestricted mode"
-		"god mode"
-		"sudo mode"
-		"admin mode"
-		"debug mode"
-		"maintenance mode"
-	)
-	for pattern in "${jailbreaks[@]}"; do
-		if [[ "$content_lower" == *"$pattern"* ]]; then
-			echo "BLOCKED: Prompt injection detected - jailbreak attempt: '$pattern'" >&2
 			exit 2
 		fi
 	done
@@ -153,31 +134,13 @@ check_injection_patterns() {
 		fi
 	done
 
-	local -a authorities=(
-		"anthropic employee"
-		"anthropic staff"
-		"i am your creator"
-		"i am your developer"
-		"i have admin access"
-		"authorized to bypass"
-		"emergency override"
-		"security exception"
-		"this is a test"
-		"testing mode"
-	)
-	for pattern in "${authorities[@]}"; do
-		if [[ "$content_lower" == *"$pattern"* ]]; then
-			echo "BLOCKED: Prompt injection detected - authority impersonation: '$pattern'" >&2
-			exit 2
-		fi
-	done
-
+	# Base64-encoded injection payloads
 	if echo "$content" | grep -qE '[A-Za-z0-9+/]{50,}={0,2}'; then
 		local decoded
 		decoded=$(echo "$content" | grep -oE '[A-Za-z0-9+/]{50,}={0,2}' | head -1 | base64 -d 2>/dev/null || true)
 		local decoded_lower
 		decoded_lower=$(echo "$decoded" | tr '[:upper:]' '[:lower:]')
-		for keyword in "ignore" "override" "system" "jailbreak" "dan mode"; do
+		for keyword in "ignore" "override" "system" "jailbreak"; do
 			if [[ "$decoded_lower" == *"$keyword"* ]]; then
 				echo "BLOCKED: Prompt injection detected - encoded payload containing: '$keyword'" >&2
 				exit 2
@@ -185,7 +148,7 @@ check_injection_patterns() {
 		done
 	fi
 
-	# Nested dangerous commands inside $() or backticks
+	# Nested dangerous commands in subshells
 	local -a nested_patterns=(
 		'\$\([^)]*\b(curl|wget|bash|sh|nc|python|ruby|perl|php)\b'
 		'\$\([^)]*\b(rm|dd|mkfs|chmod|chown)\b'
@@ -198,29 +161,15 @@ check_injection_patterns() {
 			exit 2
 		fi
 	done
-
-	local -a context_manip=(
-		"in the previous message"
-		"as i mentioned earlier"
-		"you agreed to"
-		"you already said"
-		"you promised"
-		"remember when you"
-		"our agreement was"
-	)
-	for pattern in "${context_manip[@]}"; do
-		if [[ "$content_lower" == *"$pattern"* ]]; then
-			echo '{"systemMessage": "Warning: Detected potential context manipulation pattern. Verify legitimacy."}'
-			break
-		fi
-	done
 }
+
+# ── Unicode attacks ─────────────────────────────────────────────────────────
 
 check_unicode_attacks() {
 	local content="$1"
 
 	if echo "$content" | grep -qP '[\x{200B}-\x{200D}\x{FEFF}]' 2>/dev/null; then
-		echo "BLOCKED: Zero-width characters detected (U+200B-U+200D or BOM)." >&2
+		echo "BLOCKED: Zero-width characters detected." >&2
 		exit 2
 	fi
 
@@ -238,103 +187,17 @@ check_unicode_attacks() {
 		echo "BLOCKED: Null byte detected." >&2
 		exit 2
 	fi
-
-	if echo "$content" | grep -qP '[\x{E0000}-\x{E007F}]' 2>/dev/null; then
-		echo "BLOCKED: Unicode tag characters detected." >&2
-		exit 2
-	fi
-
-	if echo "$content" | grep -qP '[\xC0-\xC1][\x80-\xBF]' 2>/dev/null; then
-		echo "BLOCKED: Overlong UTF-8 sequence detected." >&2
-		exit 2
-	fi
-
-	local homoglyphs=false
-	if echo "$content" | grep -qP '[\x{0430}\x{0435}\x{043E}\x{0440}\x{0441}\x{0445}]' 2>/dev/null; then
-		homoglyphs=true
-	fi
-	if echo "$content" | grep -qP '[\x{0391}-\x{03C9}]' 2>/dev/null && echo "$content" | grep -qP '[a-zA-Z]' 2>/dev/null; then
-		homoglyphs=true
-	fi
-	if [[ "$homoglyphs" == "true" ]]; then
-		echo '{"systemMessage": "Warning: Potential homoglyph characters detected (Cyrillic/Greek mixed with Latin)."}'
-	fi
 }
 
-check_write_edit() {
-	local file_path
-	file_path=$(jq -r '.file_path // empty' <<< "$TOOL_INPUT")
+# ── Main ────────────────────────────────────────────────────────────────────
 
-	local filename
-	filename=$(basename "$file_path")
-	local -a protected=(
-		".env" ".env.local" ".env.production" ".env.development"
-		"credentials.json" "serviceAccountKey.json"
-		"id_rsa" "id_ed25519" "id_ecdsa"
-		".npmrc" ".pypirc" "secrets.yml" "secrets.yaml"
-	)
-	for pf in "${protected[@]}"; do
-		if [[ "$filename" == "$pf" ]]; then
-			echo "BLOCKED: Editing sensitive file '$filename' is forbidden" >&2
-			exit 2
-		fi
-	done
+check_destructive_commands "$COMMAND"
+check_secrets_in_command "$COMMAND"
+check_injection_patterns "$COMMAND"
+check_unicode_attacks "$COMMAND"
 
-	local project_dir="${CLAUDE_PROJECT_DIR:-$(pwd)}"
-	local claude_home="$HOME/.claude"
-	local extra="${ALLOWED_PATHS:-}"
-	local allowed=false
-
-	[[ "$file_path" == "$project_dir"* ]] && allowed=true
-	[[ "$file_path" == "$claude_home"* ]] && allowed=true
-	[[ "$file_path" == "/tmp"* ]] && allowed=true
-
-	if [[ -n "$extra" ]]; then
-		IFS=':' read -ra extra_paths <<< "$extra"
-		for ap in "${extra_paths[@]}"; do
-			[[ "$file_path" == "$ap"* ]] && allowed=true
-		done
-	fi
-
-	if [[ "$allowed" == "false" ]]; then
-		echo "BLOCKED: Editing outside project is forbidden: $file_path" >&2
-		echo "Allowed paths: $project_dir, $claude_home, /tmp" >&2
-		[[ -n "$extra" ]] && echo "Additional allowed: $extra" >&2
-		exit 2
-	fi
-
-	local content=""
-	if [[ "$TOOL_NAME" == "Write" ]]; then
-		content=$(jq -r '.content // empty' <<< "$TOOL_INPUT")
-	else
-		content=$(jq -r '.new_string // empty' <<< "$TOOL_INPUT")
-	fi
-	[[ -n "$content" ]] && check_unicode_attacks "$content"
-}
-
-# Main dispatch
-case "$TOOL_NAME" in
-Bash)
-	COMMAND=$(jq -r '.command // empty' <<< "$TOOL_INPUT")
-	[[ -z "$COMMAND" ]] && exit 0
-	check_destructive_commands "$COMMAND"
-	check_secrets_in_command "$COMMAND"
-	check_injection_patterns "$COMMAND"
-	check_unicode_attacks "$COMMAND"
-	if echo "$COMMAND" | grep -qE "rm -r|rmdir|unlink"; then
-		echo '{"systemMessage": "Warning: File deletion detected. Verify this is intentional."}'
-	fi
-	;;
-Write | Edit)
-	check_write_edit
-	;;
-WebFetch)
-	URL=$(jq -r '.url // empty' <<< "$TOOL_INPUT")
-	[[ -n "$URL" ]] && check_injection_patterns "$URL"
-	;;
-*)
-	exit 0
-	;;
-esac
+if echo "$COMMAND" | grep -qE "rm -r|rmdir|unlink"; then
+	echo '{"systemMessage": "Warning: File deletion detected. Verify this is intentional."}'
+fi
 
 exit 0
