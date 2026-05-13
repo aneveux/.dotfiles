@@ -34,19 +34,6 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/security-gate.sh",
             "timeout": 5
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/pre-bash-security.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "WebFetch",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/pre-bash-security.sh"
           }
         ]
       }
@@ -107,6 +94,28 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/pre-compact-snapshot.sh",
             "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/compact-reinjection.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "CwdChanged": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/cwd-profile.sh",
+            "timeout": 2
           }
         ]
       }
