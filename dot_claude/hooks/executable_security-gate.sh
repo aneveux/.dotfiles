@@ -124,4 +124,28 @@ if echo "$CONTENT" | grep -qE '(new\s+File|Paths\.get)\s*\([^)]*request\.(getPar
 	exit 2
 fi
 
+# ── Unicode attacks in source code ──────────────────────────────────────────
+if echo "$CONTENT" | grep -qP '[\x{200B}-\x{200D}\x{FEFF}]' 2>/dev/null; then
+	echo "SECURITY-GATE: Zero-width characters detected in $FILE_PATH" >&2
+	echo "These can hide malicious content. Remove zero-width chars." >&2
+	exit 2
+fi
+
+if echo "$CONTENT" | grep -qP '[\x{202A}-\x{202E}\x{2066}-\x{2069}]' 2>/dev/null; then
+	echo "SECURITY-GATE: Bidirectional text override detected in $FILE_PATH" >&2
+	echo "Bidi overrides can disguise malicious code (CVE-2021-42574)." >&2
+	exit 2
+fi
+
+if echo "$CONTENT" | grep -qE $'\x1b\[|\x1b\]|\x1b\(' 2>/dev/null; then
+	echo "SECURITY-GATE: ANSI escape sequence detected in $FILE_PATH" >&2
+	echo "Escape sequences don't belong in source files." >&2
+	exit 2
+fi
+
+if echo "$CONTENT" | grep -qP '\x00' 2>/dev/null; then
+	echo "SECURITY-GATE: Null byte detected in $FILE_PATH" >&2
+	exit 2
+fi
+
 exit 0
