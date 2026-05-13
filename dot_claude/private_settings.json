@@ -57,11 +57,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/session-logger.sh"
+            "command": "~/.claude/hooks/session-logger.sh",
+            "async": true
           },
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/post-bash-security.sh"
+            "command": "bash ~/.claude/hooks/post-bash-security.sh",
+            "async": true
           }
         ]
       },
@@ -72,6 +74,50 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/auto-format.sh",
             "async": true
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/session-orientation.sh",
+            "timeout": 3
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/compact-reinjection.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-compact-snapshot.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/stash-reminder.sh",
+            "timeout": 2
           }
         ]
       }
@@ -89,28 +135,18 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@latest",
+    "command": "npx -y ccstatusline@2.2.15",
     "padding": 0
   },
   "enabledPlugins": {
-    "cloudbees-context@cloudbees-marketplace": true,
     "safety-net@cc-marketplace": true,
-    "cloudbees-docs-dev@cloudbees-dev-marketplace": true,
-    "skill-creator@claude-plugins-official": true,
     "antoine-voice@claude-secret-garden": true,
-    "bark@claude-garden": true,
     "trellis@claude-garden": true,
-    "graft@claude-garden": true,
-    "vine@claude-garden": true,
-    "jdtls-lsp@claude-plugins-official": true,
-    "jira-stats@claude-secret-garden": true,
-    "qf-inbox@claude-secret-garden": true,
     "thorn@claude-garden": true,
-    "bloom@claude-garden": true,
-    "frontend-design@claude-plugins-official": true,
     "slack@claude-plugins-official": true,
     "seed@claude-garden": true,
-    "claude-stats@claude-secret-garden": true
+    "claude-stats@claude-secret-garden": true,
+    "qf-inbox@claude-secret-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -134,5 +170,15 @@
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "skillListingBudgetFraction": 0.015
+  "skillListingBudgetFraction": 0.02,
+  "skillOverrides": {
+    "skill-creator:skill-creator": "user-invocable-only",
+    "frontend-design:frontend-design": "off",
+    "slack:slack-search": "user-invocable-only",
+    "slack:slack-messaging": "user-invocable-only",
+    "cloudbees-docs-dev:cloudbees-docs": "user-invocable-only",
+    "seed:prompt-cultivation": "user-invocable-only",
+    "claude-stats:claude-stats": "user-invocable-only",
+    "jira-stats:jira-stats": "user-invocable-only"
+  }
 }

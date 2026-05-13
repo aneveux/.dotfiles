@@ -51,3 +51,8 @@ Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
 ## Token Management
 
 @RTK.md
+
+## Compact Instructions
+
+When compacting, preserve: modified file list, test commands run, architectural
+decisions made, current task state, and file paths being worked on.

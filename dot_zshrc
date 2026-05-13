@@ -36,11 +36,8 @@ mkdir -p ~/.zfunc
 fpath+=~/.zfunc
 
 autoload -Uz compinit
-if [[ -s ${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION} ]]; then
-  compinit -C -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
-else
-  compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
-fi
+# Full rebuild every time — fzf-tab's compadd hook breaks with stale cached state
+compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
 
 #==============================================================================
 # ⚡  Core plugins & completions
@@ -53,8 +50,25 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
+# Load order matters: compinit -> carapace -> fzf-tab.
+# Carapace loading AFTER fzf-tab corrupts fzf-tab's compadd hook on second completion.
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm'
+export CARAPACE_MATCH=1
+source <(carapace _carapace)
+
+# Restore native zsh completions for basic file commands (carapace breaks fzf-tab for these)
+for cmd in ${(s:,:)CARAPACE_EXCLUDES}; do
+  unfunction "_$cmd" 2>/dev/null
+  compdef _files "$cmd"
+done; unset cmd
+
+zinit light Aloxaf/fzf-tab
+
+# zsh-vi-mode clobbers ^I on init; re-bind fzf-tab after it settles
 function zvm_after_init() {
   eval "$(tv init zsh)"
+  enable-fzf-tab
 }
 
 zinit ice depth=1
@@ -83,9 +97,6 @@ eval "$(starship init zsh)"
 #==============================================================================
 # ⚡  Zsh options, key-bindings, history
 #==============================================================================
-
-HYPHEN_INSENSITIVE=yes
-HIST_STAMPS="yyyy-mm-dd"
 
 # nice defaults ---------------------------------------------------------------
 setopt auto_cd interactivecomments extended_glob print_exit_value
@@ -116,8 +127,6 @@ ensure_file() {
 ensure_file ~/.zfunc/_chezmoi chezmoi completion zsh --output=~/.zfunc/_chezmoi
 ensure_file ~/.zfunc/atuin.zsh atuin gen-completions --shell zsh --out-dir ~/.zfunc
 
-typeset -U fpath
-
 #==============================================================================
 # ⚡  completion configuration
 #==============================================================================
@@ -125,6 +134,7 @@ typeset -U fpath
 # Completion styling ----------------------------------------------------------
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcache"
+# fzf-tab overrides menu behavior via compadd hook; this is the fallback when fzf-tab is toggled off
 zstyle ':completion:*' menu select
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*' matcher-list \
@@ -133,18 +143,20 @@ zstyle ':completion:*' matcher-list \
       'l:|=* r:|=*'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:git-checkout:*' sort false
-zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
+zstyle ':completion:*:descriptions' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 #==============================================================================
-# ⚡  fzf-tab configuration (fzf kept for fzf-tab + tmux-fzf-links)
+# ⚡  fzf configuration
 #==============================================================================
+# FZF_DEFAULT_OPTS: used by native fzf invocations (tv, tmux-fzf-links, fzf CLI).
+# fzf-tab ignores this and uses its own fzf-flags zstyle instead.
 
 export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} \
   --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
   --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
   --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
-export FZF_COMPLETION_TRIGGER='**'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:*'             fzf-flags --layout=reverse --info=inline --color=fg:1,fg+:2 --bind=tab:accept
@@ -152,21 +164,6 @@ zstyle ':fzf-tab:*'             switch-group '<' '>'
 zstyle ':fzf-tab:*'             show-group none
 zstyle ':fzf-tab:*'             single-group header
 zstyle ':fzf-tab:*'             fzf-command fzf
-
-#==============================================================================
-# ⚡  Carapace completions
-#==============================================================================
-
-export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' 
-export CARAPACE_MATCH=1
-zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
-
-zinit ice wait"2" silent atload'source <(carapace _carapace)'
-zinit light zdharma-continuum/null
-
-zinit ice wait"3" silent atload'source fzf-tab.zsh'
-zinit light Aloxaf/fzf-tab
 
 zinit cdreplay -q
 
