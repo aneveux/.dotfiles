@@ -20,4 +20,6 @@ export WORKSPACE="$HOME/projects"
 export PROJECTS="$WORKSPACE"
 
 export GPG_TTY=$TTY
-#export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
+gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1

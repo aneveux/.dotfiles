@@ -1,7 +1,13 @@
 [user]
 	name = Antoine Neveux
 	email = {{ .email }}
-	signingkey = 72C9B89DB1F04D9C6F52D20F9A20D59AA892142A 
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8tOmfg5S7SiLvPEVKDdHZlER9rIzc+L5Y6kJi7BX7H
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
 
 [include]
 	path = ~/catppuccin.gitconfig
