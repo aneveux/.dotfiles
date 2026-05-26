@@ -1,0 +1,36 @@
+# Build outputs
+dist/
+build/
+target/
+out/
+.next/
+.nuxt/
+.output/
+
+# Dependencies
+node_modules/
+.m2/
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and caches
+*.log
+.cache/
+.gradle/
+__pycache__/
+
+# Generated
+*.min.js
+*.min.css
+*.map
+coverage/
+.nyc_output/
