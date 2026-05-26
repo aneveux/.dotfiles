@@ -10,12 +10,6 @@ description: "Hard constraints and process invariants — never-break rules that
 - Never run DROP, TRUNCATE, or DELETE without WHERE clause
 - Never commit .env, .pem, credentials, or private key files
 
-## Code Safety — Java
-- No empty catch blocks — log or rethrow, never swallow
-- No System.out.println for logging — use SLF4J
-- No raw types — always parameterize generics
-- No string concatenation in SQL — use PreparedStatement or JPA named parameters
-
 ## Process Safety
 - Never skip pre-commit hooks (no --no-verify)
 - Never amend a pushed commit
@@ -23,6 +17,6 @@ description: "Hard constraints and process invariants — never-break rules that
 - Read a file before modifying it
 
 ## Scope Safety
-- Never refactor code outside the current task — note it for later
+- Never refactor code outside the current task — capture it with `stash` instead
 - State rationale before adding any dependency
 - One logical change per commit

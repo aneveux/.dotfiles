@@ -72,7 +72,19 @@
       "Read(**/*.pem)",
       "Read(**/credentials*)",
       "Read(**/id_rsa*)",
-      "Read(**/id_ed25519*)"
+      "Read(**/id_ed25519*)",
+      "Write(.env)",
+      "Write(**/.env.*)",
+      "Write(**/*.pem)",
+      "Write(**/credentials*)",
+      "Write(**/id_rsa*)",
+      "Write(**/id_ed25519*)",
+      "Edit(.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/*.pem)",
+      "Edit(**/credentials*)",
+      "Edit(**/id_rsa*)",
+      "Edit(**/id_ed25519*)"
     ],
     "ask": []
   }

@@ -52,7 +52,35 @@ Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
 
 @RTK.md
 
+## Don'ts
+
+- Don't explain code unless asked — just write it
+- Don't add comments that restate what the code does
+- Don't refactor outside the current task scope
+- Don't suggest dependencies without justifying them
+- Don't write wrapper functions that add no logic
+- Don't use placeholder/TODO code — implement fully or skip
+
+## Session Naming
+
+- Once session subject is clear (after 2-3 exchanges), run /name with short title
+- Format: `[verb] [subject]` — max 50 chars, no date, no "Session:" prefix
+- Action verb first: fix, add, refactor, update, research, debug, review
+- If scope shifts significantly, re-rename before closing
+- Do NOT ask for confirmation — just rename
+
 ## Compact Instructions
 
-When compacting, preserve: modified file list, test commands run, architectural
-decisions made, current task state, and file paths being worked on.
+When compacting, preserve:
+- Modified file list and paths being worked on
+- Test commands run and their results
+- Architectural decisions made this session
+- Current task state and next steps
+- Error messages actively being debugged
+
+When compacting, drop:
+- Files read for exploration but no longer relevant
+- Resolved debug output and stack traces
+- Long git log/diff output already processed
+- Completed sub-tasks with no bearing on remaining work
+- Large config files read for reference
