@@ -27,8 +27,5 @@ fi
 touch "$ONCE_FILE"
 
 jq -nc --arg msg "This project has STASH.md with ${OPEN} open items. Run 'address stash' if the user wants to review them." '{
-  hookSpecificOutput: {
-    hookEventName: "Stop",
-    additionalContext: $msg
-  }
+  systemMessage: $msg
 }'
