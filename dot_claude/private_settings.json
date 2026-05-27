@@ -187,6 +187,8 @@
     "cloudbees-docs-dev:cloudbees-docs": "user-invocable-only",
     "seed:prompt-cultivation": "user-invocable-only",
     "claude-stats:claude-stats": "user-invocable-only",
-    "jira-stats:jira-stats": "user-invocable-only"
+    "jira-stats:jira-stats": "user-invocable-only",
+    "agent-risk-checker:agent-risk-checker": "user-invocable-only",
+    "claudecode-agent-registry:claudecode-agent-registry": "user-invocable-only"
   }
 }

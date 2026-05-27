@@ -96,3 +96,5 @@ claude-debug.log
 *.reviews.json
 .worktrees/
 .stash/items.json.lock
+
+**/.claude/settings.local.json
