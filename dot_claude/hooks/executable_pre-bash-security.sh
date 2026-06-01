@@ -42,8 +42,8 @@ check_destructive_commands() {
 		fi
 	done
 
-	if echo "$cmd" | grep -qE "git push.*(-f|--force).*(main|master)"; then
-		echo "BLOCKED: Force push to main/master is forbidden" >&2
+	if echo "$cmd" | grep -qE "git push.*(--force-with-lease|--force\b|-f\b)"; then
+		echo "BLOCKED: Force push is forbidden (all branches)" >&2
 		exit 2
 	fi
 

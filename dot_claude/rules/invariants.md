@@ -6,7 +6,7 @@ description: "Hard constraints and process invariants — never-break rules that
 
 ## Data Safety
 - Never store secrets (API keys, passwords, tokens) in source files
-- Never force-push to main or master
+- Never force-push to any branch, under any circumstances
 - Never run DROP, TRUNCATE, or DELETE without WHERE clause
 - Never commit .env, .pem, credentials, or private key files
 
