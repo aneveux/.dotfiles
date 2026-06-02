@@ -42,7 +42,9 @@ if [[ "$TOOL" == "Write" || "$TOOL" == "Edit" ]]; then
 		dir=$(dirname "$FILE" || echo "/")
 		while [[ "$dir" != "/" ]]; do
 			if [[ -f "$dir/pom.xml" ]]; then
-				(cd "$dir" && mvn spotless:apply -q 2>/dev/null) || true
+				if [[ ! -f "$dir/.no-spotless" ]]; then
+					(cd "$dir" && mvn spotless:apply -q 2>/dev/null) || true
+				fi
 				break
 			fi
 			dir=$(dirname "$dir" || echo "/")
