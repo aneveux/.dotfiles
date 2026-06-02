@@ -20,3 +20,4 @@ description: "Hard constraints and process invariants — never-break rules that
 - Never refactor code outside the current task — capture it with `stash` instead
 - State rationale before adding any dependency
 - One logical change per commit
+- Every changed line must trace to the request — see rules/minimal-changes.md

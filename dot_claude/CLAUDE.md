@@ -60,6 +60,8 @@ Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
 - Don't suggest dependencies without justifying them
 - Don't write wrapper functions that add no logic
 - Don't use placeholder/TODO code — implement fully or skip
+- Don't reorder, reformat, or add/remove blank lines unless requested — minimum viable diff only
+- Don't silently apply noticed improvements — report them, then stop
 
 ## Session Naming
 
