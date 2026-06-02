@@ -2,7 +2,7 @@
   "env": {
     "ENABLE_LSP_TOOL": "1"
   },
-  "model": "us.anthropic.claude-opus-4-6-v1",
+  "model": "us.anthropic.claude-opus-4-8",
   "hooks": {
     "PreToolUse": [
       {
