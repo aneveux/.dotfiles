@@ -1,8 +1,25 @@
 {
+  "skillListingBudgetFraction": 0.02,
   "env": {
     "ENABLE_LSP_TOOL": "1"
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "model": "us.anthropic.claude-opus-4-8",
+  "skillOverrides": {
+    "skill-creator:skill-creator": "user-invocable-only",
+    "frontend-design:frontend-design": "off",
+    "slack:slack-search": "user-invocable-only",
+    "slack:slack-messaging": "user-invocable-only",
+    "cloudbees-docs-dev:cloudbees-docs": "user-invocable-only",
+    "seed:prompt-cultivation": "user-invocable-only",
+    "claude-stats:claude-stats": "user-invocable-only",
+    "jira-stats:jira-stats": "user-invocable-only",
+    "agent-risk-checker:agent-risk-checker": "user-invocable-only",
+    "claudecode-agent-registry:claudecode-agent-registry": "user-invocable-only"
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -154,7 +171,8 @@
     "thorn@claude-garden": true,
     "seed@claude-garden": true,
     "claude-stats@claude-secret-garden": true,
-    "qf-inbox@claude-secret-garden": true
+    "qf-inbox@claude-secret-garden": true,
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -176,23 +194,6 @@
       }
     }
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "skillListingBudgetFraction": 0.02,
-  "skillOverrides": {
-    "skill-creator:skill-creator": "user-invocable-only",
-    "frontend-design:frontend-design": "off",
-    "slack:slack-search": "user-invocable-only",
-    "slack:slack-messaging": "user-invocable-only",
-    "cloudbees-docs-dev:cloudbees-docs": "user-invocable-only",
-    "seed:prompt-cultivation": "user-invocable-only",
-    "claude-stats:claude-stats": "user-invocable-only",
-    "jira-stats:jira-stats": "user-invocable-only",
-    "agent-risk-checker:agent-risk-checker": "user-invocable-only",
-    "claudecode-agent-registry:claudecode-agent-registry": "user-invocable-only"
-  }
+  "skipDangerousModePermissionPrompt": true
 }
