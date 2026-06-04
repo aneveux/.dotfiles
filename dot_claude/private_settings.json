@@ -144,6 +144,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/stash-reminder.sh",
             "timeout": 2
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/session-summary-display.sh",
+            "timeout": 5
           }
         ]
       }
