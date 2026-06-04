@@ -172,7 +172,6 @@
     "seed@claude-garden": true,
     "claude-stats@claude-secret-garden": true,
     "qf-inbox@claude-secret-garden": true,
-    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
