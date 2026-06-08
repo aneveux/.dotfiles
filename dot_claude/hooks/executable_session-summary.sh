@@ -161,21 +161,15 @@ is_section_enabled() {
 	esac
 }
 
-# Output target: /dev/tty bypasses Claude Code's stderr capture for lifecycle hooks.
-# Since v2.1.139, SessionEnd runs without a controlling terminal so /dev/tty is gone.
-# When unavailable, write to a pending file that session-summary-display.sh flushes
-# on the next Stop hook (which does have terminal access).
-_PENDING_DIR="${TMPDIR:-/tmp}/claude-session-summary"
+# SessionEnd has a controlling terminal in some Claude Code versions but the output
+# is invisible (races with the shell prompt on exit). Always write to a pending file
+# that session-summary-display.sh (Stop hook) flushes on the next turn.
+# Use $HOME-based path so both hooks see the same directory regardless of $TMPDIR.
+_PENDING_DIR="$HOME/.claude/tmp/session-summary"
 mkdir -p "$_PENDING_DIR"
-if (echo -n "" >/dev/tty) 2>/dev/null; then
-	OUTPUT_TARGET="/dev/tty"
-	_PENDING_FILE=""
-else
-	# Session id not yet parsed here; use $$ as a stable-enough tmp name.
-	# The display hook will pick up any *.pending file left in the dir.
-	_PENDING_FILE="$_PENDING_DIR/$$.pending"
-	OUTPUT_TARGET="$_PENDING_FILE"
-fi
+# Session id not yet parsed here; use $$ as a stable-enough tmp name.
+_PENDING_FILE="$_PENDING_DIR/$$.pending"
+OUTPUT_TARGET="$_PENDING_FILE"
 
 # ANSI colors (respect NO_COLOR)
 if [[ -z "${NO_COLOR:-}" ]]; then

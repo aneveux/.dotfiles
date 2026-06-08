@@ -3,7 +3,7 @@
 # SessionEnd runs without a terminal since Claude Code v2.1.139, so session-summary.sh
 # writes its output to a tmp file. This hook picks it up on the first Stop after exit.
 
-PENDING_DIR="${TMPDIR:-/tmp}/claude-session-summary"
+PENDING_DIR="$HOME/.claude/tmp/session-summary"
 
 [[ -d "$PENDING_DIR" ]] || exit 0
 
