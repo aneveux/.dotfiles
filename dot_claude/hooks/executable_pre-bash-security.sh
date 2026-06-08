@@ -88,6 +88,44 @@ check_secrets_in_command() {
 	fi
 }
 
+# ── curl/wget exfiltration via file arguments ───────────────────────────────
+
+check_curl_exfiltration() {
+	local cmd="$1"
+
+	echo "$cmd" | grep -qE '\b(curl|wget)\b' || return 0
+
+	# @<sensitive-homedir> — curl reads file content and sends it
+	if echo "$cmd" | grep -qiE '@(~|/home/[^/ ]+|/root)/?\.(ssh|aws|gnupg|netrc|claude)(/|[^/a-zA-Z]|$)'; then
+		echo "BLOCKED: curl/wget exfiltration attempt via @file syntax (sensitive home dir)" >&2
+		exit 2
+	fi
+
+	# @.env — relative path common in project roots
+	if echo "$cmd" | grep -qiE '@\.env\b'; then
+		echo "BLOCKED: curl/wget attempting to send .env file" >&2
+		exit 2
+	fi
+
+	# -T / --upload-file <sensitive-path> (no @ needed)
+	if echo "$cmd" | grep -qiE '(-T|--upload-file)[= ]+[^ ]*(\.ssh|\.aws|\.gnupg|id_rsa|id_ed25519|id_ecdsa|credentials)[^ ]*'; then
+		echo "BLOCKED: curl upload (-T/--upload-file) targeting sensitive file" >&2
+		exit 2
+	fi
+
+	# -d / --data* @<system-sensitive-file>
+	if echo "$cmd" | grep -qiE '(-d|--data[^ ]*)[= ]+@[^ ]*(id_rsa|id_ed25519|id_ecdsa|/etc/passwd|/etc/shadow|/etc/sudoers)'; then
+		echo "BLOCKED: curl --data targeting sensitive system file" >&2
+		exit 2
+	fi
+
+	# wget --post-file <sensitive-path>
+	if echo "$cmd" | grep -qiE -- '--post-file[= ]+[^ ]*(\.ssh|\.aws|\.gnupg|id_rsa|credentials|\.env)[^ ]*'; then
+		echo "BLOCKED: wget --post-file targeting sensitive file" >&2
+		exit 2
+	fi
+}
+
 # ── Injection patterns (strong signals only) ────────────────────────────────
 
 check_injection_patterns() {
@@ -193,6 +231,7 @@ check_unicode_attacks() {
 
 check_destructive_commands "$COMMAND"
 check_secrets_in_command "$COMMAND"
+check_curl_exfiltration "$COMMAND"
 check_injection_patterns "$COMMAND"
 check_unicode_attacks "$COMMAND"
 

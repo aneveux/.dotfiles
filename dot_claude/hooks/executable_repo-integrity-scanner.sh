@@ -3,7 +3,7 @@
 # Event: PreToolUse:Read — scan files for injection vectors before processing
 #
 # Detects prompt injection attempts hidden in:
-#   - README.md, SECURITY.md (hidden HTML comments with instructions)
+#   - README.md, SECURITY.md, CLAUDE.md (hidden HTML comments with instructions)
 #   - package.json (malicious scripts)
 #   - .claude/, .cursor/ configs (tampered configurations)
 #
@@ -36,6 +36,8 @@ HIGH_RISK_FILES=(
 	"readme.md"
 	"SECURITY.md"
 	"CONTRIBUTING.md"
+	"CLAUDE.md"
+	"CLAUDE.local.md"
 )
 
 # === CONFIG FILES ===
@@ -53,6 +55,7 @@ IDE_CONFIG_PATTERNS=(
 	".cursor"
 	".vscode"
 	".idea"
+	".claude"
 )
 
 check_injection_patterns() {
