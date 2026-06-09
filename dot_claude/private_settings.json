@@ -196,6 +196,12 @@
         "source": "directory",
         "path": "/home/antoine/projects/claude-secret-garden"
       }
+    },
+    "claude-java-stack": {
+      "source": {
+        "source": "directory",
+        "path": "/home/antoine/projects/claude-java-stack"
+      }
     }
   },
   "alwaysThinkingEnabled": true,
