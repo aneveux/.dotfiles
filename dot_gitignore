@@ -98,3 +98,4 @@ claude-debug.log
 .stash/items.json.lock
 
 **/.claude/settings.local.json
+**/.claude/CLAUDE.md
