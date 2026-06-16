@@ -1,0 +1,19 @@
+[metadata]
+name = "ccx-profiles"
+description = "Browse ccx profiles with preview"
+requirements = ["ccx"]
+
+[source]
+command = "ccx profiles list"
+display = "{split:\t:0|pad:20: :right} {split:\t:1}"
+output = "{split:\t:0}"
+
+[preview]
+command = "ccx profiles show '{split:\t:0}'"
+
+[ui]
+layout = "landscape"
+
+[ui.preview_panel]
+size = 50
+header = "Profile: {split:\t:0}"

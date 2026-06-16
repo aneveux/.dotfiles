@@ -1,0 +1,19 @@
+[metadata]
+name = "ccx-parts"
+description = "Browse CLAUDE.md template parts with preview"
+requirements = ["ccx"]
+
+[source]
+command = "ccx compose --list-parts"
+display = "{}"
+output = "{}"
+
+[preview]
+command = "ccx compose --resolve-part '{}' | xargs bat --color=always --style=plain --language=markdown"
+
+[ui]
+layout = "landscape"
+
+[ui.preview_panel]
+size = 60
+header = "Part: {}"
