@@ -1,8 +1,6 @@
 function sesh-sessions() {
   if [[ -n "${TMUX:-}" ]]; then
-    local session
-    session=$(tv sesh < /dev/tty)
-    [[ -n "$session" ]] && sesh connect "$session"
+    tmux display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' "tv sesh"
     zle reset-prompt > /dev/null 2>&1 || true
   else
     BUFFER="tmux new-session 'tv sesh'"
