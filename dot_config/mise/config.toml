@@ -41,6 +41,7 @@ stern = "latest"
 television = "latest"
 terraform = "latest"
 usage = "latest"
+uv = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
