@@ -46,3 +46,4 @@ uv = "latest"
 [settings]
 idiomatic_version_file_enable_tools = []
 experimental = true
+minimum_release_age = "1h"
