@@ -30,3 +30,8 @@ vim.keymap.set("n", "<leader>tp", ":tabp<CR>", { desc = "[T]ab [P]revious" }) --
 -- Remap for dealing with word wrap
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+-- Personal cheatsheet float (forgettable verbs: surround, textobjects, flash…)
+vim.keymap.set("n", "<leader>mc", function()
+  require("util.cheatsheet").open()
+end, { desc = "Cheatsheet" })
