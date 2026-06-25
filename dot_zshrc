@@ -53,7 +53,7 @@ zinit wait lucid for \
 # Load order matters: compinit -> carapace -> fzf-tab.
 # Carapace loading AFTER fzf-tab corrupts fzf-tab's compadd hook on second completion.
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm'
+export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm,vi,nvim'
 export CARAPACE_MATCH=1
 source <(carapace _carapace)
 
