@@ -188,6 +188,12 @@
         "repo": "anthropics/claude-plugins-official"
       }
     },
+    "cloudbees": {
+      "source": {
+        "source": "github",
+        "repo": "cloudbees/cloudbees-claude-plugin"
+      }
+    },
     "claude-garden": {
       "source": {
         "source": "directory",
