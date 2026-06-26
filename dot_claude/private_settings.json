@@ -1,11 +1,11 @@
 {
+  "awsAuthRefresh": "aws sso login --profile $AWS_PROFILE",
   "skillListingBudgetFraction": 0.02,
   "env": {
     "ENABLE_LSP_TOOL": "1",
     "CLAUDE_CODE_USE_BEDROCK": "true",
     "AWS_PROFILE": "cloudbees-bedrock-claude-infra-bedrock-claude-user"
   },
-  "awsAuthRefresh": "aws sso login --profile $AWS_PROFILE",
   "attribution": {
     "commit": "",
     "pr": ""
