@@ -5,7 +5,7 @@
     "CLAUDE_CODE_USE_BEDROCK": "true",
     "AWS_PROFILE": "cloudbees-bedrock-claude-infra-bedrock-claude-user"
   },
-  "awsAuthRefresh" : "aws sso login --profile $AWS_PROFILE",
+  "awsAuthRefresh": "aws sso login --profile $AWS_PROFILE",
   "attribution": {
     "commit": "",
     "pr": ""
@@ -204,6 +204,12 @@
       "source": {
         "source": "directory",
         "path": "/home/antoine/projects/claude-secret-garden"
+      }
+    },
+    "claude-java-stack": {
+      "source": {
+        "source": "directory",
+        "path": "/home/antoine/projects/claude-java-stack/"
       }
     }
   },
