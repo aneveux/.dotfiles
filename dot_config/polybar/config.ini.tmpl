@@ -64,7 +64,7 @@ border-bottom-size = 0
 border-bottom-color = ${color.text}
 
 
-monitor = ${env:MONITOR:DP-2-1}
+monitor = ${env:MONITOR:{{ .main_monitor }}}
 systray-top = ${env:TRAY_POSITION:right}
 include-file = ~/.config/polybar/bar-main.ini
 
@@ -125,7 +125,7 @@ radius-bottom = 0.0
 border-bottom-size = 0
 border-bottom-color = ${color.text}
 
-monitor = ${env:MONITOR:DP-3-2}
+monitor = ${env:MONITOR:{{ .vertical_monitor }}}
 systray-top = ${env:TRAY_POSITION:right}
 include-file = ~/.config/polybar/bar-secondary.ini
 

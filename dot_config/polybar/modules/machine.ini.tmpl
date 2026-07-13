@@ -1,0 +1,4 @@
+[module/machine]
+type = custom/text
+content = {{ if eq .machine "flower" }}{{ else if eq .machine "atuin" }}{{ else }}{{ .machine }}{{ end }}
+content-foreground = ${colors.subtext0}

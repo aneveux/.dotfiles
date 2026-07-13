@@ -498,15 +498,19 @@ bindsym $mod+Shift+BackSpace exec ~/.i3/lock.sh
 # --------------
 
 {{ if eq .machine "flower" }}
-bindsym $mod+Shift+m exec ~/.i3/dualscreen.sh
-bindsym $mod+m exec ~/.i3/laptop.sh
+bindsym $mod+Shift+h exec autorandr --load home-office
+bindsym $mod+Shift+m exec autorandr --load travel
+bindsym $mod+m exec autorandr --load laptop-only
 bindsym $mod+p exec ~/.i3/jira.sh
+bindsym $mod+Shift+n exec autorandr --load laptop-full
 
 exec --no-startup-id blueman
 
 set $LAPTOP {{ .laptop_monitor }}
 workspace $WS4 output $LAPTOP
-exec --no-startup-id ~/.i3/multiscreen.sh
+exec --no-startup-id autorandr --change --default home-office
+{{ else if eq .machine "atuin" }}
+exec --no-startup-id autorandr --change --default desktop
 {{ end }}
 
 exec_always --no-startup-id feh --bg-center ~/wallpaper.png

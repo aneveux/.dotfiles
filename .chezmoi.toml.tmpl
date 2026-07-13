@@ -1,15 +1,18 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
-{{- $main_monitor := promptStringOnce . "main_monitor" "Main Monitor" -}}
-{{- $vertical_monitor := promptStringOnce . "vertical_monitor" "Vertical Monitor" -}}
-{{- $laptop_monitor := promptStringOnce . "laptop_monitor" "Laptop Monitor" -}}
-{{- $machine := promptStringOnce . "machine" "Machine Name" -}}
+{{- $machine := promptStringOnce . "machine" "Machine Name (flower/atuin)" -}}
+{{- $main_monitor := promptStringOnce . "main_monitor" "Main monitor connector (xrandr name)" -}}
+{{- $vertical_monitor := promptStringOnce . "vertical_monitor" "Vertical monitor connector (xrandr name)" -}}
+{{- $laptop_monitor := "" -}}
+{{- if eq $machine "flower" -}}
+{{- $laptop_monitor = promptStringOnce . "laptop_monitor" "Laptop panel connector (eDP name)" -}}
+{{- end -}}
 
 [data]
     email = {{ $email | quote }}
+    machine = {{ $machine | quote }}
     main_monitor = {{ $main_monitor | quote }}
     vertical_monitor = {{ $vertical_monitor | quote }}
     laptop_monitor = {{ $laptop_monitor | quote }}
-    machine = {{ $machine | quote }}
 [diff]
     pager = "delta"
 [git]

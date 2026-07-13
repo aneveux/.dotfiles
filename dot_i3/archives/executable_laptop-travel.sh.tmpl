@@ -17,7 +17,7 @@ fi
 
 xrandr \
   --output "$dp_name" --mode 3840x2400 --rate 59.99 --pos 0x0 \
-  --output eDP-1 --primary --mode 1920x1200 --rate 59.95 --pos 3840x0
+  --output {{ .laptop_monitor }} --primary --mode 1920x1200 --rate 59.95 --pos 3840x0
 
 sleep 1
 i3-msg restart

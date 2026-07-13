@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Re-probe all DP outputs
+for dp in $(xrandr | grep -oP '^DP-\S+'); do
+  xrandr --output "$dp" --auto 2>/dev/null || true
+done
+sleep 1
+
+# The travel 4K screen is whichever connected DP is neither main nor vertical
+travel=$(xrandr | grep " connected " | grep -oP '^DP-\S+' \
+  | grep -v "^{{ .main_monitor }}$" | grep -v "^{{ .vertical_monitor }}$" \
+  | head -1 || true)
+
+if [[ -z "$travel" ]]; then
+  echo "No travel monitor detected, falling back to home-office layout"
+  exec ~/.i3/multiscreen.sh
+fi
+
+xrandr \
+  --output {{ .vertical_monitor }} --mode 1920x1080 --rate 60 --pos 0x0 --rotate left \
+  --output {{ .main_monitor }} --primary --mode 3440x1440 --rate 60 --pos 1080x0 --rotate normal \
+  --output {{ .laptop_monitor }} --mode 1920x1200 --rate 60 --pos 4520x0 --rotate normal \
+  --output "$travel" --mode 3840x2400 --rate 59.99 --pos 6440x0
+
+sleep 1
+i3-msg restart
