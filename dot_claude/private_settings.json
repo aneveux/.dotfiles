@@ -3,7 +3,7 @@
   "skillListingBudgetFraction": 0.02,
   "env": {
     "ENABLE_LSP_TOOL": "1",
-    "CLAUDE_CODE_USE_BEDROCK": "true",
+    "CLAUDE_CODE_USE_BEDROCK": "1",
     "AWS_PROFILE": "cloudbees-bedrock-claude-infra-bedrock-claude-user",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
   },
