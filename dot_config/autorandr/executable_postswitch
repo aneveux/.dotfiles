@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+~/.config/polybar/polybar.sh &
+
+i3-msg restart
