@@ -3,7 +3,7 @@
   "skillListingBudgetFraction": 0.02,
   "env": {
     "ENABLE_LSP_TOOL": "1",
-    "CLAUDE_CODE_USE_BEDROCK": "1",
+    "CLAUDE_CODE_USE_BEDROCK": "true",
     "AWS_PROFILE": "cloudbees-bedrock-claude-infra-bedrock-claude-user",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
   },
@@ -180,7 +180,10 @@
     "thorn@claude-garden": true,
     "seed@claude-garden": true,
     "claude-stats@claude-secret-garden": true,
-    "qf-inbox@claude-secret-garden": true
+    "qf-inbox@claude-secret-garden": true,
+    "java@claude-java-stack": true,
+    "java-cbci@claude-java-stack": true,
+    "java-jenkins@claude-java-stack": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
