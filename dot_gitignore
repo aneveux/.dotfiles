@@ -97,5 +97,4 @@ claude-debug.log
 .worktrees/
 .stash/items.json.lock
 
-**/.claude/settings.local.json
-**/.claude/CLAUDE.md
+**/.claude/*
