@@ -3,7 +3,7 @@
   "skillListingBudgetFraction": 0.02,
   "env": {
     "ENABLE_LSP_TOOL": "1",
-    "CLAUDE_CODE_USE_BEDROCK": "true",
+    "CLAUDE_CODE_USE_BEDROCK": "1",
     "AWS_PROFILE": "cloudbees-bedrock-claude-infra-bedrock-claude-user",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
   },
@@ -14,7 +14,6 @@
   "model": "us.anthropic.claude-opus-4-8",
   "skillOverrides": {
     "skill-creator:skill-creator": "user-invocable-only",
-    "frontend-design:frontend-design": "off",
     "slack:slack-search": "user-invocable-only",
     "slack:slack-messaging": "user-invocable-only",
     "cloudbees-docs-dev:cloudbees-docs": "user-invocable-only",
@@ -148,21 +147,6 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/stash-reminder.sh",
             "timeout": 2
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/session-summary-display.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/session-summary.sh"
           }
         ]
       }
@@ -180,10 +164,7 @@
     "thorn@claude-garden": true,
     "seed@claude-garden": true,
     "claude-stats@claude-secret-garden": true,
-    "qf-inbox@claude-secret-garden": true,
-    "java@claude-java-stack": true,
-    "java-cbci@claude-java-stack": true,
-    "java-jenkins@claude-java-stack": true
+    "qf-inbox@claude-secret-garden": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
