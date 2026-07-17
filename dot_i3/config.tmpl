@@ -414,7 +414,6 @@ set $LEFT {{ .vertical_monitor }}
 workspace $WS1 output $MAIN
 workspace $WS2 output $MAIN
 workspace $WS3 output $MAIN
-workspace $WS4 output $MAIN
 workspace $WS5 output $MAIN
 workspace $WS7 output $MAIN
 workspace $WS8 output $MAIN
@@ -498,7 +497,7 @@ bindsym $mod+Shift+BackSpace exec ~/.i3/lock.sh
 # --------------
 
 {{ if eq .machine "flower" }}
-bindsym $mod+Shift+h exec autorandr --load home-office
+bindsym $mod+Shift+o exec autorandr --load home-office
 bindsym $mod+Shift+m exec autorandr --load travel
 bindsym $mod+m exec autorandr --load laptop-only
 bindsym $mod+p exec ~/.i3/jira.sh
