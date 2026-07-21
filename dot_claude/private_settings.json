@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "awsAuthRefresh": "aws sso login --profile $AWS_PROFILE",
   "skillListingBudgetFraction": 0.02,
   "env": {
@@ -12,6 +13,12 @@
     "pr": ""
   },
   "model": "us.anthropic.claude-opus-4-8",
+  "outputStyle": "Antoine - Engineering",
+  "fallbackModel": [
+    "opus",
+    "sonnet",
+    "haiku"
+  ],
   "skillOverrides": {
     "skill-creator:skill-creator": "user-invocable-only",
     "slack:slack-search": "user-invocable-only",
@@ -199,5 +206,6 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim"
 }
