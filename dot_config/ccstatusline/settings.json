@@ -11,11 +11,6 @@
         "id": "482cc1b9-da86-4d63-b7f8-a9c1c0a74db7",
         "type": "model",
         "backgroundColor": "bgBrightGreen"
-      },
-      {
-        "id": "343518e3-d310-4278-a480-0945cea013e3",
-        "type": "vim-mode",
-        "backgroundColor": "bgGreen"
       }
     ],
     [
@@ -59,8 +54,11 @@
   "colorLevel": 3,
   "defaultSeparator": " | ",
   "defaultPadding": " ",
+  "defaultPaddingSide": "both",
   "inheritSeparatorColors": true,
   "globalBold": false,
+  "gitCacheTtlSeconds": 5,
+  "minimalistMode": false,
   "powerline": {
     "enabled": true,
     "separators": [
@@ -76,6 +74,7 @@
       ""
     ],
     "theme": "catppuccin",
-    "autoAlign": true
+    "autoAlign": true,
+    "continueThemeAcrossLines": false
   }
 }
