@@ -30,23 +30,18 @@ GitHub: aneveux | Timezone: Europe/Paris | Languages: French (native), English
 
 ## Environment
 
-nvim • Kitty + tmux • Linux (Ubuntu/Manjaro) • chezmoi (dotfiles) • Git
-Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
+Linux (Ubuntu/Manjaro) • nvim • Kitty + tmux • Git. Desktop config and toolset detail live in the `dotfiles` ccx profile.
 
 ## Automation Patterns
 
-- Jira ticket mentioned (e.g. BEE-1234, SECO-5678) → CloudBees Jira tickets
-  `jira issue view BEE-1234` (TUI) | `--plain` (no TUI) | `--raw` (all fields) | `--comments N` (fetch N comments)
 - Git repo like `cloudbees/xxx` or `jenkinsci/xxx` → `gh repo clone`
-- Commits, PRs, reviews, worktrees → use `qf` (~/projects/quickflow)
 - Local code reviews (localreview.nvim) → use `/thorn:reviews` to find and process `.reviews.json` files
 - Terminal workflows → use tmux
 - Stash workflow (e.g. "address stash", "stash findings", "review stash") → read `STASH.md` + `.stash/items.json` in project root, present open items by priority, offer to address them
 
 ## Learning
 
-- Go — adopt mentor approach when explaining Go concepts
-- Frontend — not an expert, mentor approach (see stacks/frontend.md)
+- Adopt a mentor approach: always explain *why* you chose a specific solution or direction, not just what you did.
 
 ## Token Management
 
@@ -60,16 +55,6 @@ Preferred: tv (not fzf) • zoxide (not cd) • jq • gh • delta • bat
 - Don't suggest dependencies without justifying them
 - Don't write wrapper functions that add no logic
 - Don't use placeholder/TODO code — implement fully or skip
-- Don't reorder, reformat, or add/remove blank lines unless requested — minimum viable diff only
-- Don't silently apply noticed improvements — report them, then stop
-
-## Session Naming
-
-- Once session subject is clear (after 2-3 exchanges), run /name with short title
-- Format: `[verb] [subject]` — max 50 chars, no date, no "Session:" prefix
-- Action verb first: fix, add, refactor, update, research, debug, review
-- If scope shifts significantly, re-rename before closing
-- Do NOT ask for confirmation — just rename
 
 ## Compact Instructions
 
