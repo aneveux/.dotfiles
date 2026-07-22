@@ -1,0 +1,12 @@
+metadata:
+  name: cloudbees-org
+  description: CloudBees org & management — Slack MCP, Jira stats, goals, Claude stats
+
+extends:
+  - tooling-perso
+
+plugins:
+  enable:
+    - smart-goals@cloudbees-marketplace
+    - cloudbees-slack@cloudbees-marketplace
+    - claude-stats@claude-secret-garden

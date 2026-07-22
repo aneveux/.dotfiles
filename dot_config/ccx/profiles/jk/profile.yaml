@@ -1,0 +1,8 @@
+metadata:
+  name: jk
+  description: jk (Jenkins Terminal Navigator) — fetch CI logs from dogfooding & gauntlet
+
+extends: []
+
+plugins:
+  enable: []

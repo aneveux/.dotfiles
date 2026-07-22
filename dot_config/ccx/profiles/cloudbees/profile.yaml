@@ -1,0 +1,12 @@
+metadata:
+  name: cloudbees
+  description: CloudBees integrations — Jira stats, Claude stats, Slack, context
+
+extends: []
+
+plugins:
+  enable:
+    - jira-stats@claude-secret-garden
+    - claude-stats@claude-secret-garden
+    - slack@claude-plugins-official
+    - cloudbees-context@cloudbees-marketplace

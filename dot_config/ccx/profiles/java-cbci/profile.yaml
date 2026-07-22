@@ -1,0 +1,11 @@
+metadata:
+  name: java-cbci
+  description: CloudBees CI plugin and core development (extends java-jenkins, java-quarkus)
+
+extends:
+  - java-jenkins
+  - java-quarkus
+
+plugins:
+  enable:
+    - java-cbci@claude-java-stack

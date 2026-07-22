@@ -1,0 +1,8 @@
+metadata:
+  name: git-work
+  description: CloudBees / shared-repo git workflow — fork push, rebase, Jira branch naming
+
+extends: []
+
+plugins:
+  enable: []

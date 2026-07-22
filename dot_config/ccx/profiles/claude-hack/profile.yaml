@@ -1,0 +1,9 @@
+metadata:
+  name: claude-hack
+  description: Claude Code extension development — skill creator
+
+extends: []
+
+plugins:
+  enable:
+    - skill-creator@claude-plugins-official

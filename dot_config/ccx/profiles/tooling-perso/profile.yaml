@@ -1,0 +1,9 @@
+metadata:
+  name: tooling-perso
+  description: Antoine's personal tooling — voice style
+
+extends: []
+
+plugins:
+  enable:
+    - antoine-voice@claude-secret-garden

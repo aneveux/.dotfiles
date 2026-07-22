@@ -1,0 +1,10 @@
+metadata:
+  name: java-persistence
+  description: JPA, Hibernate, Panache persistence (extends java)
+
+extends:
+  - java
+
+plugins:
+  enable:
+    - java-persistence@claude-java-stack

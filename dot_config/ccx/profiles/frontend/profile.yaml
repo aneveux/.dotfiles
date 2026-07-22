@@ -1,0 +1,9 @@
+metadata:
+  name: frontend
+  description: Frontend design and UI/UX development
+
+extends: []
+
+plugins:
+  enable:
+    - frontend-design@claude-plugins-official

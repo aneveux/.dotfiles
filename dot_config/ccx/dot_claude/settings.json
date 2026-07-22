@@ -1,0 +1,23 @@
+{
+  "enabledPlugins" : {
+    "java@claude-java-stack" : true,
+    "java-core@claude-java-stack" : true,
+    "java-testing@claude-java-stack" : true,
+    "java-logging@claude-java-stack" : true,
+    "jdtls-lsp@claude-plugins-official" : true,
+    "java-security@claude-java-stack" : true,
+    "java-jenkins@claude-java-stack" : true,
+    "java-debug@claude-java-stack" : true,
+    "java-quarkus@claude-java-stack" : true,
+    "java-cbci@claude-java-stack" : true,
+    "cloudbees-docs@cloudbees-marketplace" : true,
+    "cbci-release-context@cloudbees-marketplace" : true,
+    "cloudbees-context@cloudbees-marketplace" : true
+  },
+  "env" : {
+    "ENABLE_LSP_TOOL" : "1"
+  },
+  "permissions" : {
+    "allow" : [ "Bash(mvn *)", "Bash(mvnd *)", "Bash(java *)", "Bash(javac *)", "Bash(quarkus *)" ]
+  }
+}

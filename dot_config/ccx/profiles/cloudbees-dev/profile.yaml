@@ -1,0 +1,14 @@
+metadata:
+  name: cloudbees-dev
+  description: CloudBees CI development — technical context, docs, Jira tickets, release (extends java-cbci, jk)
+
+extends:
+  - java-cbci
+  - jk
+
+plugins:
+  enable:
+    - cloudbees-docs@cloudbees-marketplace
+    - cbci-release-context@cloudbees-marketplace
+    - cloudbees-context@cloudbees-marketplace
+

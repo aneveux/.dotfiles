@@ -1,0 +1,11 @@
+metadata:
+  name: meta-ai-dev
+  description: Claude Code meta-development — trellis, thorn, seed plugin suite
+
+extends: []
+
+plugins:
+  enable:
+    - trellis@claude-garden
+    - thorn@claude-garden
+    - seed@claude-garden

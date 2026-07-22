@@ -1,0 +1,19 @@
+metadata:
+  name: java-release
+  description: GraalVM native image, DevOps, and release tooling (extends java-quarkus)
+
+extends:
+  - java-quarkus
+
+plugins:
+  enable:
+    - java-graalvm@claude-java-stack
+    - java-tooling@claude-java-stack
+    - java-devops@claude-java-stack
+
+permissions:
+  allow:
+    - "Bash(native-image *)"
+    - "Bash(docker *)"
+    - "Bash(gh *)"
+    - "Bash(jreleaser *)"

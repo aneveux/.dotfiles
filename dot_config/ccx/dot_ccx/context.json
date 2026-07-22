@@ -1,0 +1,111 @@
+{
+  "version" : "1",
+  "enabledProfiles" : {
+    "jk" : {
+      "enabledAt" : "2026-07-22T14:56:44.653913277Z",
+      "snapshot" : {
+        "plugins" : [ ],
+        "rules" : [ ],
+        "permissionsAllow" : [ ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ "/home/antoine/.config/ccx/profiles/jk/claudemd/jk.md" ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    },
+    "cloudbees-dev" : {
+      "enabledAt" : "2026-07-22T14:56:10.183970022Z",
+      "snapshot" : {
+        "plugins" : [ "cloudbees-docs@cloudbees-marketplace", "cbci-release-context@cloudbees-marketplace", "cloudbees-context@cloudbees-marketplace" ],
+        "rules" : [ ],
+        "permissionsAllow" : [ ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ "/home/antoine/.config/ccx/profiles/cloudbees-dev/claudemd/cloudbees-dev.md" ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    },
+    "java" : {
+      "enabledAt" : "2026-07-22T14:56:10.178819184Z",
+      "snapshot" : {
+        "plugins" : [ "java@claude-java-stack", "java-core@claude-java-stack", "java-testing@claude-java-stack", "java-logging@claude-java-stack", "jdtls-lsp@claude-plugins-official" ],
+        "rules" : [ "java-safety", "java" ],
+        "permissionsAllow" : [ "Bash(mvn *)", "Bash(mvnd *)", "Bash(java *)", "Bash(javac *)" ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ "/home/antoine/.config/ccx/profiles/java/claudemd/java-core.md", "/home/antoine/.config/ccx/profiles/java/claudemd/java.md" ],
+        "env" : {
+          "ENABLE_LSP_TOOL" : "1"
+        },
+        "ignorePatterns" : [ ]
+      }
+    },
+    "java-security" : {
+      "enabledAt" : "2026-07-22T14:56:10.180623846Z",
+      "snapshot" : {
+        "plugins" : [ "java-security@claude-java-stack" ],
+        "rules" : [ "security-safety" ],
+        "permissionsAllow" : [ ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ "/home/antoine/.config/ccx/profiles/java-security/claudemd/security.md" ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    },
+    "java-cbci" : {
+      "enabledAt" : "2026-07-22T14:56:10.182603448Z",
+      "snapshot" : {
+        "plugins" : [ "java-cbci@claude-java-stack" ],
+        "rules" : [ ],
+        "permissionsAllow" : [ ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    },
+    "review" : {
+      "enabledAt" : "2026-07-22T14:56:44.662914419Z",
+      "snapshot" : {
+        "plugins" : [ ],
+        "rules" : [ "review" ],
+        "permissionsAllow" : [ ],
+        "permissionsDeny" : [ ],
+        "commands" : [ "pr-review", "pr-feedback" ],
+        "fragments" : [ ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    },
+    "java-jenkins" : {
+      "enabledAt" : "2026-07-22T14:56:10.181453918Z",
+      "snapshot" : {
+        "plugins" : [ "java-jenkins@claude-java-stack", "java-debug@claude-java-stack" ],
+        "rules" : [ "jenkins-security" ],
+        "permissionsAllow" : [ ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ "/home/antoine/.config/ccx/profiles/java-jenkins/claudemd/jenkins.md" ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    },
+    "java-quarkus" : {
+      "enabledAt" : "2026-07-22T14:56:10.182066463Z",
+      "snapshot" : {
+        "plugins" : [ "java-quarkus@claude-java-stack" ],
+        "rules" : [ ],
+        "permissionsAllow" : [ "Bash(quarkus *)" ],
+        "permissionsDeny" : [ ],
+        "commands" : [ ],
+        "fragments" : [ "/home/antoine/.config/ccx/profiles/java-quarkus/claudemd/quarkus.md" ],
+        "env" : null,
+        "ignorePatterns" : [ ]
+      }
+    }
+  }
+}

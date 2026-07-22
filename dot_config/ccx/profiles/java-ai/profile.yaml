@@ -1,0 +1,10 @@
+metadata:
+  name: java-ai
+  description: LangChain4j and Quarkus AI extensions (extends java-quarkus)
+
+extends:
+  - java-quarkus
+
+plugins:
+  enable:
+    - java-ai@claude-java-stack

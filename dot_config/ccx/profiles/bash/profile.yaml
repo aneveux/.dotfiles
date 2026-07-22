@@ -1,0 +1,15 @@
+metadata:
+  name: bash
+  description: Bash scripting — bark plugin suite, style guide, bats testing
+
+extends: []
+
+plugins:
+  enable:
+    - bark@claude-garden
+    - vine@claude-garden
+
+permissions:
+  allow:
+    - "Bash(*)"
+

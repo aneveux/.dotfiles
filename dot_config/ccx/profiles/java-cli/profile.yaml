@@ -1,0 +1,10 @@
+metadata:
+  name: java-cli
+  description: CLI application development with Picocli (extends java-quarkus)
+
+extends:
+  - java-quarkus
+
+plugins:
+  enable:
+    - java-cli@claude-java-stack

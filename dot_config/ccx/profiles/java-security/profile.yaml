@@ -1,0 +1,10 @@
+metadata:
+  name: java-security
+  description: Java security review — OWASP, path traversal, injection (extends java)
+
+extends:
+  - java
+
+plugins:
+  enable:
+    - java-security@claude-java-stack

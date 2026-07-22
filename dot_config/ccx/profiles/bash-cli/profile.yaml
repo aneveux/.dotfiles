@@ -1,0 +1,9 @@
+metadata:
+  name: bash-cli
+  description: Interactive shell tooling — gum, tv, and rich CLI patterns (extends bash)
+
+extends:
+  - bash
+
+plugins:
+  enable: []

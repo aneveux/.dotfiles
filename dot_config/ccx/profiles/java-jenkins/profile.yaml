@@ -1,0 +1,12 @@
+metadata:
+  name: java-jenkins
+  description: Jenkins pipeline development with security hardening (extends java, java-security)
+
+extends:
+  - java
+  - java-security
+
+plugins:
+  enable:
+    - java-jenkins@claude-java-stack
+    - java-debug@claude-java-stack

@@ -1,0 +1,28 @@
+metadata:
+  name: java
+  description: Java/Maven development — core language, testing, logging, LSP
+
+extends: []
+
+plugins:
+  enable:
+    - java@claude-java-stack
+    - java-core@claude-java-stack
+    - java-testing@claude-java-stack
+    - java-logging@claude-java-stack
+    - jdtls-lsp@claude-plugins-official
+
+env:
+  ENABLE_LSP_TOOL: "1"
+
+permissions:
+  allow:
+    - "Bash(mvn *)"
+    - "Bash(mvnd *)"
+    - "Bash(java *)"
+    - "Bash(javac *)"
+
+ignore:
+  - "target/"
+  - ".mvn/"
+  - "*.class"

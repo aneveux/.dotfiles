@@ -1,0 +1,8 @@
+metadata:
+  name: dotfiles
+  description: Local desktop config via chezmoi — editor, terminal, CLI toolset
+
+extends: []
+
+plugins:
+  enable: []

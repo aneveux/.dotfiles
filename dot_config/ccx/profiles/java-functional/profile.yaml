@@ -1,0 +1,10 @@
+metadata:
+  name: java-functional
+  description: Functional Java patterns — Vavr, immutability, effect types (extends java)
+
+extends:
+  - java
+
+plugins:
+  enable:
+    - java-functional@claude-java-stack

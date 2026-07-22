@@ -1,0 +1,17 @@
+metadata:
+  name: java-quarkus
+  description: Quarkus framework — CDI, REST, reactive, Arc (extends java)
+
+extends:
+  - java
+
+plugins:
+  enable:
+    - java-quarkus@claude-java-stack
+
+permissions:
+  allow:
+    - "Bash(quarkus *)"
+
+ignore:
+  - ".quarkus/"

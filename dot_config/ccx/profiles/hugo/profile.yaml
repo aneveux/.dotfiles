@@ -1,0 +1,17 @@
+metadata:
+  name: hugo
+  description: Hugo static sites — structure, dev loop, content authoring (extends frontend)
+
+extends:
+  - frontend
+
+plugins:
+  enable: []
+
+permissions:
+  allow:
+    - "Bash(hugo *)"
+
+ignore:
+  - "public/"
+  - "resources/"

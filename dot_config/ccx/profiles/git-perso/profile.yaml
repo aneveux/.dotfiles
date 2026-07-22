@@ -1,0 +1,8 @@
+metadata:
+  name: git-perso
+  description: Solo repos — gitmoji commits, direct-to-master or PR, tag-push releases
+
+extends: []
+
+plugins:
+  enable: []

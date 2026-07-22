@@ -1,0 +1,9 @@
+metadata:
+  name: review
+  description: Code & PR review — heuristics, agent delegation, jk for CI logs, review commands
+
+extends:
+  - jk
+
+plugins:
+  enable: []
