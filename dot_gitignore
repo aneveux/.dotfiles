@@ -1,103 +1,76 @@
+# ⚡ Global gitignore (core.excludesFile) — Linux + JVM/Node/Go + Editors + Claude/ccx
 
-###############################################################################
-# ⚡ GLOBAL GITIGNORE — Sane Defaults for Linux + JVM + Editors + Claude ⚡
-###############################################################################
-
-# =========================================================================== #
-# ⚡ OS / LINUX NOISE
-# =========================================================================== #
-
-# Backup & swap files
+# 🐧 OS / Linux noise
 *~
 *.swp
 *.swo
-
-# Temporary files
 *.tmp
 *.temp
-
-# NFS / FUSE artifacts
 .nfs*
 .fuse_hidden*
-
-# Desktop metadata
 .Trash-*
 .directory
 
-# =========================================================================== #
-# ⚡ EDITORS & IDEs
-# =========================================================================== #
+# 🍎 macOS junk (teammates on macOS leak these into repos)
+.DS_Store
+.AppleDouble
+._*
 
-# JetBrains (IntelliJ, etc.)
+# 🧠 Editors & IDEs
 .idea/
 *.iws
-
-# VS Code
 .vscode/
 *.code-workspace
 
-# =========================================================================== #
-# ⚡ JVM RUNTIME NOISE
-# =========================================================================== #
-
-# JVM crash logs
+# ☕ JVM runtime noise
 hs_err_pid*
 replay_pid*
 
-# Generic logs
+# 🌘 Eclipse / JDT-LS metadata (nvim-jdtls runs Eclipse JDT under the hood)
+.project
+.classpath
+.factorypath
+.settings/
+# Safety-net catch-all; occasionally a project tracks logs on purpose.
 *.log
 
-# =========================================================================== #
-# ⚡ BUILD TOOL OUTPUTS (SAFE GLOBAL DEFAULTS)
-# =========================================================================== #
-
-# Maven
+# 📦 Build outputs (global safety net — NOT bare `build/`: it hides real source dirs)
 target/
-
-# Gradle
 .gradle/
-build/
+.quarkus/
+node_modules/
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+# Go
+*.test
+*.out
+# Hugo
+public/
+resources/_gen/
+.hugo_build.lock
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
 
-# =========================================================================== #
-# ⚡ CLAUDE LOCAL ARTIFACTS
-# =========================================================================== #
-
-# Local settings (personal preferences)
+# 🤖 Claude / ccx (surgical: personal & regenerable only)
+# Shareable per ccx design and intentionally NOT ignored: .claude/settings.json, rules/, commands/
+.ccx/
 .claude/settings.local.json
-
-# Local memory (personal notes, not for team)
 .claude/CLAUDE.md
-
-# Temporary Claude files
+.claude/plugin-map-cache.json
 .claude/tmp/
 .claude/cache/
-
-# Debug logs
+.claude/.cc-writes/
+.claudeignore
 claude-debug.log
-
 # MCP / Serena memory
 .serena/
 
-# =========================================================================== #
-# ⚡ TOOLING / VERSION MANAGERS
-# =========================================================================== #
-
-# ASDF
-.tool-versions
-
-# Eclipse leftovers (occasionally leaks into mixed teams)
-.factorypath
-
-# =========================================================================== #
-# ⚡ QUICKFLOW
-# =========================================================================== #
-
+# 🔧 Local workflow artifacts
 .quickflow/
 *.reviews.json
 .worktrees/
 .stash/items.json.lock
-
-**/.claude/settings.local.json
-**/.claude/CLAUDE.md
-
-**/.claude/.cc-writes/
