@@ -1,0 +1,16 @@
+metadata:
+  name: sonarqube
+  description: SonarQube CLI (sonar) — on-demand secrets scan, issue/project queries, Web API
+
+extends: []
+
+plugins:
+  enable: []
+
+permissions:
+  allow:
+    - "Bash(sonar list *)"
+    - "Bash(sonar analyze secrets *)"
+    - "Bash(sonar api *)"
+    - "Bash(sonar auth status)"
+    - "Bash(sonar system status *)"
