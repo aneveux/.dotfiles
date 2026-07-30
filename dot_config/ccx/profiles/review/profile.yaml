@@ -4,6 +4,7 @@ metadata:
 
 extends:
   - jk
+  - sonarqube
 
 plugins:
   enable: []
