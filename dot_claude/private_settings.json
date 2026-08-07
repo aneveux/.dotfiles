@@ -12,7 +12,7 @@
     "commit": "",
     "pr": ""
   },
-  "model": "us.anthropic.claude-opus-4-8",
+  "model": "us.anthropic.claude-opus-5",
   "fallbackModel": [
     "opus",
     "sonnet",
