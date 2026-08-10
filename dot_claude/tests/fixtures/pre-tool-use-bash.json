@@ -1,0 +1,11 @@
+{
+  "session_id": "00000000-0000-4000-8000-000000000000",
+  "transcript_path": "/home/antoine/.claude/projects/-home-antoine-projects-blog/00000000-0000-4000-8000-000000000000.jsonl",
+  "cwd": "/home/antoine/projects/blog",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "grep -rn cloudbees themes content 2>/dev/null; echo \"exit $?\"",
+    "description": "Locate cloudbees reference"
+  }
+}

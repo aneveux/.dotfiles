@@ -1,0 +1,19 @@
+{
+  "session_id": "00000000-0000-4000-8000-000000000000",
+  "transcript_path": "/home/antoine/.claude/projects/-home-antoine-projects-sandbox/00000000-0000-4000-8000-000000000000.jsonl",
+  "cwd": "/home/antoine/projects/sandbox",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/home/antoine/projects/sandbox/image/.dockerignore",
+    "content": "# Only the Dockerfile + vendor/rtk are needed in the build context.\n*\n!Dockerfile\n!vendor/rtk\n"
+  },
+  "tool_response": {
+    "type": "create",
+    "filePath": "/home/antoine/projects/sandbox/image/.dockerignore",
+    "content": "# Only the Dockerfile + vendor/rtk are needed in the build context.\n*\n!Dockerfile\n!vendor/rtk\n",
+    "structuredPatch": [],
+    "originalFile": null,
+    "userModified": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "session_id": "00000000-0000-4000-8000-000000000000",
+  "transcript_path": "/home/antoine/.claude/projects/-home-antoine-projects-blog/00000000-0000-4000-8000-000000000000.jsonl",
+  "cwd": "/home/antoine/projects/blog",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "cd ~/projects/blog && git log --oneline -3",
+    "description": "Git log"
+  },
+  "tool_response": {
+    "stdout": "116c583 (HEAD -> master, tag: v1.2.0, origin/master, origin/HEAD) fix: create release before uploading artifact in CI\n5e1978f feat: publish article on adapting your environment for the AI era\n0a21e22 (tag: v1.1.1) fix: simplify CI workflow to match cheloniens pattern\n",
+    "stderr": "",
+    "interrupted": false,
+    "isImage": false,
+    "noOutputExpected": false
+  }
+}
