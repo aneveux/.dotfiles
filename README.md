@@ -7,3 +7,8 @@ This repository is a replacement of [my former dotfiles](https://github.com/anev
 I am now using [chezmoi](https://www.chezmoi.io/) as a dotfiles manager, and I am very happy with it so far.
 
 Obviously these are my personal dotfiles, and I wouldn't recommend you to use them without customization. I am sharing them publicly as it is sometimes interesting to get a little inspiration from others' environments though.
+
+## Setup
+
+After `chezmoi apply` on a new machine: run `cc-safety-net rule sync -g`, then confirm with
+`cc-safety-net rule list` that it prints "Active rulebooks (1)". The rulebook is inert until synced.

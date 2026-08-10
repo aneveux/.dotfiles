@@ -43,15 +43,17 @@
       }
     },
     "java-security" : {
-      "enabledAt" : "2026-07-22T14:56:10.180623846Z",
+      "enabledAt" : "2026-08-10T18:01:43.775165138Z",
       "snapshot" : {
-        "plugins" : [ "java-security@claude-java-stack" ],
+        "plugins" : [ "java@claude-java-stack", "java-core@claude-java-stack", "java-testing@claude-java-stack", "java-logging@claude-java-stack", "jdtls-lsp@claude-plugins-official", "java-security@claude-java-stack" ],
         "rules" : [ "security-safety" ],
-        "permissionsAllow" : [ ],
+        "permissionsAllow" : [ "Bash(mvn *)", "Bash(mvnd *)", "Bash(java *)", "Bash(javac *)" ],
         "permissionsDeny" : [ ],
         "commands" : [ ],
         "fragments" : [ "/home/antoine/.config/ccx/profiles/java-security/claudemd/security.md" ],
-        "env" : null,
+        "env" : {
+          "ENABLE_LSP_TOOL" : "1"
+        },
         "ignorePatterns" : [ ]
       }
     },
@@ -82,15 +84,17 @@
       }
     },
     "java-jenkins" : {
-      "enabledAt" : "2026-07-22T14:56:10.181453918Z",
+      "enabledAt" : "2026-08-10T18:01:27.023464402Z",
       "snapshot" : {
-        "plugins" : [ "java-jenkins@claude-java-stack", "java-debug@claude-java-stack" ],
+        "plugins" : [ "java@claude-java-stack", "java-core@claude-java-stack", "java-testing@claude-java-stack", "java-logging@claude-java-stack", "jdtls-lsp@claude-plugins-official", "java-security@claude-java-stack", "java-jenkins@claude-java-stack", "java-debug@claude-java-stack" ],
         "rules" : [ "jenkins-security" ],
-        "permissionsAllow" : [ ],
+        "permissionsAllow" : [ "Bash(mvn *)", "Bash(mvnd *)", "Bash(java *)", "Bash(javac *)" ],
         "permissionsDeny" : [ ],
         "commands" : [ ],
         "fragments" : [ "/home/antoine/.config/ccx/profiles/java-jenkins/claudemd/jenkins.md" ],
-        "env" : null,
+        "env" : {
+          "ENABLE_LSP_TOOL" : "1"
+        },
         "ignorePatterns" : [ ]
       }
     },
