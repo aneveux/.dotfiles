@@ -4,3 +4,13 @@ nighttab.json
 packages.txt
 prompts
 prompts/**
+.claude/history.jsonl
+.claude/logs
+.claude/logs/**
+.claude/session-env
+.claude/session-env/**
+.claude/.credentials.json
+.claude/daemon.log
+.claude/gh-pr-status-cache.json
+.claude/stats-cache.json
+.claude/mcp-needs-auth-cache.json
