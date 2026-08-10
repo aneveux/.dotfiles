@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/kenryu42/cc-safety-net/main/assets/cc-safety-net.schema.json",
+  "version": 1,
+  "rules": [
+    "antoine-personal"
+  ],
+  "overrides": {},
+  "transparent_wrappers": [
+    "rtk"
+  ]
+}
