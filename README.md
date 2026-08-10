@@ -11,4 +11,5 @@ Obviously these are my personal dotfiles, and I wouldn't recommend you to use th
 ## Setup
 
 After `chezmoi apply` on a new machine: run `cc-safety-net rule sync -g`, then confirm with
-`cc-safety-net rule list` that it prints "Active rulebooks (1)". The rulebook is inert until synced.
+`cc-safety-net rule list` that it prints "Active sources (1)" and "Active rules (6)". The rulebook is
+inert until synced, and the `-g` flag is required: a bare `rule sync` leaves it inactive.
