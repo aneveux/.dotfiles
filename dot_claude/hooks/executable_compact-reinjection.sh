@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-SESSION_ID="${CLAUDE_SESSION_ID:-}"
+SESSION_ID="${CLAUDE_CODE_SESSION_ID:-}"
 
 if [[ -z "$SESSION_ID" ]]; then
 	exit 0

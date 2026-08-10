@@ -1,6 +1,7 @@
 ---
 description: "Java security — injection, path traversal, secrets, crypto, TLS, auth"
-globs: "**/*.java"
+paths:
+  - "**/*.java"
 ---
 
 # Java Security Safety

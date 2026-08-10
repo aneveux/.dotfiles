@@ -6,7 +6,15 @@ set -euo pipefail
 
 INPUT=$(cat)
 TOOL_NAME=$(jq -r '.tool_name // empty' <<<"$INPUT")
-TOOL_OUTPUT=$(jq -r '.tool_output // .output // ""' <<<"$INPUT")
+TOOL_OUTPUT=$(jq -r '
+  if .tool_response then
+    [.tool_response.stdout?, .tool_response.stderr?, .tool_response.content?, (.tool_response | tostring)]
+    | map(select(. != null and . != ""))
+    | join("\n")
+  else
+    ""
+  end
+' <<<"$INPUT")
 
 case "$TOOL_NAME" in
 Bash | Write | Edit | WebFetch) ;;
@@ -19,7 +27,7 @@ declare -A SECRET_PATTERNS=(
 	["OpenAI Key"]="sk-[a-zA-Z0-9]{20,}"
 	["Anthropic Key"]="sk-ant-[a-zA-Z0-9]{20,}"
 	["AWS Access Key"]="AKIA[0-9A-Z]{16}"
-	["AWS Secret Key"]="[0-9a-zA-Z/+]{40}"
+	["AWS Secret Key"]="[A-Za-z0-9/+=]{40}"
 	["GCP Key"]="AIza[0-9A-Za-z_-]{35}"
 	["Stripe Key"]="(sk|pk)_(live|test)_[0-9a-zA-Z]{24,}"
 	["Twilio Key"]="SK[a-f0-9]{32}"

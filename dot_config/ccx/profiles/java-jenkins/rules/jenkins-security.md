@@ -1,6 +1,7 @@
 ---
 description: "Jenkins plugin security — CSRF, permissions, web-method safety, Jelly escaping"
-globs: "**/*.{java,jelly}"
+paths:
+  - "**/*.{java,jelly}"
 ---
 
 # Jenkins Plugin Security

@@ -1,6 +1,7 @@
 ---
 description: "Hugo content authoring — frontmatter, page bundles, markdown rendering"
-globs: "content/**/*.md"
+paths:
+  - "content/**/*.md"
 ---
 
 # Hugo Content Authoring

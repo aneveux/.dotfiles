@@ -4,6 +4,7 @@ nighttab.json
 packages.txt
 prompts
 prompts/**
+.claude/settings.local.json
 .claude/history.jsonl
 .claude/logs
 .claude/logs/**
@@ -14,3 +15,11 @@ prompts/**
 .claude/gh-pr-status-cache.json
 .claude/stats-cache.json
 .claude/mcp-needs-auth-cache.json
+.claude/skills/humanizer/.git
+.claude/skills/humanizer/.git/**
+.cc-safety-net/rules/rule.lock
+.cc-safety-net/cache
+.cc-safety-net/cache/**
+.cc-safety-net/logs
+.cc-safety-net/logs/**
+.cc-safety-net/update-check.json

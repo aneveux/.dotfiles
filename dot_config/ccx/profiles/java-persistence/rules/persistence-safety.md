@@ -1,6 +1,13 @@
 ---
 description: "Persistence safety — N+1, transaction boundaries, entity leaking, lazy loading, unbounded fetches, parameterized queries"
-globs: "**/*Entity.java,**/*Repository.java,**/*Service.java,**/entity/**/*.java,**/domain/**/*.java,**/repository/**/*.java,**/service/**/*.java"
+paths:
+  - "**/*Entity.java"
+  - "**/*Repository.java"
+  - "**/*Service.java"
+  - "**/entity/**/*.java"
+  - "**/domain/**/*.java"
+  - "**/repository/**/*.java"
+  - "**/service/**/*.java"
 ---
 
 # Persistence Safety

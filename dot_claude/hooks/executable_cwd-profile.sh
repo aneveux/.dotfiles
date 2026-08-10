@@ -6,7 +6,7 @@
 set -euo pipefail
 
 INPUT=$(cat)
-NEW_CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || true)
+NEW_CWD=$(echo "$INPUT" | jq -r '.new_cwd // empty' 2>/dev/null || true)
 
 if [[ -z "$NEW_CWD" ]]; then
 	exit 0

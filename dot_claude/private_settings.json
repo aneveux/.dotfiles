@@ -12,23 +12,45 @@
     "commit": "",
     "pr": ""
   },
+  "permissions": {
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push --force-with-lease*)",
+      "Bash(rtk read .env)",
+      "Bash(rtk read *.env)",
+      "Bash(rtk read *.env.*)",
+      "Bash(rtk read *.pem)",
+      "Bash(rtk read *credentials*)",
+      "Bash(rtk read *id_rsa*)",
+      "Bash(rtk read *id_ed25519*)",
+      "Bash(rtk grep .env)",
+      "Bash(rtk grep *.env)",
+      "Bash(rtk grep *.env.*)",
+      "Bash(rtk grep *.pem)",
+      "Bash(rtk grep *credentials*)",
+      "Bash(rtk grep *id_rsa*)",
+      "Bash(rtk grep *id_ed25519*)",
+      "Read(.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/credentials*)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Edit(.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/*.pem)",
+      "Edit(**/credentials*)",
+      "Edit(**/id_rsa*)",
+      "Edit(**/id_ed25519*)"
+    ]
+  },
   "model": "us.anthropic.claude-opus-5",
   "fallbackModel": [
     "opus",
     "sonnet",
     "haiku"
   ],
-  "skillOverrides": {
-    "skill-creator:skill-creator": "user-invocable-only",
-    "slack:slack-search": "user-invocable-only",
-    "slack:slack-messaging": "user-invocable-only",
-    "cloudbees-docs-dev:cloudbees-docs": "user-invocable-only",
-    "seed:prompt-cultivation": "user-invocable-only",
-    "claude-stats:claude-stats": "user-invocable-only",
-    "jira-stats:jira-stats": "user-invocable-only",
-    "agent-risk-checker:agent-risk-checker": "user-invocable-only",
-    "claudecode-agent-registry:claudecode-agent-registry": "user-invocable-only"
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -37,10 +59,6 @@
           {
             "type": "command",
             "command": "rtk hook claude"
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/pre-bash-security.sh"
           }
         ]
       },
@@ -68,11 +86,6 @@
       {
         "matcher": "Bash|Write|Edit|WebFetch",
         "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/session-logger.sh",
-            "async": true
-          },
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/post-bash-security.sh",
@@ -120,17 +133,6 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/pre-compact-snapshot.sh",
             "timeout": 5
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/compact-reinjection.sh",
-            "timeout": 3
           }
         ]
       }

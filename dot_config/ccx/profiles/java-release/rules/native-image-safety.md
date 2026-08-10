@@ -1,6 +1,7 @@
 ---
 description: "Native-image safety — reflection registration, runtime resources, dynamic classloading"
-globs: "src/main/java/**/*.java"
+paths:
+  - "src/main/java/**/*.java"
 ---
 
 # Native-Image Safety

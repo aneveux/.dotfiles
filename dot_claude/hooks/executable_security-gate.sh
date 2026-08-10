@@ -18,7 +18,7 @@ fi
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
 EXTENSION="${FILE_PATH##*.}"
-SOURCE_EXTENSIONS="js ts jsx tsx py go java rb php cs sh"
+SOURCE_EXTENSIONS="js ts jsx tsx py go java kt kts rs rb php cs sh tf yaml yml json gradle"
 is_source=false
 for ext in $SOURCE_EXTENSIONS; do
 	[[ "$EXTENSION" == "$ext" ]] && is_source=true && break
@@ -50,7 +50,7 @@ fi
 # ── SQL injection via string interpolation ───────────────────────────────────
 if echo "$CONTENT" | grep -qiE '(SELECT|INSERT|UPDATE|DELETE|DROP).{0,60}(\$\{|'"'"'\s*\+\s*|"\s*\+\s*)'; then
 	echo "SECURITY-GATE: Potential SQL injection pattern in $FILE_PATH" >&2
-	echo "Use parameterized queries (PreparedStatement, $1 params, or ORM)." >&2
+	echo 'Use parameterized queries (PreparedStatement, $1 params, or ORM).' >&2
 	exit 2
 fi
 
