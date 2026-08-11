@@ -5,7 +5,10 @@
 set -euo pipefail
 
 INPUT=$(cat)
-SESSION_ID="${CLAUDE_CODE_SESSION_ID:-default}"
+SESSION_ID="${CLAUDE_CODE_SESSION_ID:-}"
+if [[ -z "$SESSION_ID" ]]; then
+	exit 0
+fi
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
 CWD="${CWD:-$(pwd)}"
 

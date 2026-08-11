@@ -6,7 +6,7 @@
 - RAG — retrieve through an `EmbeddingStore` + `ContentRetriever` wired via `RetrievalAugmentor` — never ad-hoc prompt stuffing.
 - Guardrails — validate and transform with `@InputGuardrail`/`@OutputGuardrail`; never trust raw model output at a boundary.
 - Never hardcode keys — all config via `quarkus.langchain4j.*` (`quarkus.langchain4j.anthropic.api-key=${ANTHROPIC_API_KEY}`). Watch token cost: cap `max-tokens`, bound agentic loops, keep request/response logging to dev only.
-- Default to current Claude — `quarkus-langchain4j-anthropic` with `quarkus.langchain4j.anthropic.chat-model.model-name=claude-opus-4-8` (or `claude-sonnet-5` / `claude-haiku-4-5`). The extension's built-in default is an old Haiku — set the model explicitly.
+- Default to current Claude — `quarkus-langchain4j-anthropic` with `quarkus.langchain4j.anthropic.chat-model.model-name=claude-opus-5` (or `claude-sonnet-5` / `claude-haiku-4-5`). The extension's built-in default is an old Haiku — set the model explicitly. Model IDs go stale: confirm the current lineup before pinning one.
 
 Docs:
 - https://docs.quarkiverse.io/quarkus-langchain4j/dev/

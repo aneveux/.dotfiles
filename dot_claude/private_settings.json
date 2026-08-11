@@ -42,7 +42,13 @@
       "Edit(**/*.pem)",
       "Edit(**/credentials*)",
       "Edit(**/id_rsa*)",
-      "Edit(**/id_ed25519*)"
+      "Edit(**/id_ed25519*)",
+      "Read(**/*.p12)",
+      "Edit(**/*.p12)",
+      "Read(**/*.jks)",
+      "Edit(**/*.jks)",
+      "Read(**/*.keystore)",
+      "Edit(**/*.keystore)"
     ]
   },
   "model": "us.anthropic.claude-opus-5",
@@ -84,66 +90,12 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash|Write|Edit|WebFetch",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/post-bash-security.sh",
-            "async": true
-          }
-        ]
-      },
-      {
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/auto-format.sh",
             "async": true
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/session-orientation.sh",
-            "timeout": 3
-          }
-        ]
-      },
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/compact-reinjection.sh",
-            "timeout": 3
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/pre-compact-snapshot.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "CwdChanged": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/cwd-profile.sh",
-            "timeout": 2
           }
         ]
       }

@@ -1,3 +1,9 @@
+---
+description: "Bash safety — strict mode, quoting, conditionals, tooling"
+paths:
+  - "**/*.{sh,bash,bats}"
+---
+
 # Bash Safety
 
 - Every script starts with `set -euo pipefail`.

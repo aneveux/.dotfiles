@@ -1,5 +1,7 @@
 ---
 description: "Java code quality — naming, documentation, imports, readability"
+paths:
+  - "**/*.java"
 ---
 
 # Java Code Quality

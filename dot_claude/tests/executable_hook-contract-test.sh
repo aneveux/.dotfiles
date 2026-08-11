@@ -55,7 +55,7 @@ section() { printf '\n\033[1m%s\033[0m\n' "$1"; }
 
 require_deps() {
 	local missing=()
-	for dep in jq bash awk git; do
+	for dep in jq bash awk; do
 		command -v "$dep" >/dev/null 2>&1 || missing+=("$dep")
 	done
 	if [[ ${#missing[@]} -gt 0 ]]; then
@@ -79,18 +79,18 @@ run_hook() {
 
 fixture() { cat "$FIXTURES/$1"; }
 
-# A credential-shaped string in GitHub personal-token format.
+# A credential-shaped string in GitHub personal-token format, built from
+# fragments so no literal token lands in this file.
 fake_github_token() { printf 'ghp_%s' "$(printf 'a%.0s' {1..36})"; }
 
-# A leaked-credential line, built from fragments so no assignment literal is stored.
-leak_line() { printf '%s%s%s' 'token' '=' "$(fake_github_token)"; }
-
-# A Java statement that concatenates user input into a query string.
-injectable_query() {
-	local verb
-	verb=$(printf '%s%s' 'SEL' 'ECT')
-	printf 'String q = "%s * FROM users WHERE id = " + userId;' "$verb"
+# A source line assigning that credential to a constant.
+leaked_credential_line() {
+	printf 'String t = "%s";' "$(fake_github_token)"
 }
+
+# A source line carrying a zero-width space (U+200B), written as its UTF-8 bytes
+# so no invisible character is stored in this file.
+zero_width_line() { printf 'int a = 1;\xe2\x80\x8b\n'; }
 
 # ── 1. Field extraction ──────────────────────────────────────────────────────
 # Each assertion feeds a real captured payload and checks that the hook reacted
@@ -99,54 +99,19 @@ injectable_query() {
 test_field_extraction() {
 	section "1. Field extraction"
 
-	local leak
-	leak=$(leak_line)
-
-	# post-bash-security.sh must read .tool_response.stdout (Bash shape).
-	local bash_payload
-	bash_payload=$(fixture post-tool-use-bash.json |
-		jq --arg leak "$leak" '.tool_response.stdout += "\n" + $leak')
-	run_hook post-bash-security.sh "$bash_payload"
-	if [[ "$HOOK_STDOUT" == *"SECRET LEAK WARNING"* && "$HOOK_STDOUT" == *"GitHub Token"* ]]; then
-		pass "post-bash-security.sh reads .tool_response.stdout"
-	else
-		fail "post-bash-security.sh reads .tool_response.stdout" "stdout: ${HOOK_STDOUT:-<empty>}"
-	fi
-
-	# ...and .tool_response.content (Write shape). This is the exact field the
-	# audit found broken: the hook used to read a non-existent .tool_output.
-	local write_payload
-	write_payload=$(fixture post-tool-use-write.json |
-		jq --arg leak "$leak" '.tool_response.content += $leak + "\n"')
-	run_hook post-bash-security.sh "$write_payload"
-	if [[ "$HOOK_STDOUT" == *"GitHub Token"* ]]; then
-		pass "post-bash-security.sh reads .tool_response.content"
-	else
-		fail "post-bash-security.sh reads .tool_response.content" "stdout: ${HOOK_STDOUT:-<empty>}"
-	fi
-
-	# A clean payload must stay silent — guards against a detector that fires on
-	# the serialised envelope rather than on real output.
-	run_hook post-bash-security.sh "$(fixture post-tool-use-write.json)"
-	if [[ -z "$HOOK_STDOUT" ]]; then
-		pass "post-bash-security.sh silent on clean output"
-	else
-		fail "post-bash-security.sh silent on clean output" "stdout: $HOOK_STDOUT"
-	fi
-
 	# security-gate.sh must read .tool_input.file_path and .tool_input.content.
 	local query gate_payload
-	query=$(injectable_query)
+	query=$(leaked_credential_line)
 	gate_payload=$(jq -nc --arg c "$query" '{
 	  hook_event_name: "PreToolUse",
 	  tool_name: "Write",
 	  tool_input: {file_path: "/tmp/Example.java", content: $c}
 	}')
 	run_hook security-gate.sh "$gate_payload"
-	if [[ $HOOK_RC -eq 2 && "$HOOK_STDERR" == *"injection"* ]]; then
-		pass "security-gate.sh reads .tool_input.content (query branch reachable)"
+	if [[ $HOOK_RC -eq 2 && "$HOOK_STDERR" == *"API key"* ]]; then
+		pass "security-gate.sh reads .tool_input.content (credential branch reachable)"
 	else
-		fail "security-gate.sh reads .tool_input.content (query branch reachable)" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+		fail "security-gate.sh reads .tool_input.content (credential branch reachable)" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
 	fi
 
 	# Same content, non-source extension: extension gating must short-circuit.
@@ -177,55 +142,32 @@ test_field_extraction() {
 		fail "security-gate.sh treats .kt as source" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
 	fi
 
-	# cwd-profile.sh must read .new_cwd, not .cwd. The payload points .cwd at a
-	# plain directory and .new_cwd at a linked-worktree marker, so a hook reading
-	# the wrong key produces no export.
-	local worktree="$SANDBOX/linked-worktree" plain="$SANDBOX/plain-repo"
-	mkdir -p "$worktree" "$plain"
-	printf 'gitdir: %s/main/.git/worktrees/linked\n' "$SANDBOX" >"$worktree/.git"
-	local env_file="$SANDBOX/claude-env"
-	: >"$env_file"
-	local cwd_payload
-	cwd_payload=$(fixture cwd-changed.json |
-		jq --arg wt "$worktree" --arg plain "$plain" '.new_cwd = $wt | .cwd = $plain')
-	run_hook cwd-profile.sh "$cwd_payload" "CLAUDE_ENV_FILE=$env_file"
-	if grep -qx 'SAFETY_NET_WORKTREE=1' "$env_file"; then
-		pass "cwd-profile.sh reads .new_cwd (worktree detected)"
+	# Maven/properties files carry credentials too, so they must be gated as source.
+	local xml_payload
+	xml_payload=$(jq -nc --arg c "$query" '{
+	  hook_event_name: "PreToolUse",
+	  tool_name: "Write",
+	  tool_input: {file_path: "/tmp/pom.xml", content: $c}
+	}')
+	run_hook security-gate.sh "$xml_payload"
+	if [[ $HOOK_RC -eq 2 ]]; then
+		pass "security-gate.sh treats .xml as source"
 	else
-		fail "cwd-profile.sh reads .new_cwd (worktree detected)" "env file: $(cat "$env_file")"
+		fail "security-gate.sh treats .xml as source" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
 	fi
 
-	# pre-compact-snapshot.sh must read CLAUDE_CODE_SESSION_ID and harvest the
-	# activity log for that session.
-	local sid fake_home log_dir log_file
-	sid=$(fixture pre-compact.json | jq -r '.session_id')
-	fake_home="$SANDBOX/home-precompact"
-	log_dir="$fake_home/.claude/logs"
-	mkdir -p "$log_dir"
-	log_file="$log_dir/activity-$(date +%Y-%m-%d).jsonl"
-	jq -nc --arg sid "$sid" '{timestamp: "2026-08-10T08:00:00Z", session_id: $sid, tool: "Write", file: "/home/antoine/projects/blog/content/about.md", project: "blog"}' >"$log_file"
-	jq -nc --arg sid "$sid" '{timestamp: "2026-08-10T08:01:00Z", session_id: $sid, tool: "Bash", command: "mvn test -q", project: "blog"}' >>"$log_file"
-	run_hook pre-compact-snapshot.sh "$(fixture pre-compact.json)" \
-		"HOME=$fake_home" "CLAUDE_CODE_SESSION_ID=$sid"
-	local state_dir="$fake_home/.claude/session-env/$sid"
-	if [[ -s "$state_dir/files-modified.txt" ]] && grep -q 'content/about.md' "$state_dir/files-modified.txt"; then
-		pass "pre-compact-snapshot.sh harvests files from the activity log"
+	# Invisible-character blocking is the other half of the narrowed gate.
+	local zw_payload
+	zw_payload=$(jq -nc --arg c "$(zero_width_line)" '{
+	  hook_event_name: "PreToolUse",
+	  tool_name: "Write",
+	  tool_input: {file_path: "/tmp/Example.java", content: $c}
+	}')
+	run_hook security-gate.sh "$zw_payload"
+	if [[ $HOOK_RC -eq 2 && "$HOOK_STDERR" == *"Zero-width"* ]]; then
+		pass "security-gate.sh blocks a zero-width character"
 	else
-		fail "pre-compact-snapshot.sh harvests files from the activity log" "state dir: $(ls -1 "$state_dir" 2>/dev/null | tr '\n' ' ')"
-	fi
-	if [[ -s "$state_dir/tests-run.txt" ]] && grep -q 'mvn test' "$state_dir/tests-run.txt"; then
-		pass "pre-compact-snapshot.sh harvests test commands from the activity log"
-	else
-		fail "pre-compact-snapshot.sh harvests test commands from the activity log" "tests-run: $(cat "$state_dir/tests-run.txt" 2>/dev/null)"
-	fi
-
-	# compact-reinjection.sh must read the same env var and the snapshot it wrote.
-	run_hook compact-reinjection.sh "$(fixture session-start-compact.json)" \
-		"HOME=$fake_home" "CLAUDE_CODE_SESSION_ID=$sid"
-	if [[ "$HOOK_STDOUT" == *"content/about.md"* ]]; then
-		pass "compact-reinjection.sh re-injects the snapshot"
-	else
-		fail "compact-reinjection.sh re-injects the snapshot" "stdout: ${HOOK_STDOUT:-<empty>}"
+		fail "security-gate.sh blocks a zero-width character" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
 	fi
 
 	# stash-reminder.sh must read .cwd and count open STASH.md items.
@@ -261,10 +203,10 @@ test_env_contract() {
 
 	local users
 	users=$(grep -rl 'CLAUDE_CODE_SESSION_ID' "$HOOKS_DIR" 2>/dev/null | wc -l | tr -dc '0-9')
-	if [[ "$users" -ge 3 ]]; then
+	if [[ "$users" -ge 1 ]]; then
 		pass "session-scoped hooks use CLAUDE_CODE_SESSION_ID ($users files)"
 	else
-		fail "session-scoped hooks use CLAUDE_CODE_SESSION_ID" "expected >= 3 files, found $users"
+		fail "session-scoped hooks use CLAUDE_CODE_SESSION_ID" "expected >= 1 file, found $users"
 	fi
 }
 
@@ -277,13 +219,7 @@ test_exit_codes() {
 
 	local -a cases=(
 		"auto-format.sh|post-tool-use-write.json"
-		"post-bash-security.sh|post-tool-use-bash.json"
-		"post-bash-security.sh|post-tool-use-write.json"
 		"repo-integrity-scanner.sh|pre-tool-use-bash.json"
-		"cwd-profile.sh|cwd-changed.json"
-		"pre-compact-snapshot.sh|pre-compact.json"
-		"compact-reinjection.sh|session-start-compact.json"
-		"session-orientation.sh|session-start-compact.json"
 	)
 
 	local entry hook fx
@@ -326,49 +262,14 @@ test_exit_codes() {
 }
 
 # ── 4. Output shape ──────────────────────────────────────────────────────────
-# PostToolUse/Stop hooks emit {systemMessage}. SessionStart hooks must emit
-# hookSpecificOutput with hookEventName "SessionStart" — the only injection path.
+# PostToolUse/Stop hooks emit {systemMessage}. A hook whose stdout is not valid
+# JSON of the expected shape is discarded silently.
 
 test_output_shape() {
 	section "4. Output shape"
 
-	local shape_home="$SANDBOX/home-shape" sid="contract-shape-$$"
-	mkdir -p "$shape_home/.claude/session-env/$sid"
-	printf '/home/antoine/projects/blog/content/about.md\n' >"$shape_home/.claude/session-env/$sid/files-modified.txt"
-
-	run_hook compact-reinjection.sh "$(fixture session-start-compact.json)" \
-		"HOME=$shape_home" "CLAUDE_CODE_SESSION_ID=$sid"
-	if jq -e '.hookSpecificOutput.hookEventName == "SessionStart" and (.hookSpecificOutput.additionalContext | length) > 0' <<<"$HOOK_STDOUT" >/dev/null 2>&1; then
-		pass "compact-reinjection.sh emits SessionStart hookSpecificOutput"
-	else
-		fail "compact-reinjection.sh emits SessionStart hookSpecificOutput" "stdout: ${HOOK_STDOUT:-<empty>}"
-	fi
-
-	# A repo with at least one commit: session-orientation.sh reads `git log`, and
-	# a commitless repo makes that call fail (tracked separately, not a contract
-	# this harness asserts).
-	local repo="$SANDBOX/orientation-repo"
-	mkdir -p "$repo"
-	git -C "$repo" init -q 2>/dev/null
-	git -C "$repo" commit -q --allow-empty -m "fixture commit" 2>/dev/null
-	local orient_payload
-	orient_payload=$(jq -nc --arg cwd "$repo" '{hook_event_name: "SessionStart", source: "startup", cwd: $cwd}')
-	run_hook session-orientation.sh "$orient_payload" "HOME=$shape_home"
-	if jq -e '.hookSpecificOutput.hookEventName == "SessionStart"' <<<"$HOOK_STDOUT" >/dev/null 2>&1; then
-		pass "session-orientation.sh emits SessionStart hookSpecificOutput"
-	else
-		fail "session-orientation.sh emits SessionStart hookSpecificOutput" "stdout: ${HOOK_STDOUT:-<empty>}"
-	fi
-
-	local leak_payload
-	leak_payload=$(fixture post-tool-use-bash.json |
-		jq --arg leak "$(leak_line)" '.tool_response.stdout += "\n" + $leak')
-	run_hook post-bash-security.sh "$leak_payload"
-	if jq -e '(.systemMessage | length) > 0' <<<"$HOOK_STDOUT" >/dev/null 2>&1; then
-		pass "post-bash-security.sh emits a valid systemMessage object"
-	else
-		fail "post-bash-security.sh emits a valid systemMessage object" "stdout: ${HOOK_STDOUT:-<empty>}"
-	fi
+	local shape_home="$SANDBOX/home-shape"
+	mkdir -p "$shape_home/.claude"
 
 	local stash_cwd="$SANDBOX/stash-shape"
 	mkdir -p "$stash_cwd"
@@ -514,6 +415,9 @@ test_rule_scoping() {
 		"java-persistence/rules/persistence-safety.md|src/main/java/domain/User.java|src/main/java/util/Helper.java"
 		"java-release/rules/native-image-safety.md|src/main/java/Main.java|src/test/java/MainTest.java"
 		"java-security/rules/security-safety.md|src/main/java/Auth.java|src/main/kotlin/Auth.kt"
+		"bash/rules/bash-safety.md|scripts/deploy.sh|src/main/java/App.java"
+		"java/rules/java-safety.md|src/main/java/App.java|README.md"
+		"java/rules/java.md|src/main/java/App.java|README.md"
 	)
 
 	local entry rel positive negative file

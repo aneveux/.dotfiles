@@ -1,7 +1,0 @@
-{
-  "session_id": "00000000-0000-4000-8000-000000000000",
-  "transcript_path": "/home/antoine/.claude/projects/-home-antoine-projects-hacker/00000000-0000-4000-8000-000000000000.jsonl",
-  "cwd": "/home/antoine/projects/hacker",
-  "new_cwd": "/home/antoine/projects/wt-rem-classfilter-cnfe",
-  "hook_event_name": "CwdChanged"
-}

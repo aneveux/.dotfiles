@@ -1,5 +1,7 @@
 ---
 description: "Java safety — catch blocks, logging, type safety, SQL, injection"
+paths:
+  - "**/*.java"
 ---
 
 # Java Safety

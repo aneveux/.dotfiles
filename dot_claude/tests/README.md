@@ -10,7 +10,7 @@ make test      # the contract suite
 make doctor    # the suite, then cc-safety-net doctor + rule verify -g
 ```
 
-Requires `jq`, `bash` 4+, `awk`, `git`. `cc-safety-net` is optional: without it, the rulebook class
+Requires `jq`, `bash` 4+, `awk`. `cc-safety-net` is optional: without it, the rulebook class
 skips instead of failing.
 
 ## Safety principle, non-negotiable
@@ -25,10 +25,10 @@ at runtime from fragments so no literal lands in this file: the dotfiles repo is
 
 | # | Class | Bug it would have caught |
 |---|---|---|
-| 1 | Field extraction | `post-bash-security.sh` read `.tool_output`, a field Claude Code never sends, so the secret scanner scanned an empty string. Same family: `cwd-profile.sh` reading `.cwd` instead of `.new_cwd`, and plugin hooks reading `.tool_result` instead of `.tool_response`. |
+| 1 | Field extraction | A hook reading a field Claude Code never sends silently sees an empty string: `.tool_output` instead of `.tool_response`, or `.tool_result` instead of `.tool_response`. Each assertion feeds a real captured payload and checks the hook reacted to a field it could only have seen by reading the correct key. |
 | 2 | Env contract | Three hooks read `CLAUDE_SESSION_ID`. The variable is `CLAUDE_CODE_SESSION_ID`; all three exited early on every invocation. |
 | 3 | Exit-code hygiene | `set -euo pipefail` plus an unquoted, unbound `$1` aborted `security-gate.sh` before its later checks. Asserted on both real fixtures and a minimal `{}` payload. |
-| 4 | Output shape | `SessionStart` hooks can only inject context through `hookSpecificOutput.additionalContext` with `hookEventName: "SessionStart"`. Anything else is discarded silently. |
+| 4 | Output shape | A `PostToolUse`/`Stop` hook communicates only through a `{systemMessage}` JSON object on stdout. Anything else is discarded silently. |
 | 5 | Rulebook conformance | Safety Net shape-validates the `tests[]` array in `rulebook.json` but never executes it. Untested, those fixtures are decorative comments. This class runs each one through `explain` and also asserts the `rtk` transparent wrapper still unwraps. |
 | 6 | Rule scoping | `globs:` is not a valid ccx frontmatter key; a rule using it loads in *every* session instead of only where it applies. Asserts the key is gone and that each `paths:` pattern matches an in-scope file and rejects an out-of-scope one. |
 
@@ -41,12 +41,8 @@ so the field shapes stay honest.
 
 | Fixture | Source shape |
 |---|---|
-| `post-tool-use-bash.json` | Bash: `{stdout, stderr, interrupted, isImage, noOutputExpected}` |
 | `post-tool-use-write.json` | Write: `{type, filePath, content, structuredPatch, originalFile, userModified}` |
 | `pre-tool-use-bash.json` | PreToolUse Bash, `tool_input` only (no response yet) |
-| `cwd-changed.json` | CwdChanged: carries both `cwd` and `new_cwd` |
-| `session-start-compact.json` | SessionStart with `source: "compact"` |
-| `pre-compact.json` | PreCompact with `trigger: "auto"` |
 
 ## Adding a test
 
@@ -54,11 +50,3 @@ Hooks run in a sandbox: `run_hook <hook> <payload> [VAR=value ...]` pipes the pa
 under a temporary `HOME` when the hook touches `~`, and exposes `HOOK_STDOUT`, `HOOK_STDERR`,
 `HOOK_RC`. Assert with `pass`/`fail`/`skip`. Anything that would need a destructive command to prove
 belongs in `rulebook.json`'s `tests[]` array, where class 5 will pick it up via `explain`.
-
-## Known gap
-
-The compaction pipeline (`PreCompact` → snapshot → `SessionStart:compact` → re-injection) is verified
-here only at the unit level: each hook reads and writes what it should, given a synthetic activity
-log. The end-to-end path has never run in a real session, and `session-logger.sh` (the sole producer
-of `~/.claude/logs/activity-*.jsonl`) was deleted, so in practice `pre-compact-snapshot.sh` now
-snapshots git state only. A real compaction is still the only way to prove the pipeline.

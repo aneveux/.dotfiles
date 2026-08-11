@@ -18,7 +18,7 @@
     "ENABLE_LSP_TOOL" : "1"
   },
   "permissions" : {
-    "allow" : [ "Bash(mvn *)", "Bash(mvnd *)", "Bash(java *)", "Bash(javac *)", "Bash(quarkus *)" ],
+    "allow" : [ "Bash(mvn *)", "Bash(mvnd *)", "Bash(java *)", "Bash(javac *)", "Bash(quarkus *)", "Bash(sonar list *)", "Bash(sonar analyze secrets *)", "Bash(sonar api *)", "Bash(sonar auth status)", "Bash(sonar system status *)" ],
     "deny" : [ ]
   }
 }

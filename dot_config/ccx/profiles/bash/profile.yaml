@@ -11,5 +11,7 @@ plugins:
 
 permissions:
   allow:
-    - "Bash(*)"
+    - "Bash(bats *)"
+    - "Bash(shellcheck *)"
+    - "Bash(shfmt *)"
 

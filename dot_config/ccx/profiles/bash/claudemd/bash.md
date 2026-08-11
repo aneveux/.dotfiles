@@ -1,9 +1,7 @@
 # Bash Conventions
 
-Use the **bark** plugin for CLI/script development:
-- `/agent bash-developer` — write scripts
-- `/agent bash-code-reviewer` — review
-- `/agent bash-test-writer` — generate bats tests
+Use the **bark** plugin for CLI/script development. Delegate to `bark:bash-developer` (write
+scripts), `bark:bash-code-reviewer` (review), `bark:bash-test-writer` (generate bats tests).
 
 Skills: `bash-style-guide`, `bash-tools`, `bash-patterns`, `bash-testing`, `bash-project-setup`
 
