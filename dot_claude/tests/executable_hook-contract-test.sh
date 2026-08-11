@@ -445,6 +445,91 @@ test_rule_scoping() {
 	done
 }
 
+# ── 7. Handover content ──────────────────────────────────────────────────────
+# The deleted compaction feature passed exit-code tests while producing empty
+# output. These assertions require non-empty, well-formed content, and verify
+# that the hook actually read the transcript field it claims to extract.
+
+test_handover_content() {
+	section "7. Handover content"
+
+	local fake_tp="$SANDBOX/handover-fixture.jsonl"
+
+	# Minimal transcript: ai-title + last-prompt + one Write tool_use
+	jq -nc '{type:"ai-title",aiTitle:"test-session-title",sessionId:"s1"}' >"$fake_tp"
+	jq -nc '{type:"last-prompt",lastPrompt:"do the thing",sessionId:"s1"}' >>"$fake_tp"
+	jq -nc '{
+	  type:"assistant",sessionId:"s1",
+	  message:{role:"assistant",content:[{
+	    type:"tool_use",id:"t1",name:"Write",
+	    input:{file_path:"src/app.ts",content:"export const x = 1"}
+	  }]}
+	}' >>"$fake_tp"
+
+	local compact_payload
+	compact_payload=$(jq -nc \
+		--arg tp "$fake_tp" \
+		'{hook_event_name:"SessionStart",source:"compact",
+		  transcript_path:$tp,session_id:"contract-ho-$$",cwd:"/tmp"}')
+
+	run_hook session-handover.sh "$compact_payload" \
+		"HOME=$SANDBOX/home-ho" "CLAUDE_CODE_SESSION_ID=contract-ho-$$"
+
+	if [[ $HOOK_RC -eq 0 ]]; then
+		pass "session-handover.sh exits 0 on compact payload"
+	else
+		fail "session-handover.sh exits 0 on compact payload" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	if [[ -n "$HOOK_STDOUT" ]]; then
+		pass "session-handover.sh stdout is non-empty (anti-regression: deleted version was always empty)"
+	else
+		fail "session-handover.sh stdout is non-empty (anti-regression: deleted version was always empty)" "stdout was empty"
+	fi
+
+	if [[ "$HOOK_STDOUT" == *"src/app.ts"* ]]; then
+		pass "session-handover.sh output contains extracted file path (read transcript)"
+	else
+		fail "session-handover.sh output contains extracted file path (read transcript)" "stdout: ${HOOK_STDOUT:-<empty>}"
+	fi
+
+	# session-end-pointer: write then verify the pointer file
+	local ptr_home="$SANDBOX/home-ptr"
+	mkdir -p "$ptr_home/.claude/session-env"
+
+	local ptr_payload
+	ptr_payload=$(jq -nc \
+		--arg tp "$fake_tp" \
+		'{hook_event_name:"SessionEnd",reason:"clear",
+		  transcript_path:$tp,session_id:"contract-ptr-$$",cwd:"/tmp"}')
+
+	run_hook session-end-pointer.sh "$ptr_payload" \
+		"HOME=$ptr_home" "CLAUDE_CODE_SESSION_ID=contract-ptr-$$"
+
+	if [[ $HOOK_RC -eq 0 ]]; then
+		pass "session-end-pointer.sh exits 0 on clear payload"
+	else
+		fail "session-end-pointer.sh exits 0 on clear payload" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	local ptr_file
+	ptr_file=$(find "$ptr_home" -name "last-clear.json" 2>/dev/null | head -1)
+
+	if [[ -n "$ptr_file" && -f "$ptr_file" ]]; then
+		pass "session-end-pointer.sh wrote last-clear.json"
+	else
+		fail "session-end-pointer.sh wrote last-clear.json" "no file found under $ptr_home"
+	fi
+
+	if [[ -n "$ptr_file" ]] && jq -e '.session_id == "contract-ptr-'"$$"'"' "$ptr_file" >/dev/null 2>&1; then
+		pass "last-clear.json contains correct session_id"
+	else
+		fail "last-clear.json contains correct session_id" "contents: $(cat "$ptr_file" 2>/dev/null || echo '<missing>')"
+	fi
+
+	rm -rf "$ptr_home"
+}
+
 main() {
 	require_deps
 	printf '\033[1mHook contract tests\033[0m — %s\n' "$HOOKS_DIR"
@@ -455,6 +540,7 @@ main() {
 	test_output_shape
 	test_rulebook_conformance
 	test_rule_scoping
+	test_handover_content
 
 	printf '\n\033[1mSummary\033[0m: %d passed, %d failed, %d skipped\n' "$PASSED" "$FAILED" "$SKIPPED"
 	[[ $FAILED -eq 0 ]]
