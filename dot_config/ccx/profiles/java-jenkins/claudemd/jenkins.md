@@ -7,6 +7,11 @@
 - Sensitive fields use the `Secret` type and `CredentialsProvider` lookup — never store or accept plaintext credentials
 - Permission-check every web method (`Jenkins.get().checkPermission(...)`) and gate admin actions on `Jenkins.ADMINISTER`
 - Iterate locally with `mvn hpi:run`
+- Reading a plugin's source: every Jenkins plugin is open source and every CBCI plugin is on GitHub,
+  so decompiling one is always wrong. Get the repo from `<scm>` in the artifact's `~/.m2` pom
+  (artifactId ≠ repo name), then follow the Dependency Investigation ladder. Jenkins core:
+  `~/projects/jenkins`, tag `jenkins-<version>`. API signatures without a checkout:
+  https://javadoc.jenkins.io/
 
 Defer to the java-jenkins skill for depth (extension points, Stapler internals, Pipeline compatibility).
 
