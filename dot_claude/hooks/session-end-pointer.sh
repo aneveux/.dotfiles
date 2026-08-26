@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hook: SessionEnd(clear) — write predecessor pointer for session-handover.sh
+# Hook: SessionEnd(clear|prompt_input_exit|other) — write predecessor pointer for session-handover.sh
 # Fired when the user runs /clear. Writes a ~100-byte pointer so session-handover.sh
 # can find this transcript deterministically on the next SessionStart.
 # Exit 0 always; SessionEnd cannot block.

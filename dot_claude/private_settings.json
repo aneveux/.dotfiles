@@ -6,7 +6,8 @@
     "ENABLE_LSP_TOOL": "1",
     "CLAUDE_CODE_USE_BEDROCK": "1",
     "AWS_PROFILE": "cloudbees-bedrock-claude-infra-bedrock-claude-user",
-    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "CC_SAFETY_NET_AUDIT_SCOPE": "blocked"
   },
   "attribution": {
     "commit": "",
@@ -48,7 +49,26 @@
       "Read(**/*.jks)",
       "Edit(**/*.jks)",
       "Read(**/*.keystore)",
-      "Edit(**/*.keystore)"
+      "Edit(**/*.keystore)",
+      "Read(~/.m2/settings.xml)",
+      "Read(~/.m2/settings-security.xml)",
+      "Edit(~/.claude/settings.json)",
+      "Edit(~/.claude/hooks/*.sh)",
+      "Edit(~/.cc-safety-net/rule.json)",
+      "Edit(~/.cc-safety-net/rules/**/rulebook.json)"
+    ],
+    "allow": [
+      "Read(rtk read *)",
+      "Read(rtk ls *)",
+      "Read(rtk git *)",
+      "Read(rtk grep *)",
+      "Read(rtk diff *)",
+      "Read(rtk head *)",
+      "Read(rtk tail *)",
+      "Read(rtk find *)",
+      "Read(rtk fd *)",
+      "Read(rtk git-rev-list *)",
+      "Read(rtk bat *)"
     ]
   },
   "model": "us.anthropic.claude-opus-5",
@@ -70,7 +90,7 @@
     ],
     "SessionEnd": [
       {
-        "matcher": "clear",
+        "matcher": "clear|prompt_input_exit|other",
         "hooks": [
           {
             "type": "command",
@@ -86,7 +106,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "rtk hook claude"
+            "command": "rtk hook claude",
+            "timeout": 5
           }
         ]
       },
@@ -129,6 +150,17 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/stash-reminder.sh",
             "timeout": 2
+          }
+        ]
+      }
+    ],
+    "ConfigChange": [
+      {
+        "matcher": "user_settings",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/config-guard.sh"
           }
         ]
       }
