@@ -58,17 +58,18 @@
       "Edit(~/.cc-safety-net/rules/**/rulebook.json)"
     ],
     "allow": [
-      "Read(rtk read *)",
-      "Read(rtk ls *)",
-      "Read(rtk git *)",
-      "Read(rtk grep *)",
-      "Read(rtk diff *)",
-      "Read(rtk head *)",
-      "Read(rtk tail *)",
-      "Read(rtk find *)",
-      "Read(rtk fd *)",
-      "Read(rtk git-rev-list *)",
-      "Read(rtk bat *)"
+      "Bash(rtk read *)",
+      "Bash(rtk ls *)",
+      "Bash(rtk tree *)",
+      "Bash(rtk find *)",
+      "Bash(rtk grep *)",
+      "Bash(rtk rg *)",
+      "Bash(rtk diff *)",
+      "Bash(rtk wc *)",
+      "Bash(rtk git status *)",
+      "Bash(rtk git log *)",
+      "Bash(rtk git diff *)",
+      "Bash(rtk git show *)"
     ]
   },
   "model": "us.anthropic.claude-opus-5",
