@@ -182,6 +182,7 @@
   },
   "outputStyle": "Antoine - Engineering",
   "alwaysThinkingEnabled": true,
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim"
 }
