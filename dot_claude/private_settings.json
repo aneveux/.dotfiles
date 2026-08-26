@@ -188,12 +188,6 @@
         "repo": "anthropics/claude-plugins-official"
       }
     },
-    "cloudbees": {
-      "source": {
-        "source": "github",
-        "repo": "cloudbees/cloudbees-claude-plugin"
-      }
-    },
     "claude-garden": {
       "source": {
         "source": "directory",
@@ -209,7 +203,19 @@
     "claude-java-stack": {
       "source": {
         "source": "directory",
-        "path": "/home/antoine/projects/claude-java-stack/"
+        "path": "/home/antoine/projects/claude-java-stack"
+      }
+    },
+    "cc-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "kenryu42/cc-marketplace"
+      }
+    },
+    "cloudbees-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "cloudbees/cloudbees-claude-plugins"
       }
     }
   },
