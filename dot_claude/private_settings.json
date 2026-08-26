@@ -54,7 +54,7 @@
       "Read(~/.m2/settings-security.xml)",
       "Edit(~/.claude/settings.json)",
       "Edit(~/.claude/hooks/*.sh)",
-      "Edit(~/.cc-safety-net/rule.json)",
+      "Edit(~/.cc-safety-net/rules/rule.json)",
       "Edit(~/.cc-safety-net/rules/**/rulebook.json)"
     ],
     "allow": [
