@@ -29,7 +29,9 @@
       "Bash(rtk git show *)",
       "Read(~/.claude/plugins/cache/**)",
       "Read(~/projects/claude-java-stack/**)",
-      "Read(~/.claude/java-stack/**)"
+      "Read(~/.claude/java-stack/**)",
+      "Read(~/projects/claude-garden/**)",
+      "Read(~/projects/claude-secret-garden/**)"
     ],
     "deny": [
       "Bash(git push --force*)",
