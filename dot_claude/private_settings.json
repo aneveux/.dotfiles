@@ -26,7 +26,10 @@
       "Bash(rtk git status *)",
       "Bash(rtk git log *)",
       "Bash(rtk git diff *)",
-      "Bash(rtk git show *)"
+      "Bash(rtk git show *)",
+      "Read(~/.claude/plugins/cache/**)",
+      "Read(~/projects/claude-java-stack/**)",
+      "Read(~/.claude/java-stack/**)"
     ],
     "deny": [
       "Bash(git push --force*)",
