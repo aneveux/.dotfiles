@@ -7,16 +7,18 @@
 # without executing it. Nothing destructive is ever run by this harness.
 #
 # Vulnerable-looking payloads are assembled at runtime from fragments, never
-# stored as literals: this tree is published in a public dotfiles repo, and the
-# local Write/Edit gate would reject a file containing them.
+# stored as literals: this tree gets published, and the local Write/Edit gate
+# would reject a file containing them.
 #
-# Six assertion classes, each mapping to a bug class found in the 2026-08-10 audit:
+# Eight assertion classes, each mapping to a bug class found in the audits:
 #   1. Field extraction   — hooks read the fields Claude Code actually sends
 #   2. Env contract       — no hook references the non-existent CLAUDE_SESSION_ID
 #   3. Exit-code hygiene  — no hook exits non-zero on well-formed input
 #   4. Output shape       — emitted JSON is valid and carries the right event name
 #   5. Rulebook conformance — rulebook.json `tests` verdicts hold (Safety Net never runs them)
 #   6. Rule scoping       — ccx rules use `paths:`, and those paths scope as intended
+#   7. Handover content   — the context hook emits real content, not just exit 0
+#   8. Config guard       — the deny-rule floor blocks and allows in the right cases
 
 set -uo pipefail
 shopt -s extglob
@@ -530,6 +532,121 @@ test_handover_content() {
 	rm -rf "$ptr_home"
 }
 
+# ── 8. Config guard ──────────────────────────────────────────────────────────
+# The guard of the guards had no coverage at all. It also treated a missing
+# settings.json as "the deny rules were deleted", which blocked every config
+# change under a fresh HOME. Both directions matter here: a guard that stops
+# blocking is as broken as one that always blocks, and the second failure mode
+# is the one nothing would have noticed.
+
+# Write a settings.json with $1 deny rules into a throwaway HOME, echo the HOME.
+guard_home() {
+	local count="$1"
+	local home="$SANDBOX/guard-$count-$RANDOM"
+	mkdir -p "$home/.claude"
+	jq -nc --argjson n "$count" \
+		'{permissions: {deny: [range($n) | "Bash(fake-rule-\(.))"]}}' \
+		>"$home/.claude/settings.json"
+	printf '%s' "$home"
+}
+
+# The floor the hook enforces, read from the hook rather than hardcoded here, so
+# the two cannot drift apart.
+guard_floor() {
+	sed -n 's/^FLOOR=\([0-9]\{1,\}\).*/\1/p' "$HOOKS_DIR/config-guard.sh" | head -1
+}
+
+test_config_guard() {
+	section "8. Config guard"
+
+	local floor
+	floor=$(guard_floor)
+	if [[ -z $floor ]]; then
+		fail "config-guard.sh declares a FLOOR" "no FLOOR= assignment found"
+		return
+	fi
+	pass "config-guard.sh declares a FLOOR ($floor)"
+
+	# Absent settings file: nothing to guard, must allow. This is the assertion
+	# that used to fail, and the reason the hook was rewritten.
+	local empty_home="$SANDBOX/guard-empty-$RANDOM"
+	mkdir -p "$empty_home"
+	run_hook config-guard.sh '{}' "HOME=$empty_home"
+	if [[ $HOOK_RC -eq 0 ]]; then
+		pass "config-guard.sh allows when settings.json is absent"
+	else
+		fail "config-guard.sh allows when settings.json is absent" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	# At the floor: allow.
+	run_hook config-guard.sh '{}' "HOME=$(guard_home "$floor")"
+	if [[ $HOOK_RC -eq 0 ]]; then
+		pass "config-guard.sh allows exactly $floor deny rules"
+	else
+		fail "config-guard.sh allows exactly $floor deny rules" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	# One below the floor: block. Without this, the hook could be reduced to
+	# `exit 0` and every other assertion would still pass.
+	run_hook config-guard.sh '{}' "HOME=$(guard_home $((floor - 1)))"
+	if [[ $HOOK_RC -eq 2 ]]; then
+		pass "config-guard.sh blocks $((floor - 1)) deny rules"
+	else
+		fail "config-guard.sh blocks $((floor - 1)) deny rules" "rc=$HOOK_RC (expected 2)"
+	fi
+
+	# permissions.deny removed entirely: block.
+	local stripped="$SANDBOX/guard-stripped-$RANDOM"
+	mkdir -p "$stripped/.claude"
+	jq -nc '{permissions: {allow: []}}' >"$stripped/.claude/settings.json"
+	run_hook config-guard.sh '{}' "HOME=$stripped"
+	if [[ $HOOK_RC -eq 2 ]]; then
+		pass "config-guard.sh blocks when permissions.deny is missing"
+	else
+		fail "config-guard.sh blocks when permissions.deny is missing" "rc=$HOOK_RC (expected 2)"
+	fi
+
+	# Malformed JSON: block rather than read as zero and report a count.
+	local broken="$SANDBOX/guard-broken-$RANDOM"
+	mkdir -p "$broken/.claude"
+	printf '{"permissions": {"deny": [' >"$broken/.claude/settings.json"
+	run_hook config-guard.sh '{}' "HOME=$broken"
+	if [[ $HOOK_RC -eq 2 && $HOOK_STDERR == *"no deny-rule count"* ]]; then
+		pass "config-guard.sh blocks on malformed settings.json"
+	else
+		fail "config-guard.sh blocks on malformed settings.json" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	# deny as a non-list: block. `length` on a string returns a number, so an
+	# unguarded count check would happily compare it against the floor.
+	local wrong_type="$SANDBOX/guard-type-$RANDOM"
+	mkdir -p "$wrong_type/.claude"
+	jq -nc '{permissions: {deny: "everything"}}' >"$wrong_type/.claude/settings.json"
+	run_hook config-guard.sh '{}' "HOME=$wrong_type"
+	if [[ $HOOK_RC -eq 2 ]]; then
+		pass "config-guard.sh blocks when permissions.deny is not a list"
+	else
+		fail "config-guard.sh blocks when permissions.deny is not a list" "rc=$HOOK_RC (expected 2)"
+	fi
+
+	# FLOOR must match the settings file shipped next to the hooks, otherwise the
+	# guard either blocks every legitimate change or has stopped counting.
+	local reference=""
+	[[ -f "$CLAUDE_DIR/settings.json" ]] && reference="$CLAUDE_DIR/settings.json"
+	[[ -z $reference && -f "$CLAUDE_DIR/config/settings.json" ]] && reference="$CLAUDE_DIR/config/settings.json"
+	if [[ -z $reference ]]; then
+		skip "FLOOR matches the reference settings" "no settings.json next to $HOOKS_DIR"
+	else
+		local actual
+		actual=$(jq '.permissions.deny // [] | length' "$reference" 2>/dev/null || echo -1)
+		if [[ $actual -eq $floor ]]; then
+			pass "FLOOR matches $(basename "$(dirname "$reference")")/$(basename "$reference") ($actual rules)"
+		else
+			fail "FLOOR matches $reference" "FLOOR=$floor but the file has $actual deny rules"
+		fi
+	fi
+}
+
 main() {
 	require_deps
 	printf '\033[1mHook contract tests\033[0m — %s\n' "$HOOKS_DIR"
@@ -541,6 +658,7 @@ main() {
 	test_rulebook_conformance
 	test_rule_scoping
 	test_handover_content
+	test_config_guard
 
 	printf '\n\033[1mSummary\033[0m: %d passed, %d failed, %d skipped\n' "$PASSED" "$FAILED" "$SKIPPED"
 	[[ $FAILED -eq 0 ]]
