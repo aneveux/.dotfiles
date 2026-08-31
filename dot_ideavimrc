@@ -1,69 +1,97 @@
-""" -------------------------------------------------------------------
-""" aneveux - ideavimrc
-""" Configuration for IdeaVim in IntelliJ-based IDEs
-""" -------------------------------------------------------------------
+""" ═══════════════════════════════════════════════════════════════════
+"""  aneveux · .ideavimrc
+"""  IdeaVim configuration for IntelliJ-based IDEs
+"""
+"""  ⚠️  Managed by chezmoi — edit ~/.local/share/chezmoi/dot_ideavimrc
+"""      then run `chezmoi apply`. Never edit ~/.ideavimrc directly.
+"""
+"""  Lint: ~/bin/ideavim-lint-actions.sh (checks every <Action> ID
+"""        against the installed IDE + plugin jars)
+""" ═══════════════════════════════════════════════════════════════════
 
-""" -------------------------------------------------------------------
-"""
-""" PLUGINS CONFIGURATION
-"""
-""" -------------------------------------------------------------------
+
+""" ═══════════════════════════════════════════════════════════════════
+"""  🧩 EMULATED PLUGINS
+""" ═══════════════════════════════════════════════════════════════════
 
 set surround " https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
 set commentary " https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt
-set multiple-cursors " https://github.com/terryma/vim-multiple-cursors/blob/master/doc/multiple_cursors.txt
 set highlightedyank " Highlight copied text
 set argtextobj " https://www.vim.org/scripts/script.php?script_id=2699
 set textobj-entire " https://github.com/kana/vim-textobj-entire/blob/master/doc/textobj-entire.txt
 set textobj-indent " https://github.com/michaeljsmith/vim-indent-object/blob/master/doc/indent-object.txt
 set ReplaceWithRegister " https://github.com/vim-scripts/ReplaceWithRegister/blob/master/doc/ReplaceWithRegister.txt
 set NERDTree " https://raw.githubusercontent.com/wiki/JetBrains/ideavim/NERDTree-support.md
-set which-key " https://github.com/TheBlob42/idea-which-key
+set which-key " https://github.com/brandonkramer/which-key-lazy
 set functiontextobj " https://github.com/jphalip/ideavim-functiontextobj
+set matchit " % across XML/HTML tags, Java if/else, Jenkinsfile blocks
+set abolish " :S/ case-preserving substitute + crs/crc/crm/cru coercions
 
-""" -------------------------------
-""" PLUGINS SETTINGS
-""" -------------------------------
-
-let g:argtextobj_pairs="[:],(:),<:>"
-
-let g:which_key_use_floating_win = 1
-let g:WhichKey_ProcessUnknownMappings = "false"
-let g:WhichKey_FontSize = 16
-let g:WhichKey_SortOrder = "by_key_prefix_first"
+""" NOTE: `multiple-cursors` intentionally NOT enabled — IDEA's native
+""" multi-caret is used instead (see <A-n>/<A-p>/<A-a> below).
 
 """ -------------------------------------------------------------------
-"""
-""" GENERAL SETTINGS
-"""
+""" ⚙️  PLUGIN SETTINGS
 """ -------------------------------------------------------------------
 
-set ex " Enable extended Vim functionality in IntelliJ
+let g:argtextobj_pairs = "[:],(:),<:>"
+
+""" which-key — https://github.com/brandonkramer/which-key-lazy
+""" `set which-key` above activates Which Key Lazy: it registers the same
+""" IdeaVIM extension name ("which-key") as TheBlob42/idea-which-key, so only
+""" one of the two can ever be enabled. The old plugin is currently disabled.
+"""
+""" Which Key Lazy reads ONLY g:WhichKeyDesc_* from this file. Appearance and
+""" behaviour live in ~/.whichkey-lazy.json (managed as dot_whichkey-lazy.json);
+""" edit it and run "Which Key Lazy: Reload Config" to apply without a restart.
+"""
+""" It needs no popup mapping of its own and no g:WhichKey_* settings — those
+""" belonged to idea-which-key and are silently ignored here. If you ever swap
+""" back (Which Key Lazy declares until-build=262.*, so 2026.3 will break it),
+""" restore: DefaultDelay=200, FontSize=16, SortOrder="by_key_prefix_first",
+""" ShowTypedSequence/ShowVimActions/ProcessUnknownMappings="true".
+"""
+""" Trade-off of the swap: labels resolve WhichKeyDesc_ → LazyVim group default
+""" → IDE action name → humanised action ID, so an unlabelled leader mapping
+""" still reads sensibly. But discovery is leader-scoped only — the built-in
+""" Vim verbs that ShowVimActions used to surface no longer appear.
+
+""" cmdfloat — https://github.com/yelog/IdeaVim-CmdFloat
+""" Intercepts : / ? on its own; no mappings needed. Its default
+""" single_char_argument_keys list contains "g", which would swallow one key
+""" after g and break the 3-key sequences here (gsa/gsd/gsr surround, gcc
+""" comment, grr ReplaceWithRegister), so g is dropped from the list.
+""" "s"/"S" stay in extended_search_keys — that is exactly vim-flash's `s`.
+let g:cmdfloat_single_char_argument_keys = ['f', 't', 'F', 'T', 'r', 'm', '\'', '`', '@', 'q', 'z', 'Z']
+
+
+""" ═══════════════════════════════════════════════════════════════════
+"""  🛠️  GENERAL SETTINGS
+""" ═══════════════════════════════════════════════════════════════════
+
 let mapleader = " "
 let maplocalleader = " "
 
 set scrolloff=999
-set nu
 set number relativenumber
 set showmode
 set showcmd
 set visualbell
 set notimeout
 
-""" -------------------------------
-""" CLIPBOARD
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 📋 CLIPBOARD
+""" -------------------------------------------------------------------
 
 set clipboard^=unnamed,unnamedplus " Sync Vim clipboard with OS clipboard
+set clipboard+=ideaput " Route p through IDE paste → auto-import + reformat
 
-nnoremap <leader>dd "+dd
-vnoremap <leader>d "+d
-
+" Delete char without clobbering the clipboard
 nnoremap x "_x
 
-""" -------------------------------
-""" SEARCH
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🔍 SEARCH
+""" -------------------------------------------------------------------
 
 set ignorecase
 set smartcase
@@ -72,28 +100,69 @@ set hlsearch
 
 nnoremap <Esc> :nohlsearch<cr>
 
-""" -------------------------------
-""" IDEA SPECIFIC SETTINGS
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 💡 IDE INTEGRATION
+""" -------------------------------------------------------------------
 
 set ideajoin
 set ideastatusicon=gray
 set idearefactormode=keep
 set virtualedit=onemore
-set ideamarks " use `m`+letter to create a bookmark. `'`+letter to jump to it. F11 to delete.
 set matchpairs+=<:>
 set keymodel+=startsel
 set selectmode=key
 
+set unifyjumps " Merge the IdeaVim jumplist with IDE Back/Forward
+set ideavimsupport+=singleline " Vim keys in inline-rename / search fields
+set ideamarks " m+letter → persistent IDE bookmark, '+letter to jump back
+              " (@Deprecated upstream; see <leader>b for the explicit actions)
+set trackactionids " Show the action ID of anything done through the IDE UI.
+                   " Noisy on purpose — `:set notrackactionids` to silence.
+
 """ -------------------------------------------------------------------
-"""
-""" NAVIGATION
-"""
+""" 🎛️  KEY ARBITRATION (vim vs IDE)
 """ -------------------------------------------------------------------
 
-" Tab navigation
-nnoremap <A-n> :tabnext<CR>
-nnoremap <A-p> :tabprev<CR>
+sethandler <C-h> n:vim i:ide x:vim
+sethandler <C-l> n:vim i:ide x:vim
+sethandler <C-j> a:vim
+sethandler <C-k> a:vim
+sethandler <C-Space> a:vim
+sethandler <C-S-Space> i:vim
+sethandler <C-S-Enter> i:vim
+sethandler <BS> n:vim i:ide x:vim
+sethandler <C-r> n:vim i:ide
+sethandler <C-o> n:vim
+sethandler <C-i> n:vim
+sethandler <C-w> a:vim
+sethandler <C-v> n:vim x:vim i:ide
+
+
+""" ═══════════════════════════════════════════════════════════════════
+"""  🧭 NAVIGATION
+""" ═══════════════════════════════════════════════════════════════════
+
+""" Plugin verbs which-key cannot label (single keys / non-prefix):
+"""   s              flash jump
+"""   W / E / B      camel + snake_case word motions
+"""   af / if        function text object (functiontextobj)
+"""   ae / ie        entire-buffer text object (textobj-entire)
+"""   ai / ii        indent text object (textobj-indent)
+"""   aa / ia        argument text object (argtextobj)
+"""   gr / grr       replace with register (ReplaceWithRegister)
+"""   crs crc crm cru  snake / camel / mixed / upper coercion (abolish)
+"""   %              matchit-aware pair jump
+"""   <M-h/j/k/l>    harpoon slots 1-4
+
+" Multi-caret (IDEA native — replaces the multiple-cursors emulation)
+nmap <A-n> <Action>(SelectNextOccurrence)
+xmap <A-n> <Action>(SelectNextOccurrence)
+nmap <A-p> <Action>(UnselectPreviousOccurrence)
+xmap <A-p> <Action>(UnselectPreviousOccurrence)
+nmap <A-a> <Action>(SelectAllOccurrences)
+xmap <A-a> <Action>(SelectAllOccurrences)
+nmap <A-Down> <Action>(EditorCloneCaretBelow)
+nmap <A-Up> <Action>(EditorCloneCaretAbove)
 
 " Pane navigation
 nnoremap <C-h> <C-w>h
@@ -106,29 +175,30 @@ nnoremap [[ <Action>(MethodUp)
 nnoremap ]] <Action>(MethodDown)
 
 " Popup navigation
-inoremap <C-j> <Action>(PopupMenu-selectNext)
-inoremap <C-k> <Action>(PopupMenu-selectPrevious)
+imap <C-j> <Action>(PopupMenu-selectNext)
+imap <C-k> <Action>(PopupMenu-selectPrevious)
 
 " Word navigation in CamelCase and snake_case
 map W [w
 map E ]w
 map B [b
 
-" Prev / Next
+" Prev / Next (unified with the vim jumplist via `set unifyjumps`)
 nmap <C-Down> <Action>(Forward)
 nmap <C-Right> <Action>(Forward)
 nmap <C-Up> <Action>(Back)
 nmap <C-Left> <Action>(Back)
 
-""" -------------------------------------------------------------------
-"""
-""" KEYMAP
-"""
-""" -------------------------------------------------------------------
+" LSP-style bare-g keys, matching nvim muscle memory.
+" NOTE: gd / gD already resolve declarations natively in IdeaVim, and the
+" gr* prefix belongs to ReplaceWithRegister, so only these two are added.
+nmap K <Action>(ShowHoverInfo)
+nmap gO <Action>(FileStructurePopup)
 
-""" -------------------------------
-""" CODE EDITING
-""" -------------------------------
+
+""" ═══════════════════════════════════════════════════════════════════
+"""  ✏️  EDITING
+""" ═══════════════════════════════════════════════════════════════════
 
 " Easy visual indentation
 vnoremap < <gv
@@ -140,35 +210,26 @@ map <C-S-M-k> <Action>(MoveStatementUp)
 map <C-S-j> <Action>(MoveLineDown)
 map <C-S-k> <Action>(MoveLineUp)
 
-nnoremap <Space-Enter> <Action>(ShowIntentionActions)
-map U <C-r> " Redo
-nnoremap <leader>nn :set relativenumber!<CR>
+nmap <leader><CR> <Action>(ShowIntentionActions)
+" Redo. Normal only: visual U must stay uppercase-selection.
+nnoremap U <C-r>
 
-" Smart selection
-map <C-Space> <Action>(EditorSelectWord)
-map <BS> <Action>(EditorUnSelectWord)
-vmap <C-Space> <Action>(EditorSelectWord)
-vmap <BS> <Action>(EditorUnSelectWord)
+" Smart selection. Normal + Visual only: Select mode keeps the IDE's
+" SelectBackspace so <BS> deletes the selection after shift+arrow.
+nmap <C-Space> <Action>(EditorSelectWord)
+xmap <C-Space> <Action>(EditorSelectWord)
+nmap <BS> <Action>(EditorUnSelectWord)
+xmap <BS> <Action>(EditorUnSelectWord)
 
-" Completion
+" Completion (inline ghost text is IntelliJ Full Line, no mapping needed)
 imap <C-Space> <Action>(CodeCompletion)
 imap <C-S-Space> <Action>(SmartTypeCompletion)
 imap <C-S-Enter> <Action>(EditorCompleteStatement)
 
-""" -------------------------------
-""" PLUGINS SHORTCUTS
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🔤 SURROUND
+""" -------------------------------------------------------------------
 
-" flash
-map s <Action>(flash.search)
-" nerdtree
-map <leader>e :NERDTree<CR>
-" Enable vim-commentary for quick commenting
-autocmd FileType * nmap <leader>/ :Commentary<CR>
-
-""" -------------------------------
-""" surround
-""" -------------------------------
 nmap gsa <Plug>(SurroundAdd)
 xmap gsa <Plug>(SurroundAdd)
 nmap gsd <Plug>(SurroundDelete)
@@ -178,74 +239,125 @@ nmap gsh <Plug>(SurroundHighlight)
 nmap gsr <Plug>(SurroundReplace)
 nmap gsn <Plug>(SurroundUpdateNLines)
 
-""" -------------------------------
-""" MNEMONIC SHORTCUTS
-""" ----
-"""
-""" - a: ai
-""" - c: code
-""" - g: goto
-""" - f: find
-""" - h: harpoon
-""" - m: misc
-""" - p: project
-""" - r: refactor
-""" - t: tools
-""" - v: view
-""" - x: execute
-""" - y: yank
-""" - z: folding
-""" -------------------------------
+""" WHICH-KEY DESCRIPTIONS
 
-""" -------------------------------
-""" - a: AI (Copilot)
-""" -------------------------------
+let g:WhichKeyDesc_surround           = "gs [S]urround"
 
-map <leader>ai <Action>(copilot.chat.inline)
-map <leader>ac <Action>(copilot.newChatSession)
-map <leader>ae <Action>(copilot.newEditSession)
-map <leader>as <Action>(copilot.chat.show)
-map <leader>ao<Action>(copilot.enableCopilot)
-map <leader>aO <Action>(copilot.disableCopilot)
-map <leader>aC <Action>(copilot.requestCompletions)
+let g:WhichKeyDesc_surround_add       = "gsa [A]dd"
+let g:WhichKeyDesc_surround_delete    = "gsd [D]elete"
+let g:WhichKeyDesc_surround_replace   = "gsr [R]eplace"
+let g:WhichKeyDesc_surround_find      = "gsf [F]ind"
+let g:WhichKeyDesc_surround_find_left = "gsF [F]ind Left"
+let g:WhichKeyDesc_surround_highlight = "gsh [H]ighlight"
+let g:WhichKeyDesc_surround_nlines    = "gsn [N]-Lines Update"
 
+""" -------------------------------------------------------------------
+""" 🔌 PLUGIN SHORTCUTS
+""" -------------------------------------------------------------------
+
+" flash
+map s <Action>(flash.search)
+" nerdtree
+map <leader>e :NERDTree<CR>
+" commentary
+nmap <leader>/ gcc
+xmap <leader>/ gc
+
+
+""" ═══════════════════════════════════════════════════════════════════
+"""  ⌨️  MNEMONIC LEADER NAMESPACES
+"""  ----
+"""  - a: ai (Copilot chat)      - r: refactor
+"""  - b: bookmarks             - s: splits
+"""  - c: code                  - t: tool windows
+"""  - d: debug                 - u: ui toggles
+"""  - e: explorer (NERDTree)   - x: execute / run
+"""  - f: find                  - y: yank
+"""  - g: goto                  - z: folding
+"""  - h: harpoon
+"""  - m: misc
+"""  - o: pull requests / review / git
+"""  - p: project
+""" ═══════════════════════════════════════════════════════════════════
+
+""" -------------------------------------------------------------------
+""" 🤖 a: AI (Copilot chat — inline completion is native, not Copilot)
+""" -------------------------------------------------------------------
+
+nmap <leader>ai <Action>(copilot.chat.inline)
+nmap <leader>ac <Action>(copilot.openCopilot)
+nmap <leader>as <Action>(copilot.chat.show)
+nmap <leader>ao <Action>(copilot.enableCopilot)
+nmap <leader>aO <Action>(copilot.disableCopilot)
 
 """ WHICH-KEY DESCRIPTIONS
 
-let g:WhichKeyDesc_ai               = "<leader>a [A]I (CodeGPT)"
+let g:WhichKeyDesc_ai            = "<leader>a [A]I (Copilot)"
 
-let g:WhichKeyDesc_ai_inline        = "<leader>ai [I]nline (Ask inline question)"
-let g:WhichKeyDesc_ai_newchat       = "<leader>ac new [C]hat session"
-let g:WhichKeyDesc_ai_newedit       = "<leader>ae new [E]dit session"
-let g:WhichKeyDesc_ai_showchat      = "<leader>as [S]how chat"
-let g:WhichKeyDesc_ai_copiloton     = "<leader>ao Completions [o]n"
-let g:WhichKeyDesc_ai_copilotoff    = "<leader>aO Completions [O]ff"
-let g:WhichKeyDesc_ai_completions   = "<leader>aC [C]omplete with AI"
+let g:WhichKeyDesc_ai_inline     = "<leader>ai [I]nline (Ask inline question)"
+let g:WhichKeyDesc_ai_open       = "<leader>ac Open [C]opilot"
+let g:WhichKeyDesc_ai_showchat   = "<leader>as [S]how chat"
+let g:WhichKeyDesc_ai_copiloton  = "<leader>ao Copilot [o]n"
+let g:WhichKeyDesc_ai_copilotoff = "<leader>aO Copilot [O]ff"
 
-""" -------------------------------
-""" - c: code
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🔖 b: bookmarks
+""" -------------------------------------------------------------------
+
+nmap <leader>bb <Action>(ToggleBookmark)
+nmap <leader>bm <Action>(ToggleBookmarkWithMnemonic)
+nmap <leader>bl <Action>(ShowBookmarks)
+nmap <leader>bn <Action>(GotoNextBookmark)
+nmap <leader>bp <Action>(GotoPreviousBookmark)
+nmap <leader>be <Action>(EditBookmark)
+
+""" WHICH-KEY DESCRIPTIONS
+
+let g:WhichKeyDesc_bookmarks          = "<leader>b [B]ookmarks"
+
+let g:WhichKeyDesc_bookmark_toggle    = "<leader>bb Toggle [B]ookmark"
+let g:WhichKeyDesc_bookmark_mnemonic  = "<leader>bm Toggle with [M]nemonic"
+let g:WhichKeyDesc_bookmark_list      = "<leader>bl [L]ist Bookmarks"
+let g:WhichKeyDesc_bookmark_next      = "<leader>bn [N]ext Bookmark"
+let g:WhichKeyDesc_bookmark_prev      = "<leader>bp [P]revious Bookmark"
+let g:WhichKeyDesc_bookmark_edit      = "<leader>be [E]dit Bookmark"
+
+""" -------------------------------------------------------------------
+""" 💡 c: code
+""" -------------------------------------------------------------------
 
 " info
-map <leader>cq <Action>(QuickJavaDoc)
-map <leader>cs <Action>(FileStructurePopup)
-map <leader>ct <Action>(ExpressionTypeInfo)
-map <leader>ci <Action>(ShowHoverInfo)
+nmap <leader>cq <Action>(QuickJavaDoc)
+nmap <leader>cs <Action>(FileStructurePopup)
+nmap <leader>ct <Action>(ExpressionTypeInfo)
+nmap <leader>ci <Action>(ShowHoverInfo)
+nmap <leader>cp <Action>(ParameterInfo)
+nmap <leader>cP <Action>(QuickImplementations)
+" diagnostics
+nmap <leader>ce <Action>(ShowErrorDescription)
+nmap <leader>cI <Action>(InspectCode)
 " actions
-map <leader>ca <Action>(ShowIntentionActions)
-map <leader>cg <Action>(Generate)
-map <leader>cC <Action>(GenerateConstructor)
-map <leader>cF <Action>(SilentCodeCleanup)
-map <leader>cn <Action>(NewFile)
-map <leader>cN <Action>(NewDir)
-map <leader>cS <Action>(SurroundWith)
-map <leader>cO <Action>(OverrideMethods)
-map <leader>cR <Action>(ReplaceInPath)
-map <leader>cQ <Action>(ToggleRenderedDocPresentation)
+nmap <leader>ca <Action>(ShowIntentionActions)
+nmap <leader>cg <Action>(Generate)
+nmap <leader>cC <Action>(GenerateConstructor)
+nmap <leader>cF <Action>(SilentCodeCleanup)
+nmap <leader>cn <Action>(NewFile)
+nmap <leader>cN <Action>(NewDir)
+nmap <leader>cS <Action>(SurroundWith)
+nmap <leader>cO <Action>(OverrideMethods)
+nmap <leader>cR <Action>(ReplaceInPath)
+nmap <leader>cQ <Action>(ToggleRenderedDocPresentation)
+nmap <leader>cb <Action>(CommentByBlockComment)
+xmap <leader>cb <Action>(CommentByBlockComment)
+" live templates
+nmap <leader>cl <Action>(InsertLiveTemplate)
+nmap <leader>cL <Action>(SurroundWithLiveTemplate)
+xmap <leader>cL <Action>(SurroundWithLiveTemplate)
 " style
-map <leader>co <Action>(OptimizeImports)
-map <leader>cr <Action>(RearrangeCode)
-map <leader>cf <Action>(ReformatCode)
+nmap <leader>co <Action>(OptimizeImports)
+nmap <leader>cr <Action>(RearrangeCode)
+nmap <leader>cf <Action>(ReformatCode)
+xmap <leader>cf <Action>(ReformatCode)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -255,6 +367,10 @@ let g:WhichKeyDesc_code_info_quick_doc   = "<leader>cq [Q]uick JavaDoc"
 let g:WhichKeyDesc_code_info_structure   = "<leader>cs File [S]tructure"
 let g:WhichKeyDesc_code_info_expr_type   = "<leader>ct Expression [T]ype Info"
 let g:WhichKeyDesc_code_info_hover       = "<leader>ci Show Hover [I]nfo"
+let g:WhichKeyDesc_code_info_params      = "<leader>cp [P]arameter Info"
+let g:WhichKeyDesc_code_info_peek        = "<leader>cP [P]eek Implementation"
+let g:WhichKeyDesc_code_diag_error       = "<leader>ce Show [E]rror Description"
+let g:WhichKeyDesc_code_diag_inspect     = "<leader>cI [I]nspect Code"
 let g:WhichKeyDesc_code_action_intention = "<leader>ca Show Intention [A]ctions"
 let g:WhichKeyDesc_code_action_generate  = "<leader>cg [G]enerate"
 let g:WhichKeyDesc_code_action_ctor      = "<leader>cC Generate [C]onstructor"
@@ -265,32 +381,171 @@ let g:WhichKeyDesc_code_action_surround  = "<leader>cS [S]urround With"
 let g:WhichKeyDesc_code_action_override  = "<leader>cO [O]verride Methods"
 let g:WhichKeyDesc_code_action_replace   = "<leader>cR [R]eplace in Path"
 let g:WhichKeyDesc_code_action_togdoc    = "<leader>cQ Toggle Rendered Javadoc"
+let g:WhichKeyDesc_code_action_block_com = "<leader>cb [B]lock Comment"
+let g:WhichKeyDesc_code_tmpl_insert      = "<leader>cl Insert [L]ive Template"
+let g:WhichKeyDesc_code_tmpl_surround    = "<leader>cL Surround with [L]ive Template"
 let g:WhichKeyDesc_code_style_optimize   = "<leader>co [O]ptimize Imports"
 let g:WhichKeyDesc_code_style_rearrange  = "<leader>cr [R]earrange Code"
 let g:WhichKeyDesc_code_style_reformat   = "<leader>cf Re[f]ormat Code"
 
-""" -------------------------------
-""" - g: goto
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🐞 d: debug
+""" -------------------------------------------------------------------
 
-map <leader>g+ <Action>(GoToMenu)
-map <leader>gD <Action>(ViewSource)
-map <leader>gS <Action>(GotoStaplerView)
-map <leader>gT <Action>(GotoTest)
-map <leader>gU <Action>(GotoUrlAction)
-map <leader>gb <Action>(EditorMatchBrace)
-map <leader>gC <Action>(VcsShowPrevChangeMarker)
-map <leader>gc <Action>(VcsShowNextChangeMarker)
-map <leader>gd <Action>(GotoDeclaration)
-map <leader>gE <Action>(GotoPreviousError)
-map <leader>ge <Action>(GotoNextError)
-map <leader>gi <Action>(GotoImplementation)
-map <leader>gl <Action>(GotoLine)
-map <leader>gM <Action>(MethodUp)
-map <leader>gm <Action>(MethodDown)
-map <leader>gs <Action>(GotoSuperMethod)
-map <leader>gt <Action>(GotoTypeDeclaration)
-map <leader>gu <Action>(FindUsages)
+" breakpoints
+nmap <leader>db <Action>(ToggleLineBreakpoint)
+nmap <leader>dB <Action>(ToggleTemporaryLineBreakpoint)
+nmap <leader>dl <Action>(ViewBreakpoints)
+nmap <leader>dm <Action>(XDebugger.MuteBreakpoints)
+nmap <leader>dX <Action>(Debugger.RemoveAllBreakpoints)
+" session
+nmap <leader>dd <Action>(Debug)
+nmap <leader>dD <Action>(DebugClass)
+nmap <leader>dC <Action>(ChooseDebugConfiguration)
+nmap <leader>dc <Action>(Resume)
+nmap <leader>dP <Action>(Pause)
+nmap <leader>dq <Action>(Stop)
+" stepping
+nmap <leader>do <Action>(StepOver)
+nmap <leader>di <Action>(StepInto)
+nmap <leader>dO <Action>(StepOut)
+nmap <leader>dI <Action>(SmartStepInto)
+nmap <leader>dF <Action>(ForceStepOver)
+nmap <leader>dr <Action>(RunToCursor)
+nmap <leader>dp <Action>(Debugger.PopFrame)
+nmap <leader>dh <Action>(ShowExecutionPoint)
+" inspect
+nmap <leader>de <Action>(EvaluateExpression)
+xmap <leader>de <Action>(EvaluateExpression)
+nmap <leader>dE <Action>(QuickEvaluateExpression)
+xmap <leader>dE <Action>(QuickEvaluateExpression)
+nmap <leader>dn <Action>(Debugger.EvaluateInConsole)
+xmap <leader>dn <Action>(Debugger.EvaluateInConsole)
+nmap <leader>dw <Action>(Debugger.AddToWatch)
+xmap <leader>dw <Action>(Debugger.AddToWatch)
+nmap <leader>du <Action>(ActivateDebugToolWindow)
+
+""" WHICH-KEY DESCRIPTIONS
+
+let g:WhichKeyDesc_debug                = "<leader>d [D]ebug"
+
+let g:WhichKeyDesc_debug_breakpoint     = "<leader>db Toggle [B]reakpoint"
+let g:WhichKeyDesc_debug_bp_temp        = "<leader>dB Toggle Temporary [B]reakpoint"
+let g:WhichKeyDesc_debug_bp_list        = "<leader>dl [L]ist Breakpoints"
+let g:WhichKeyDesc_debug_bp_mute        = "<leader>dm [M]ute Breakpoints"
+let g:WhichKeyDesc_debug_bp_clear       = "<leader>dX Remove All Breakpoints"
+let g:WhichKeyDesc_debug_start          = "<leader>dd [D]ebug"
+let g:WhichKeyDesc_debug_start_class    = "<leader>dD [D]ebug Class"
+let g:WhichKeyDesc_debug_choose_config  = "<leader>dC [C]hoose Debug Configuration"
+let g:WhichKeyDesc_debug_continue       = "<leader>dc [C]ontinue (Resume)"
+let g:WhichKeyDesc_debug_pause          = "<leader>dP [P]ause"
+let g:WhichKeyDesc_debug_stop           = "<leader>dq [Q]uit (Stop)"
+let g:WhichKeyDesc_debug_step_over      = "<leader>do Step [O]ver"
+let g:WhichKeyDesc_debug_step_into      = "<leader>di Step [I]nto"
+let g:WhichKeyDesc_debug_step_out       = "<leader>dO Step [O]ut"
+let g:WhichKeyDesc_debug_smart_step     = "<leader>dI Smart Step [I]nto"
+let g:WhichKeyDesc_debug_force_step     = "<leader>dF [F]orce Step Over"
+let g:WhichKeyDesc_debug_run_to_cursor  = "<leader>dr [R]un to Cursor"
+let g:WhichKeyDesc_debug_pop_frame      = "<leader>dp [P]op Frame"
+let g:WhichKeyDesc_debug_exec_point     = "<leader>dh Show Execution Point ([H]ere)"
+let g:WhichKeyDesc_debug_evaluate       = "<leader>de [E]valuate Expression"
+let g:WhichKeyDesc_debug_quick_eval     = "<leader>dE Quick [E]valuate"
+let g:WhichKeyDesc_debug_eval_console   = "<leader>dn Evaluate i[n] Console"
+let g:WhichKeyDesc_debug_add_watch      = "<leader>dw Add to [W]atch"
+let g:WhichKeyDesc_debug_tool_window    = "<leader>du Debug Tool Window ([U]I)"
+
+""" -------------------------------------------------------------------
+""" 🔎 f: find
+""" -------------------------------------------------------------------
+
+""" Fuzzier — https://github.com/mituuz/fuzzier — Telescope-style pickers.
+""" These take the slots that hold the same picker on the nvim side, so <leader>ff
+""" is subsequence-matched like snacks.picker rather than IDEA's camel-hump
+""" matcher; GotoFile keeps its own slot at <leader>fF. Lowercase = case
+""" insensitive, uppercase = case sensitive, matching Fuzzier's own convention.
+""" In the popup IdeaVim is not active (the search field has focus): navigate
+""" with <C-n>/<C-p>, scroll the preview with <C-d>/<C-u>, open with <CR>.
+""" Remap those under Settings → Keymap (chorded shortcuts unsupported).
+nmap <leader>ff <Action>(com.mituuz.fuzzier.search.Fuzzier)
+nmap <leader>fv <Action>(com.mituuz.fuzzier.search.FuzzierVCS)
+nmap <leader>fo <Action>(com.mituuz.fuzzier.search.FuzzierOpenTabs)
+nmap <leader>fm <Action>(com.mituuz.fuzzier.operation.FuzzyMover)
+nmap <leader>fg <Action>(com.mituuz.fuzzier.grep.FuzzyGrepCI)
+nmap <leader>fG <Action>(com.mituuz.fuzzier.grep.FuzzyGrep)
+nmap <leader>fb <Action>(com.mituuz.fuzzier.grep.FuzzyGrepCurrentBufferCI)
+nmap <leader>fB <Action>(com.mituuz.fuzzier.grep.FuzzyGrepCurrentBuffer)
+nmap <leader>fO <Action>(com.mituuz.fuzzier.grep.FuzzyGrepOpenTabsCI)
+
+nmap <leader>fu <Action>(ShowUsages)
+nmap <leader>fa <Action>(GotoAction)
+nmap <leader>fc <Action>(GotoClass)
+nmap <leader>fd <Action>(ViewSource)
+nmap <leader>fe <Action>(SearchEverywhere)
+nmap <leader>fF <Action>(GotoFile)
+nmap <leader>fh <Action>(CallHierarchy)
+nmap <leader>fr <Action>(RecentFiles)
+nmap <leader><leader> <Action>(RecentFiles)
+nmap <leader>fR <Action>(RecentChangedFiles)
+nmap <leader>fl <Action>(RecentLocations)
+nmap <leader>fs <Action>(GotoSymbol)
+nmap <leader>ft <Action>(FindInPath)
+nmap <leader>fw <Action>($SearchWeb)
+nmap <leader>fi <Action>(SelectIn)
+
+""" WHICH-KEY DESCRIPTIONS
+
+let g:WhichKeyDesc_find            = "<leader>f [F]ind"
+
+let g:WhichKeyDesc_find_usages     = "<leader>fu Find [U]sages"
+let g:WhichKeyDesc_find_action     = "<leader>fa Find [A]ction"
+let g:WhichKeyDesc_find_class      = "<leader>fc Find [C]lass"
+let g:WhichKeyDesc_find_source     = "<leader>fd Find [D]efinition"
+let g:WhichKeyDesc_find_all        = "<leader>fe Search [E]verywhere"
+let g:WhichKeyDesc_find_file       = "<leader>ff Find [F]ile (Fuzzier)"
+let g:WhichKeyDesc_find_file_ide   = "<leader>fF Find [F]ile (IDE Goto File)"
+let g:WhichKeyDesc_find_vcs        = "<leader>fv [V]CS-Tracked Files (Fuzzier)"
+let g:WhichKeyDesc_find_open_tabs  = "<leader>fo [O]pen Tabs (Fuzzier)"
+let g:WhichKeyDesc_find_mover      = "<leader>fm [M]ove File (Fuzzy Mover)"
+let g:WhichKeyDesc_find_grep       = "<leader>fg [G]rep Project (Fuzzier)"
+let g:WhichKeyDesc_find_grep_cs    = "<leader>fG [G]rep Project, Case-Sensitive"
+let g:WhichKeyDesc_find_grep_buf   = "<leader>fb Grep [B]uffer (Fuzzier)"
+let g:WhichKeyDesc_find_grep_bufcs = "<leader>fB Grep [B]uffer, Case-Sensitive"
+let g:WhichKeyDesc_find_grep_tabs  = "<leader>fO Grep [O]pen Tabs (Fuzzier)"
+let g:WhichKeyDesc_find_hierarchy  = "<leader>fh Call [H]ierarchy"
+let g:WhichKeyDesc_find_recent     = "<leader>fr [R]ecent Files"
+let g:WhichKeyDesc_find_changed    = "<leader>fR [R]ecently Changed Files"
+let g:WhichKeyDesc_find_locations  = "<leader>fl [L]ocations (Recent)"
+let g:WhichKeyDesc_find_symbol     = "<leader>fs Find [S]ymbol"
+let g:WhichKeyDesc_find_text       = "<leader>ft Find in [T]ext (Path)"
+let g:WhichKeyDesc_find_web        = "<leader>fw Search [W]eb"
+let g:WhichKeyDesc_find_select_in  = "<leader>fi Select [I]n (Reveal)"
+
+""" -------------------------------------------------------------------
+""" 🧭 g: goto
+""" -------------------------------------------------------------------
+
+nmap <leader>g+ <Action>(GoToMenu)
+nmap <leader>gD <Action>(ViewSource)
+nmap <leader>gS <Action>(GotoStaplerView)
+nmap <leader>gT <Action>(GotoTest)
+nmap <leader>gU <Action>(GotoUrlAction)
+nmap <leader>gb <Action>(EditorMatchBrace)
+nmap <leader>gC <Action>(VcsShowPrevChangeMarker)
+nmap <leader>gc <Action>(VcsShowNextChangeMarker)
+nmap <leader>gd <Action>(GotoDeclaration)
+nmap <leader>gE <Action>(GotoPreviousError)
+nmap <leader>ge <Action>(GotoNextError)
+nmap <leader>gi <Action>(GotoImplementation)
+nmap <leader>gl <Action>(GotoLine)
+nmap <leader>gM <Action>(MethodUp)
+nmap <leader>gm <Action>(MethodDown)
+nmap <leader>gs <Action>(GotoSuperMethod)
+nmap <leader>gt <Action>(GotoTypeDeclaration)
+nmap <leader>gu <Action>(FindUsages)
+nmap <leader>gr <Action>(GotoRelated)
+nmap <leader>gL <Action>(JumpToLastChange)
+nmap <leader>gh <Action>(MethodHierarchy)
+nmap <leader>gH <Action>(TypeHierarchy)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -314,48 +569,15 @@ let g:WhichKeyDesc_goto_method_down  = "<leader>gm Method [D]own"
 let g:WhichKeyDesc_goto_super        = "<leader>gs Goto [S]uper Method"
 let g:WhichKeyDesc_goto_type         = "<leader>gt Goto [T]ype Declaration"
 let g:WhichKeyDesc_goto_usages       = "<leader>gu Find [U]sages"
+let g:WhichKeyDesc_goto_related      = "<leader>gr Goto [R]elated Symbol"
+let g:WhichKeyDesc_goto_last_change  = "<leader>gL Jump to [L]ast Change"
+let g:WhichKeyDesc_goto_hier_method  = "<leader>gh Method [H]ierarchy"
+let g:WhichKeyDesc_goto_hier_type    = "<leader>gH Type [H]ierarchy"
 
-""" -------------------------------
-""" - f: find
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🎯 h: harpoon
+""" -------------------------------------------------------------------
 
-map <leader>fu <Action>(ShowUsages)
-map <leader>fa <Action>(GotoAction)
-map <leader>fc <Action>(GotoClass)
-map <leader>fd <Action>(ViewSource)
-map <leader>fe <Action>(SearchEverywhere)
-map <leader>ff <Action>(GotoFile)
-map <leader>fh <Action>(CallHierarchy)
-map <leader>fr <Action>(RecentFiles)
-map <leader><leader> <Action>(RecentFiles)
-map <leader>fl <Action>(RecentLocations)
-map <leader>fs <Action>(GotoSymbol)
-map <leader>ft <Action>(FindInPath)
-map <leader>fw <Action>(SearchWeb)
-
-""" WHICH-KEY DESCRIPTIONS
-
-let g:WhichKeyDesc_find           = "<leader>f [F]ind"
-
-let g:WhichKeyDesc_find_usages    = "<leader>fu Find [U]sages"
-let g:WhichKeyDesc_find_action    = "<leader>fa Find [A]ction"
-let g:WhichKeyDesc_find_class     = "<leader>fc Find [C]lass"
-let g:WhichKeyDesc_find_source    = "<leader>fd Find [D]efinition"
-let g:WhichKeyDesc_find_all       = "<leader>fe Search [E]verywhere"
-let g:WhichKeyDesc_find_file      = "<leader>ff Find [F]ile"
-let g:WhichKeyDesc_find_hierarchy = "<leader>fh Call [H]ierarchy"
-let g:WhichKeyDesc_find_recent    = "<leader>fr [R]ecent Files"
-let g:WhichKeyDesc_find_locations = "<leader>fl [L]ocations (Recent)"
-let g:WhichKeyDesc_find_symbol    = "<leader>fs Find [S]ymbol"
-let g:WhichKeyDesc_find_text      = "<leader>ft Find in [T]ext (Path)"
-let g:WhichKeyDesc_find_web       = "<leader>fw Search [W]eb"
-
-""" Alias for Recent Files (double leader key)
-let g:WhichKeyDesc_find_recent_alt = "<leader><leader> Recent Files"
-
-""" -------------------------------
-""" - h: harpoon
-""" -------------------------------
 nmap <M-h> <Action>(HarpoonerOpenFile0)
 nmap <M-j> <Action>(HarpoonerOpenFile1)
 nmap <M-k> <Action>(HarpoonerOpenFile2)
@@ -376,21 +598,17 @@ let g:WhichKeyDesc_harpoon_add       = "<leader>ha [A]dd File to Harpoon"
 let g:WhichKeyDesc_harpoon_next      = "<leader>hn [N]ext Harpoon File"
 let g:WhichKeyDesc_harpoon_prev      = "<leader>hN Previous Harpoon File"
 
-""" Alt mappings for direct file access via Harpoon
-let g:WhichKeyDesc_harpoon_file_1    = "<M-h> Open Harpoon File [1]"
-let g:WhichKeyDesc_harpoon_file_2    = "<M-j> Open Harpoon File [2]"
-let g:WhichKeyDesc_harpoon_file_3    = "<M-k> Open Harpoon File [3]"
-let g:WhichKeyDesc_harpoon_file_4    = "<M-l> Open Harpoon File [4]"
+""" -------------------------------------------------------------------
+""" 🧰 m: misc
+""" -------------------------------------------------------------------
 
-""" -------------------------------
-""" - m: misc
-""" -------------------------------
-
-map <leader>mS <Action>(NewScratchFile)
-map <leader>mn <Action>(MarkNotificationsAsRead)
-map <leader>mc <Action>(ClearAllNotifications)
-map <leader>ms <Action>(osmedile.intellij.stringmanip.PopupChoiceAction)
-map <leader>mr <Action>(ExitRestart)
+nmap <leader>mS <Action>(NewScratchFile)
+nmap <leader>mn <Action>(MarkNotificationsAsRead)
+nmap <leader>mc <Action>(ClearAllNotifications)
+nmap <leader>ms <Action>(osmedile.intellij.stringmanip.PopupChoiceAction)
+xmap <leader>ms <Action>(osmedile.intellij.stringmanip.PopupChoiceAction)
+nmap <leader>mr <Action>(RestartIde)
+nmap <leader>mv <Action>(com.github.pooryam92.vimcoach.actions.ShowVimTipAction)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -401,19 +619,80 @@ let g:WhichKeyDesc_misc_notifications    = "<leader>mn Mark [N]otifications as R
 let g:WhichKeyDesc_misc_clear_notif      = "<leader>mc [C]lear All Notifications"
 let g:WhichKeyDesc_misc_string_manip     = "<leader>ms [S]tring Manipulation"
 let g:WhichKeyDesc_misc_restart          = "<leader>mr [R]estart IntelliJ"
+let g:WhichKeyDesc_misc_vim_tip          = "<leader>mv [V]im Tip (Vim Coach)"
 
-""" -------------------------------
-""" - p: project
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🔀 o: pull requests / review / git
+""" -------------------------------------------------------------------
 
-map <leader>pR <Action>(Maven.ReimportProject)
-map <leader>pb <Action>(CompileDirty)
-map <leader>pc <Action>(CloseProject)
-map <leader>po <Action>(OpenFile)
-map <leader>pr <Action>($LRU)
-map <leader>ps <Action>(FrameSwitchAction)
-map <leader>pu <Action>(Vcs.UpdateProject)
-map <leader>pw <Action>(OpenProjectWindows)
+nmap <leader>o+ <Action>(Vcs.QuickListPopupAction)
+" pull requests
+nmap <leader>op <Action>(ActivatePullRequestsToolWindow)
+nmap <leader>oc <Action>(Github.Create.Pull.Request)
+nmap <leader>ov <Action>(Github.View.Pull.Request)
+" blame & history
+nmap <leader>oa <Action>(Annotate)
+nmap <leader>oh <Action>(Vcs.ShowTabbedFileHistory)
+nmap <leader>oH <Action>(Vcs.ShowHistoryForBlock)
+xmap <leader>oH <Action>(Vcs.ShowHistoryForBlock)
+nmap <leader>oL <Action>(LocalHistory.ShowHistory)
+nmap <leader>og <Action>(Git.Log)
+" diff
+nmap <leader>od <Action>(Compare.SameVersion)
+nmap <leader>oD <Action>(Git.CompareWithBranch)
+nmap <leader>ol <Action>(Vcs.Show.Local.Changes)
+" branches & commits
+nmap <leader>ob <Action>(Git.Branches)
+nmap <leader>ok <Action>(CheckinProject)
+nmap <leader>oP <Action>(Vcs.Push)
+nmap <leader>of <Action>(Git.Fetch)
+nmap <leader>os <Action>(Git.Stash)
+nmap <leader>oS <Action>(Git.Unstash)
+nmap <leader>oR <Action>(Git.Rebase)
+nmap <leader>oX <Action>(Git.Reset)
+nmap <leader>om <Action>(Git.ResolveConflicts)
+nmap <leader>or <Action>(Vcs.RollbackChangedLines)
+xmap <leader>or <Action>(Vcs.RollbackChangedLines)
+
+""" WHICH-KEY DESCRIPTIONS
+
+let g:WhichKeyDesc_review             = "<leader>o Pull Requests / Review"
+
+let g:WhichKeyDesc_review_menu        = "<leader>o+ Menu (VCS Quick List)"
+let g:WhichKeyDesc_review_pr_window   = "<leader>op [P]ull Requests Tool Window"
+let g:WhichKeyDesc_review_pr_create   = "<leader>oc [C]reate Pull Request"
+let g:WhichKeyDesc_review_pr_view     = "<leader>ov [V]iew Pull Request"
+let g:WhichKeyDesc_review_annotate    = "<leader>oa [A]nnotate (Blame)"
+let g:WhichKeyDesc_review_file_hist   = "<leader>oh File [H]istory"
+let g:WhichKeyDesc_review_block_hist  = "<leader>oH [H]istory for Selection"
+let g:WhichKeyDesc_review_local_hist  = "<leader>oL [L]ocal History"
+let g:WhichKeyDesc_review_git_log     = "<leader>og [G]it Log"
+let g:WhichKeyDesc_review_diff        = "<leader>od [D]iff with Repository"
+let g:WhichKeyDesc_review_diff_branch = "<leader>oD [D]iff with Branch"
+let g:WhichKeyDesc_review_local_chg   = "<leader>ol [L]ocal Changes"
+let g:WhichKeyDesc_review_branches    = "<leader>ob [B]ranches"
+let g:WhichKeyDesc_review_commit      = "<leader>ok Commit (Chec[k]in)"
+let g:WhichKeyDesc_review_push        = "<leader>oP [P]ush"
+let g:WhichKeyDesc_review_fetch       = "<leader>of [F]etch"
+let g:WhichKeyDesc_review_stash       = "<leader>os [S]tash"
+let g:WhichKeyDesc_review_unstash     = "<leader>oS Un[S]tash"
+let g:WhichKeyDesc_review_rebase      = "<leader>oR [R]ebase"
+let g:WhichKeyDesc_review_reset       = "<leader>oX Reset"
+let g:WhichKeyDesc_review_conflicts   = "<leader>om [M]erge Conflicts"
+let g:WhichKeyDesc_review_rollback    = "<leader>or [R]ollback Changed Lines"
+
+""" -------------------------------------------------------------------
+""" 📦 p: project
+""" -------------------------------------------------------------------
+
+nmap <leader>pR <Action>(Maven.ReimportProject)
+nmap <leader>pb <Action>(CompileDirty)
+nmap <leader>pc <Action>(CloseProject)
+nmap <leader>po <Action>(OpenFile)
+nmap <leader>pr <Action>($LRU)
+nmap <leader>ps <Action>(NextProjectWindow)
+nmap <leader>pu <Action>(Vcs.UpdateProject)
+nmap <leader>pw <Action>(OpenProjectWindows)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -424,28 +703,38 @@ let g:WhichKeyDesc_project_build       = "<leader>pb [B]uild (Compile Dirty)"
 let g:WhichKeyDesc_project_close       = "<leader>pc [C]lose Project"
 let g:WhichKeyDesc_project_open        = "<leader>po [O]pen Project"
 let g:WhichKeyDesc_project_recent      = "<leader>pr [R]ecent Projects"
-let g:WhichKeyDesc_project_switch      = "<leader>ps [S]witch Frame"
+let g:WhichKeyDesc_project_switch      = "<leader>ps [S]witch Project Window"
 let g:WhichKeyDesc_project_update      = "<leader>pu [U]pdate from VCS"
 let g:WhichKeyDesc_project_windows     = "<leader>pw [W]indows (Project)"
 
-""" -------------------------------
-""" - r: refactor
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🔧 r: refactor
+""" -------------------------------------------------------------------
 
-map <leader>rr <Action>(Refactorings.QuickListPopupAction)
-map <leader>r+ <Action>(Refactorings.QuickListPopupAction)
-map <leader>rP <Action>(IntroduceFunctionalParameter)
-map <leader>rR <Action>(RenameFile)
-map <leader>rS <Action>(ExtractSuperclass)
-map <leader>rc <Action>(IntroduceConstant)
-map <leader>rf <Action>(IntroduceField)
-map <leader>ri <Action>(Inline)
-map <leader>rm <Action>(ExtractMethod)
-map <leader>rp <Action>(IntroduceParameter)
-map <leader>rn <Action>(RenameElement)
-map <leader>rs <Action>(ChangeSignature)
-map <leader>ru <Action>(MembersPullUp)
-map <leader>rv <Action>(IntroduceVariable)
+nmap <leader>rr <Action>(Refactorings.QuickListPopupAction)
+nmap <leader>r+ <Action>(Refactorings.QuickListPopupAction)
+nmap <leader>rP <Action>(IntroduceFunctionalParameter)
+nmap <leader>rR <Action>(RenameFile)
+nmap <leader>rS <Action>(ExtractSuperclass)
+nmap <leader>rc <Action>(IntroduceConstant)
+xmap <leader>rc <Action>(IntroduceConstant)
+nmap <leader>rf <Action>(IntroduceField)
+xmap <leader>rf <Action>(IntroduceField)
+nmap <leader>ri <Action>(Inline)
+nmap <leader>rm <Action>(ExtractMethod)
+xmap <leader>rm <Action>(ExtractMethod)
+nmap <leader>rp <Action>(IntroduceParameter)
+xmap <leader>rp <Action>(IntroduceParameter)
+nmap <leader>rn <Action>(RenameElement)
+nmap <leader>rs <Action>(ChangeSignature)
+nmap <leader>ru <Action>(MembersPullUp)
+nmap <leader>rv <Action>(IntroduceVariable)
+xmap <leader>rv <Action>(IntroduceVariable)
+nmap <leader>rM <Action>(Move)
+nmap <leader>rD <Action>(SafeDelete)
+nmap <leader>rI <Action>(ExtractInterface)
+nmap <leader>rC <Action>(ExtractClass)
+nmap <leader>re <Action>(EncapsulateFields)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -465,38 +754,74 @@ let g:WhichKeyDesc_refactor_rename_elem = "<leader>rn [R]ename Element"
 let g:WhichKeyDesc_refactor_signature   = "<leader>rs Change [S]ignature"
 let g:WhichKeyDesc_refactor_pullup      = "<leader>ru [U]p Members"
 let g:WhichKeyDesc_refactor_variable    = "<leader>rv Introduce [V]ariable"
+let g:WhichKeyDesc_refactor_move        = "<leader>rM [M]ove"
+let g:WhichKeyDesc_refactor_safe_delete = "<leader>rD Safe [D]elete"
+let g:WhichKeyDesc_refactor_interface   = "<leader>rI Extract [I]nterface"
+let g:WhichKeyDesc_refactor_class       = "<leader>rC Extract [C]lass"
+let g:WhichKeyDesc_refactor_encapsulate = "<leader>re [E]ncapsulate Fields"
 
-""" -------------------------------
-""" - t: tools
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🪟 s: splits
+""" -------------------------------------------------------------------
 
-map <leader>t+ <Action>(ToolWindowsGroup)
-map <leader>t, <Action>(HideActiveWindow)
-map <leader>tH <Action>(HideAllWindows)
-map <leader>tP <Action>(ActivateProblemsViewToolWindow)
-map <leader>tR <Action>(ActivatePullRequestsToolWindow)
-map <leader>tS <Action>(ActivateServicesToolWindow)
-map <leader>tT <Action>(ActivateTODOToolWindow)
-map <leader>tb <Action>(ActivateBookmarksToolWindow)
-map <leader>td <Action>(ActivateDebugToolWindow)
-map <leader>tf <Action>(ActivateFindToolWindow)
-map <leader>th <Action>(ActivateHierarchyToolWindow)
-map <leader>tl <Action>(JumpToLastWindow)
-map <leader>tm <Action>(ActivateMavenToolWindow)
-map <leader>tp <Action>(ActivateProjectToolWindow)
-map <leader>tr <Action>(ActivateRunToolWindow)
-map <leader>ts <Action>(ActivateStructureToolWindow)
-map <leader>tt <Action>(ActivateTerminalToolWindow)
-map <leader>tw <Action>(ActivateWebInspectorToolWindow)
+nmap <leader>sv <Action>(SplitVertically)
+nmap <leader>sh <Action>(SplitHorizontally)
+nmap <leader>sx <Action>(Unsplit)
+nmap <leader>sX <Action>(UnsplitAll)
+nmap <leader>sm <Action>(MaximizeEditorInSplit)
+nmap <leader>sn <Action>(NextSplitter)
+nmap <leader>sp <Action>(PrevSplitter)
+nmap <leader>so <Action>(MoveEditorToOppositeTabGroup)
+nmap <leader>sq <Action>(CloseContent)
+nmap <leader>sQ <Action>(CloseAllEditors)
+nmap <leader>sO <Action>(CloseAllEditorsButActive)
 
 """ WHICH-KEY DESCRIPTIONS
 
-let g:WhichKeyDesc_tools            = "<leader>t [T]ools"
+let g:WhichKeyDesc_splits            = "<leader>s [S]plits"
+
+let g:WhichKeyDesc_split_vertical    = "<leader>sv Split [V]ertically"
+let g:WhichKeyDesc_split_horizontal  = "<leader>sh Split [H]orizontally"
+let g:WhichKeyDesc_split_unsplit     = "<leader>sx Unsplit"
+let g:WhichKeyDesc_split_unsplit_all = "<leader>sX Unsplit All"
+let g:WhichKeyDesc_split_maximize    = "<leader>sm [M]aximize Editor"
+let g:WhichKeyDesc_split_next        = "<leader>sn [N]ext Splitter"
+let g:WhichKeyDesc_split_prev        = "<leader>sp [P]revious Splitter"
+let g:WhichKeyDesc_split_move        = "<leader>so M[o]ve to Opposite Group"
+let g:WhichKeyDesc_split_close       = "<leader>sq [Q]uit Editor"
+let g:WhichKeyDesc_split_close_all   = "<leader>sQ [Q]uit All Editors"
+let g:WhichKeyDesc_split_close_other = "<leader>sO Quit [O]ther Editors"
+
+""" -------------------------------------------------------------------
+""" 🧱 t: tool windows
+""" -------------------------------------------------------------------
+
+nmap <leader>t+ <Action>(ToolWindowsGroup)
+nmap <leader>t, <Action>(HideActiveWindow)
+nmap <leader>tH <Action>(HideAllWindows)
+nmap <leader>tP <Action>(ActivateProblemsViewToolWindow)
+nmap <leader>tR <Action>(ActivatePullRequestsToolWindow)
+nmap <leader>tS <Action>(ActivateServicesToolWindow)
+nmap <leader>tT <Action>(ActivateTODOToolWindow)
+nmap <leader>tb <Action>(ActivateBookmarksToolWindow)
+nmap <leader>td <Action>(ActivateDebugToolWindow)
+nmap <leader>tf <Action>(ActivateFindToolWindow)
+nmap <leader>th <Action>(ActivateHierarchyToolWindow)
+nmap <leader>tl <Action>(JumpToLastWindow)
+nmap <leader>tm <Action>(ActivateMavenToolWindow)
+nmap <leader>tp <Action>(ActivateProjectToolWindow)
+nmap <leader>tr <Action>(ActivateRunToolWindow)
+nmap <leader>ts <Action>(ActivateStructureToolWindow)
+nmap <leader>tt <Action>(ActivateTerminalToolWindow)
+nmap <leader>tv <Action>(ActivateVersionControlToolWindow)
+
+""" WHICH-KEY DESCRIPTIONS
+
+let g:WhichKeyDesc_tools            = "<leader>t [T]ool Windows"
 
 let g:WhichKeyDesc_tools_menu       = "<leader>t+ [T]ool Windows Menu"
 let g:WhichKeyDesc_tools_hide       = "<leader>t, [H]ide Active Window"
 let g:WhichKeyDesc_tools_hide_all   = "<leader>tH [H]ide All Windows"
-
 let g:WhichKeyDesc_tools_problems   = "<leader>tP [P]roblems Tool Window"
 let g:WhichKeyDesc_tools_prs        = "<leader>tR Pull [R]equests Tool Window"
 let g:WhichKeyDesc_tools_services   = "<leader>tS [S]ervices Tool Window"
@@ -511,81 +836,82 @@ let g:WhichKeyDesc_tools_project    = "<leader>tp [P]roject Tool Window"
 let g:WhichKeyDesc_tools_run        = "<leader>tr [R]un Tool Window"
 let g:WhichKeyDesc_tools_structure  = "<leader>ts [S]tructure Tool Window"
 let g:WhichKeyDesc_tools_terminal   = "<leader>tt [T]erminal Tool Window"
-let g:WhichKeyDesc_tools_web        = "<leader>tw [W]eb Inspector Tool Window"
+let g:WhichKeyDesc_tools_vcs        = "<leader>tv [V]ersion Control Tool Window"
 
-""" -------------------------------
-""" - v: view
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🎨 u: UI toggles
+""" -------------------------------------------------------------------
 
-map <leader>v+ <Action>(ViewMenu)
-map <leader>vA <Action>(TogglePresentationAssistantAction)
-map <leader>vP <Action>(TogglePresentationMode)
-map <leader>vQ <Action>(CloseAllEditors)
-map <leader>vU <Action>(UnsplitAll)
-map <leader>vb <Action>(ViewToolButtons)
-map <leader>vj <Action>(SplitHorizontally)
-map <leader>v- <Action>(SplitHorizontally)
-map <leader>vl <Action>(SplitVertically)
-map <leader>v<Bar> <Action>(SplitVertically)
-map <leader>vm <Action>(MaximizeEditorInSplit)
-map <leader>vn <Action>(NextSplitter)
-map <leader>vN <Action>(PrevSplitter)
-map <leader>vu <Action>(Unsplit)
-map <leader>vM <Action>(MoveEditorToOppositeTabGroup)
-map <leader>vz <Action>(ToggleZenMode)
+nnoremap <leader>un :set relativenumber!<CR>
+nmap <leader>u+ <Action>(ViewMenu)
+nmap <leader>uz <Action>(ToggleZenMode)
+nmap <leader>uZ <Action>(ToggleDistractionFreeMode)
+nmap <leader>up <Action>(TogglePresentationMode)
+nmap <leader>ua <Action>(TogglePresentationAssistantAction)
+nmap <leader>ub <Action>(ViewToolButtons)
+nmap <leader>uw <Action>(EditorToggleShowWhitespaces)
+nmap <leader>ui <Action>(ToggleInlayHintsGloballyAction)
+nmap <leader>uc <Action>(QuickChangeScheme)
 
 """ WHICH-KEY DESCRIPTIONS
 
-let g:WhichKeyDesc_view            = "<leader>v [V]iew"
+let g:WhichKeyDesc_ui             = "<leader>u [U]I Toggles"
 
-let g:WhichKeyDesc_view_menu       = "<leader>v+ [V]iew Menu"
-let g:WhichKeyDesc_view_pres_ass   = "<leader>vA [A]ssistant Presentation Mode"
-let g:WhichKeyDesc_view_pres_mode  = "<leader>vP [P]resentation Mode"
-let g:WhichKeyDesc_view_close_all  = "<leader>vQ [Q]uit All Editors"
-let g:WhichKeyDesc_view_unsplit_all= "<leader>vU [U]nsplit All"
-let g:WhichKeyDesc_view_tool_btns  = "<leader>vb [B]uttons (View Tool Buttons)"
-let g:WhichKeyDesc_view_split_h    = "<leader>vj Split Horizontally"
-let g:WhichKeyDesc_view_split_h2   = "<leader>v- Split Horizontally"
-let g:WhichKeyDesc_view_split_v    = "<leader>vl Split Vertically"
-let g:WhichKeyDesc_view_split_v2   = "<leader>v<Bar> Split Vertically"
-let g:WhichKeyDesc_view_maximize   = "<leader>vm [M]aximize Editor"
-let g:WhichKeyDesc_view_next_split = "<leader>vn [N]ext Splitter"
-let g:WhichKeyDesc_view_prev_split = "<leader>vN Previous Splitter"
-let g:WhichKeyDesc_view_unsplit    = "<leader>vu [U]nsplit"
-let g:WhichKeyDesc_view_move_split = "<leader>vM [M]ove Editor to Opposite Group"
-let g:WhichKeyDesc_view_zen_mode   = "<leader>vz [Z]en Mode"
+let g:WhichKeyDesc_ui_relnumber   = "<leader>un Toggle Relative [N]umbers"
+let g:WhichKeyDesc_ui_menu        = "<leader>u+ View Menu"
+let g:WhichKeyDesc_ui_zen         = "<leader>uz [Z]en Mode"
+let g:WhichKeyDesc_ui_distraction = "<leader>uZ Distraction Free Mode"
+let g:WhichKeyDesc_ui_present     = "<leader>up [P]resentation Mode"
+let g:WhichKeyDesc_ui_assistant   = "<leader>ua Presentation [A]ssistant"
+let g:WhichKeyDesc_ui_tool_btns   = "<leader>ub Tool [B]uttons"
+let g:WhichKeyDesc_ui_whitespace  = "<leader>uw Show [W]hitespaces"
+let g:WhichKeyDesc_ui_inlay       = "<leader>ui [I]nlay Hints"
+let g:WhichKeyDesc_ui_scheme      = "<leader>uc [C]olour Scheme"
 
-""" -------------------------------
-""" - x: execute
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" ▶️  x: execute / run
+""" -------------------------------------------------------------------
 
-map <leader>xt <Action>(RunClass)
-map <leader>xm <Action>(MavenHelper.QuickRunRootMavenGoal)
-map <leader>xr <Action>(Run)
-map <leader>xR <Action>(Rerun)
-map <leader>xd <Action>(Debug)
+nmap <leader>xr <Action>(Run)
+nmap <leader>xR <Action>(Rerun)
+nmap <leader>xx <Action>(Stop)
+nmap <leader>xc <Action>(ChooseRunConfiguration)
+nmap <leader>xe <Action>(editRunConfigurations)
+nmap <leader>xt <Action>(RunClass)
+nmap <leader>xT <Action>(RerunFailedTests)
+nmap <leader>xG <Action>(GenerateTestMethod)
+nmap <leader>xC <Action>(RunCoverage)
+nmap <leader>xm <Action>(MavenHelper.QuickRunRootMavenGoal)
 
 """ WHICH-KEY DESCRIPTIONS
 
-let g:WhichKeyDesc_execute       = "<leader>x e[X]ecute"
+let g:WhichKeyDesc_execute            = "<leader>x e[X]ecute"
 
-let g:WhichKeyDesc_execute_test        = "<leader>xt [T]est (Run Single Test)"
-let g:WhichKeyDesc_execute_maven       = "<leader>xm [M]aven (Quick Run Goal)"
-let g:WhichKeyDesc_execute_run         = "<leader>xr [R]un"
-let g:WhichKeyDesc_execute_rerun       = "<leader>xR [R]erun"
-let g:WhichKeyDesc_execute_debug       = "<leader>xd [D]ebug"
+let g:WhichKeyDesc_execute_run        = "<leader>xr [R]un"
+let g:WhichKeyDesc_execute_rerun      = "<leader>xR [R]erun"
+let g:WhichKeyDesc_execute_stop       = "<leader>xx Stop"
+let g:WhichKeyDesc_execute_choose     = "<leader>xc [C]hoose Run Configuration"
+let g:WhichKeyDesc_execute_edit_conf  = "<leader>xe [E]dit Run Configurations"
+let g:WhichKeyDesc_execute_test       = "<leader>xt [T]est (Run Single Test)"
+let g:WhichKeyDesc_execute_rerun_fail = "<leader>xT Rerun Failed [T]ests"
+let g:WhichKeyDesc_execute_gen_test   = "<leader>xG [G]enerate Test Method"
+let g:WhichKeyDesc_execute_coverage   = "<leader>xC [C]overage"
+let g:WhichKeyDesc_execute_maven      = "<leader>xm [M]aven (Quick Run Goal)"
 
-""" -------------------------------
-""" - y: yank
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 📋 y: yank
+""" -------------------------------------------------------------------
 
-map <leader>y+ <Action>(CopyReferencePopupGroup)
-map <leader>ya <Action>(CopyAbsolutePath)
-map <leader>yr <Action>(CopyReference)
+nmap <leader>y+ <Action>(CopyReferencePopupGroup)
+nmap <leader>ya <Action>(CopyAbsolutePath)
+nmap <leader>yr <Action>(CopyReference)
 
-map <leader>ypc <Action>(com.github.kawamataryo.copygitlink.CopyAsMarkdownWithCode)
-map <leader>ypm <Action>(com.github.kawamataryo.copygitlink.CopyPermalinkAsMarkdown)
-map <leader>ypp <Action>(com.github.kawamataryo.copygitlink.CopyPermalink)
+nmap <leader>ypc <Action>(com.github.kawamataryo.copygitlink.CopyAsMarkdownWithCode)
+xmap <leader>ypc <Action>(com.github.kawamataryo.copygitlink.CopyAsMarkdownWithCode)
+nmap <leader>ypm <Action>(com.github.kawamataryo.copygitlink.CopyPermalinkAsMarkdown)
+xmap <leader>ypm <Action>(com.github.kawamataryo.copygitlink.CopyPermalinkAsMarkdown)
+nmap <leader>ypp <Action>(com.github.kawamataryo.copygitlink.CopyPermalink)
+xmap <leader>ypp <Action>(com.github.kawamataryo.copygitlink.CopyPermalink)
 
 """ WHICH-KEY DESCRIPTIONS
 
@@ -594,48 +920,55 @@ let g:WhichKeyDesc_yank       = "<leader>y [Y]ank (Copy Actions)"
 let g:WhichKeyDesc_yank_popup         = "<leader>y+ Menu (Copy Reference Menu)"
 let g:WhichKeyDesc_yank_absolute      = "<leader>ya [A]bsolute Path (Copy Full Path)"
 let g:WhichKeyDesc_yank_reference     = "<leader>yr [R]eference (Copy Symbol Reference)"
+let g:WhichKeyDesc_yank_git           = "<leader>yp [P]ermalinks (Git)"
 let g:WhichKeyDesc_yank_git_code      = "<leader>ypc [C]ode Link (Copy Git Markdown Code)"
 let g:WhichKeyDesc_yank_git_md        = "<leader>ypm [M]arkdown Link (Copy Git Permalink as MD)"
 let g:WhichKeyDesc_yank_git_permalink = "<leader>ypp [P]ermalink (Copy Git Permalink)"
 
-""" -------------------------------
-""" - z: folding
-""" -------------------------------
+""" -------------------------------------------------------------------
+""" 🗂️  z: folding
+""" -------------------------------------------------------------------
 
-map <leader>zC <Action>(CollapseAllRegions)
-map <leader>zE <Action>(ExpandAllRegions)
-map <leader>zL <Action>(ExpandAllToLevel)
-map <leader>zb <Action>(CollapseBlock)
-map <leader>zc <Action>(CollapseRegion)
-map <leader>ze <Action>(ExpandRegion)
-map <leader>zl <Action>(ExpandToLevel)
-map <leader>zrc <Action>(CollapseRegionRecursively)
-map <leader>zre <Action>(ExpandRegionRecursively)
-map <leader>ztC <Action>(CollapseAll)
-map <leader>ztE <Action>(ExpandAll)
-map <leader>ztn <Action>(ExpandTreeNode)
+nmap <leader>zC <Action>(CollapseAllRegions)
+nmap <leader>zE <Action>(ExpandAllRegions)
+nmap <leader>zL <Action>(ExpandAllToLevel)
+nmap <leader>zb <Action>(CollapseBlock)
+nmap <leader>zc <Action>(CollapseRegion)
+nmap <leader>ze <Action>(ExpandRegion)
+nmap <leader>zl <Action>(ExpandToLevel)
+nmap <leader>zrc <Action>(CollapseRegionRecursively)
+nmap <leader>zre <Action>(ExpandRegionRecursively)
+nmap <leader>ztC <Action>(CollapseAll)
+nmap <leader>ztE <Action>(ExpandAll)
+nmap <leader>ztn <Action>(ExpandTreeNode)
 
 """ WHICH-KEY DESCRIPTIONS
 
 let g:WhichKeyDesc_folding       = "<leader>z [Z] Folding (Code Folding Actions)"
 
-let g:WhichKeyDesc_fold_collapse_all  = "<leader>zC [C]ollapse All (Collapse All Regions)"
-let g:WhichKeyDesc_fold_expand_all    = "<leader>zE [E]xpand All (Expand All Regions)"
-let g:WhichKeyDesc_fold_expand_level  = "<leader>zL [L]evel Expand (Expand All to Level)"
-let g:WhichKeyDesc_fold_collapse_block    = "<leader>zb [B]lock Collapse (Collapse Block)"
-let g:WhichKeyDesc_fold_collapse_region   = "<leader>zc [C]ollapse (Collapse Region)"
-let g:WhichKeyDesc_fold_expand_region     = "<leader>ze [E]xpand (Expand Region)"
-let g:WhichKeyDesc_fold_expand_level      = "<leader>zl [L]evel Expand (Expand to Level)"
+let g:WhichKeyDesc_fold_collapse_all        = "<leader>zC [C]ollapse All (Collapse All Regions)"
+let g:WhichKeyDesc_fold_expand_all          = "<leader>zE [E]xpand All (Expand All Regions)"
+let g:WhichKeyDesc_fold_expand_all_level    = "<leader>zL [L]evel Expand (Expand All to Level)"
+let g:WhichKeyDesc_fold_collapse_block      = "<leader>zb [B]lock Collapse (Collapse Block)"
+let g:WhichKeyDesc_fold_collapse_region     = "<leader>zc [C]ollapse (Collapse Region)"
+let g:WhichKeyDesc_fold_expand_region       = "<leader>ze [E]xpand (Expand Region)"
+let g:WhichKeyDesc_fold_expand_to_level     = "<leader>zl [L]evel Expand (Expand to Level)"
+let g:WhichKeyDesc_fold_recursive           = "<leader>zr [R]ecursive"
 let g:WhichKeyDesc_fold_recursive_collapse  = "<leader>zrc [R]ecursive Collapse (Collapse Region Recursively)"
 let g:WhichKeyDesc_fold_recursive_expand    = "<leader>zre [R]ecursive Expand (Expand Region Recursively)"
-let g:WhichKeyDesc_fold_tool_collapse_all  = "<leader>ztC [T]ool Collapse All (Collapse All)"
-let g:WhichKeyDesc_fold_tool_expand_all    = "<leader>ztE [T]ool Expand All (Expand All)"
-let g:WhichKeyDesc_fold_tool_expand_node   = "<leader>ztn [N]ode Expand (Expand Tree Node)"
+let g:WhichKeyDesc_fold_tool                = "<leader>zt [T]ree (Tool Windows)"
+let g:WhichKeyDesc_fold_tool_collapse_all   = "<leader>ztC [T]ool Collapse All (Collapse All)"
+let g:WhichKeyDesc_fold_tool_expand_all     = "<leader>ztE [T]ool Expand All (Expand All)"
+let g:WhichKeyDesc_fold_tool_expand_node    = "<leader>ztn [N]ode Expand (Expand Tree Node)"
 
 """ -------------------------------------------------------------------
-" which-key hiding some bindings 
-let g:WhichKeyDesc_hide_d_override = "<leader>d"
-let g:WhichKeyDesc_hide_n_override = "<leader>n"
-let g:WhichKeyDesc_hide_e_override = "<leader>e"
-let g:WhichKeyDesc_hide_space_override = "<leader><Space>"
+""" 🔤 NON-LEADER WHICH-KEY DESCRIPTIONS
+""" -------------------------------------------------------------------
 
+let g:WhichKeyDesc_bracket_method_up   = "[[ Previous Method"
+let g:WhichKeyDesc_bracket_method_down = "]] Next Method"
+
+let g:WhichKeyDesc_nerdtree            = "<leader>e [E]xplorer (NERDTree)"
+let g:WhichKeyDesc_comment             = "<leader>/ Comment Line"
+let g:WhichKeyDesc_intentions          = "<leader><CR> Intention Actions"
+let g:WhichKeyDesc_recent_files_alt    = "<leader><leader> Recent Files"

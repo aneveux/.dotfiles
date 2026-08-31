@@ -1,0 +1,29 @@
+{
+  "settings": {
+    "delay": 200,
+    "maxColumns": 5,
+    "sortGroupsFirst": true,
+    "position": "bottom-right",
+    "showIcons": true
+  },
+  "overrides": {
+    "a": { "icon": "AllIcons.Actions.IntentionBulb" },
+    "b": { "icon": "AllIcons.Nodes.Bookmark" },
+    "c": { "icon": "code" },
+    "d": { "icon": "debug" },
+    "e": { "icon": "AllIcons.Nodes.Folder" },
+    "f": { "icon": "search" },
+    "g": { "icon": "AllIcons.Actions.Forward" },
+    "h": { "icon": "AllIcons.Actions.MoveTo2" },
+    "m": { "icon": "AllIcons.General.Settings" },
+    "o": { "icon": "git" },
+    "p": { "icon": "AllIcons.General.ProjectStructure" },
+    "r": { "icon": "AllIcons.Actions.SuggestedRefactoringBulb" },
+    "s": { "icon": "windows" },
+    "t": { "icon": "AllIcons.General.Layout" },
+    "u": { "icon": "AllIcons.Actions.Colors" },
+    "x": { "icon": "AllIcons.Actions.Execute" },
+    "y": { "icon": "AllIcons.Actions.Copy" },
+    "z": { "icon": "AllIcons.Actions.GroupBy" }
+  }
+}

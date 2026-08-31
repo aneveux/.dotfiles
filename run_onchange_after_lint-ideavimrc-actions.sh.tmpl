@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# Re-lint .ideavimrc whenever it changes. Advisory: a stale action ID must not
+# block dotfile application, so this never fails the run.
+#
+# .ideavimrc hash: {{ include "dot_ideavimrc" | sha256sum }}
+
+LINTER="{{ .chezmoi.homeDir }}/bin/ideavim-lint-actions.sh"
+
+[[ -x "$LINTER" ]] || exit 0
+
+"$LINTER" "{{ .chezmoi.homeDir }}/.ideavimrc" || printf '⚠️  ideavimrc lint reported problems (see above)\n' >&2
+
+exit 0
