@@ -22,7 +22,8 @@ if [[ ! -f "$STASH" ]]; then
 	exit 0
 fi
 
-OPEN=$(/usr/bin/grep -c '^\- \[ \]' "$STASH" 2>/dev/null || echo 0)
+# `grep -c` prints 0 and exits 1 on no match, so `|| echo 0` made OPEN "0\n0".
+OPEN=$(/usr/bin/grep -c '^\- \[ \]' "$STASH" 2>/dev/null) || OPEN=0
 if [[ "$OPEN" -eq 0 ]]; then
 	exit 0
 fi

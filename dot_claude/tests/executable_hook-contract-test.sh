@@ -186,6 +186,22 @@ test_field_extraction() {
 		fail "stash-reminder.sh reads .cwd and counts open items" "stdout: ${HOOK_STDOUT:-<empty>}"
 	fi
 	rm -f "/tmp/claude-stash-shown-contract-test-$$"
+
+	# Zero open items must stay silent: `grep -c` exits 1 when nothing matches.
+	local quiet_cwd="$SANDBOX/stash-quiet"
+	mkdir -p "$quiet_cwd"
+	printf -- '# Stash\n\n- [x] done item\n' >"$quiet_cwd/STASH.md"
+	local quiet_payload
+	quiet_payload=$(jq -nc --arg cwd "$quiet_cwd" '{hook_event_name: "Stop", cwd: $cwd}')
+	run_hook stash-reminder.sh "$quiet_payload" \
+		"HOME=$stash_home" "CLAUDE_CODE_SESSION_ID=contract-quiet-$$"
+	if [[ $HOOK_RC -eq 0 && -z "$HOOK_STDOUT" && -z "$HOOK_STDERR" ]]; then
+		pass "stash-reminder.sh stays silent with zero open items"
+	else
+		fail "stash-reminder.sh stays silent with zero open items" \
+			"rc=$HOOK_RC stdout: ${HOOK_STDOUT:-<empty>} stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+	rm -f "/tmp/claude-stash-shown-contract-quiet-$$"
 }
 
 # ── 2. Env contract ──────────────────────────────────────────────────────────
