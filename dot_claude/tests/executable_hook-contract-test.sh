@@ -19,6 +19,7 @@
 #   6. Rule scoping       — ccx rules use `paths:`, and those paths scope as intended
 #   7. Handover content   — the context hook emits real content, not just exit 0
 #   8. Config guard       — the deny-rule floor blocks and allows in the right cases
+#   9. Credential shapes  — the gate knows the credential prefixes this platform mints
 
 set -uo pipefail
 shopt -s extglob
@@ -28,7 +29,15 @@ CLAUDE_DIR=$(dirname "$TESTS_DIR")
 HOOKS_DIR="$CLAUDE_DIR/hooks"
 FIXTURES="$TESTS_DIR/fixtures"
 RULEBOOK="$HOME/.cc-safety-net/rules/antoine-personal/rulebook.json"
-CCX_PROFILES="$HOME/.config/ccx/profiles"
+# Injectable, because $HOME is the wrong anchor for it in the one environment this
+# file is shipped to. sbx mounts the ccx store at its HOST absolute path
+# (/home/antoine/.config/ccx) while guest $HOME is /home/agent, so in-guest the
+# default resolved to a directory that does not exist and class 6 skipped — 19 of
+# the suite's 53 assertions never ran where they matter (audit finding 15). The
+# claude-project-config kit exports ASBX_CCX_PROFILES into
+# /etc/sandbox-persistent.sh when that mount resolves. Unset on the host, so host
+# behaviour is unchanged.
+CCX_PROFILES="${ASBX_CCX_PROFILES:-$HOME/.config/ccx/profiles}"
 
 SANDBOX=$(mktemp -d "${TMPDIR:-/tmp}/claude-hook-contract.XXXXXX")
 trap 'rm -rf "$SANDBOX"' EXIT
@@ -85,9 +94,20 @@ fixture() { cat "$FIXTURES/$1"; }
 # fragments so no literal token lands in this file.
 fake_github_token() { printf 'ghp_%s' "$(printf 'a%.0s' {1..36})"; }
 
-# A source line assigning that credential to a constant.
+# The other shapes this platform mints, same construction: the prefix is a literal
+# (harmless on its own — every gate pattern needs prefix and body contiguous) and
+# the body is generated, so no complete credential shape is stored in this file.
+# The PEM header has no separate body, so its middle field is the fragment.
+fake_sts_key() { printf 'ASIA%s' "$(printf 'Z%.0s' {1..16})"; }
+fake_gh_oauth_token() { printf 'gho_%s' "$(printf 'b%.0s' {1..36})"; }
+fake_atlassian_token() { printf 'ATATT%s' "$(printf 'c%.0s' {1..24})"; }
+fake_sonar_token() { printf 'squ_%s' "$(printf 'd%.0s' {1..40})"; }
+fake_private_key_header() { printf -- '-----BEGIN %s PRIVATE KEY-----' 'OPENSSH'; }
+
+# A source line assigning a credential to a constant. Defaults to the GitHub
+# personal-token shape the class-1 assertions were written against.
 leaked_credential_line() {
-	printf 'String t = "%s";' "$(fake_github_token)"
+	printf 'String t = "%s";' "${1:-$(fake_github_token)}"
 }
 
 # A source line carrying a zero-width space (U+200B), written as its UTF-8 bytes
@@ -650,6 +670,12 @@ test_config_guard() {
 	local reference=""
 	[[ -f "$CLAUDE_DIR/settings.json" ]] && reference="$CLAUDE_DIR/settings.json"
 	[[ -z $reference && -f "$CLAUDE_DIR/config/settings.json" ]] && reference="$CLAUDE_DIR/config/settings.json"
+	# The one intentional divergence from the host copy of this suite. In the sandbox
+	# kit tree the deny rules live in personal-settings.json — settings.json only
+	# exists in-guest, after the bedrock -> personal merge. Without this candidate
+	# the assertion that makes a hardcoded FLOOR safe would skip host-side, which is
+	# exactly where `make test-hooks` runs it.
+	[[ -z $reference && -f "$CLAUDE_DIR/personal-settings.json" ]] && reference="$CLAUDE_DIR/personal-settings.json"
 	if [[ -z $reference ]]; then
 		skip "FLOOR matches the reference settings" "no settings.json next to $HOOKS_DIR"
 	else
@@ -660,6 +686,78 @@ test_config_guard() {
 		else
 			fail "FLOOR matches $reference" "FLOOR=$floor but the file has $actual deny rules"
 		fi
+	fi
+}
+
+# ── 9. Credential shapes ─────────────────────────────────────────────────────
+# The gate's pattern set knew sk-, sk-ant-, ghp_, AKIA and xox — generic provider
+# prefixes — and none of the shapes this platform actually mints: the STS keys the
+# bedrock credential service issues, GH_TOKEN's own OAuth form, and the Atlassian
+# and SonarQube tokens jk-kit, cloudbees-jira-kit and sonar-kit proxy for. A
+# missing prefix is invisible: the hook exits 0, the write lands, and nothing
+# reports it. So one assertion per shape.
+#
+# The last two assertions go the other way, and they are the reason the patterns
+# are prefix-anchored and length-bounded rather than broad. This hook blocks, so a
+# rule that fires on "32 or more base62 characters" would reject a git SHA or a
+# checksum, and a gate that cries wolf gets switched off — which already happened
+# once to the heuristic set named at the top of security-gate.sh.
+
+gate_verdict() {
+	local content="$1" payload
+	payload=$(jq -nc --arg c "$content" '{
+	  hook_event_name: "PreToolUse",
+	  tool_name: "Write",
+	  tool_input: {file_path: "/tmp/Example.java", content: $c}
+	}')
+	run_hook security-gate.sh "$payload"
+}
+
+test_credential_shapes() {
+	section "9. Credential shapes"
+
+	local -a blocked=(
+		"AWS STS session key|$(fake_sts_key)"
+		"GitHub OAuth token|$(fake_gh_oauth_token)"
+		"Atlassian API token|$(fake_atlassian_token)"
+		"SonarQube user token|$(fake_sonar_token)"
+	)
+
+	local entry label secret
+	for entry in "${blocked[@]}"; do
+		label=${entry%%|*}
+		secret=${entry#*|}
+		gate_verdict "$(leaked_credential_line "$secret")"
+		if [[ $HOOK_RC -eq 2 && "$HOOK_STDERR" == *"API key"* ]]; then
+			pass "security-gate.sh blocks a $label"
+		else
+			fail "security-gate.sh blocks a $label" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+		fi
+	done
+
+	# Its own message, not the API-key one: the remediation differs.
+	gate_verdict "$(fake_private_key_header)"
+	if [[ $HOOK_RC -eq 2 && "$HOOK_STDERR" == *"Private key"* ]]; then
+		pass "security-gate.sh blocks a PEM private key header"
+	else
+		fail "security-gate.sh blocks a PEM private key header" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	# One character short of an STS key: the length bound must hold.
+	gate_verdict "$(leaked_credential_line "ASIA$(printf 'Z%.0s' {1..15})")"
+	if [[ $HOOK_RC -eq 0 ]]; then
+		pass "security-gate.sh allows a prefix that is one character short"
+	else
+		fail "security-gate.sh allows a prefix that is one character short" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
+	fi
+
+	# A bare 40-character hex string — a git SHA, a checksum — carries no prefix
+	# and must pass. This is the false positive a broad rule would produce.
+	gate_verdict "$(leaked_credential_line "$(printf 'e%.0s' {1..40})")"
+	if [[ $HOOK_RC -eq 0 ]]; then
+		pass "security-gate.sh allows a bare 40-character hex string"
+	else
+		fail "security-gate.sh allows a bare 40-character hex string" "rc=$HOOK_RC stderr: ${HOOK_STDERR:-<empty>}"
 	fi
 }
 
@@ -675,6 +773,7 @@ main() {
 	test_rule_scoping
 	test_handover_content
 	test_config_guard
+	test_credential_shapes
 
 	printf '\n\033[1mSummary\033[0m: %d passed, %d failed, %d skipped\n' "$PASSED" "$FAILED" "$SKIPPED"
 	[[ $FAILED -eq 0 ]]

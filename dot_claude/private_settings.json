@@ -174,7 +174,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@2.2.15",
+    "command": "npx -y ccstatusline@2.2.29",
     "padding": 0
   },
   "enabledPlugins": {

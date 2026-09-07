@@ -65,7 +65,9 @@ fi
 # file is safe: block instead of waving it through.
 matches() {
 	local rc=0
-	LC_ALL=C grep -qE "$1" <<<"$CONTENT" || rc=$?
+	# `--` because one pattern below starts with a hyphen (the PEM header), which
+	# grep would otherwise read as a bundle of short options.
+	LC_ALL=C grep -qE -- "$1" <<<"$CONTENT" || rc=$?
 	case $rc in
 	0) return 0 ;;
 	1) return 1 ;;
@@ -78,9 +80,46 @@ matches() {
 }
 
 # ── Provider credentials ─────────────────────────────────────────────────────
-if matches '(sk-[a-zA-Z0-9]{20,}|sk-ant-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|xox[bps]-[a-zA-Z0-9\-]{20,})'; then
+# The first pattern set was written against generic provider prefixes and missed
+# the shapes THIS platform mints, which is the only kind of miss that matters
+# here: a shape the gate does not know is not a warning, it is a write that lands
+# while the kit's agentInstructions claim the gate "blocks a Write/Edit carrying a
+# provider credential". Added, each with the caller it belongs to:
+#   ASIA   the STS session keys the bedrock credential service issues — AKIA
+#          alone covers only long-lived IAM keys, and the sandbox never sees one
+#   gho_ ghr_ ghs_ ghu_   GH_TOKEN's own OAuth/refresh/server/user forms, next to
+#          the ghp_ personal token that was already here (one rule now: the old
+#          exact-36 form is a subset of {36,})
+#   ATATT  Atlassian, behind jk-kit and cloudbees-jira-kit
+#   squ_   SonarQube user tokens, behind sonar-kit
+# The PEM header gets its own block below.
+#
+# Every addition is prefix-anchored and length-bounded, and that is not style: the
+# hook BLOCKS, so a generic "32-or-more base62 characters" rule would reject a
+# checksum, a git SHA or a minified line, and a gate that cries wolf gets switched
+# off — which is exactly why the heuristic set named at the top of this file was
+# removed. Class 9 of hook-contract-test.sh asserts the negative direction too.
+#
+# `gh[oprsu]_` also matches sbx's published GH_TOKEN placeholder (gho_ followed by
+# 36 characters). Deliberately not exempted. Nothing should be writing a
+# token-shaped constant into a source file, placeholder or not, and an exemption
+# keyed on the literal placeholder is a hole that goes stale the moment sbx
+# changes it. It costs nothing today: the placeholder appears in this repo only in
+# Markdown, and md is not in SOURCE_EXTENSIONS.
+if matches '(sk-[a-zA-Z0-9]{20,}|sk-ant-[a-zA-Z0-9]{20,}|gh[oprsu]_[A-Za-z0-9]{36,}|(AKIA|ASIA)[A-Z0-9]{16}|xox[bps]-[a-zA-Z0-9\-]{20,}|ATATT[A-Za-z0-9]{20,}|squ_[a-f0-9]{40})'; then
 	echo "SECURITY-GATE: Provider API key pattern detected in $FILE_PATH" >&2
 	echo "Move to .env and reference via environment variable." >&2
+	exit 2
+fi
+
+# ── Private keys ─────────────────────────────────────────────────────────────
+# Its own block rather than one more alternative above, because the remediation
+# differs: "move it to .env" is wrong advice for a private key, and
+# ~/.claude/rules/invariants.md forbids committing one at all. Matched on the PEM
+# header only — the body is base64 and has no anchor worth trusting.
+if matches '-----BEGIN [A-Z ]*PRIVATE KEY-----'; then
+	echo "SECURITY-GATE: Private key material detected in $FILE_PATH" >&2
+	echo "A private key does not belong in a repository. Reference it by path from outside the tree." >&2
 	exit 2
 fi
 
