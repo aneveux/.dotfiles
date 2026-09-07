@@ -22,7 +22,13 @@ run_local_hook() {
 # Extract the branch name and check for Jira ticket references
 append_ticket_to_commit_message() {
   local branch_name
-  branch_name=$(git rev-parse --abbrev-ref HEAD)
+  # symbolic-ref rather than rev-parse --abbrev-ref: on a repo's first commit HEAD
+  # points at a branch that has no commit yet, and rev-parse is fatal there — it
+  # printed `fatal: ambiguous argument 'HEAD'` on stderr for every initial commit.
+  # symbolic-ref still resolves the branch name, so a first commit on a ticket
+  # branch keeps getting its reference. A detached HEAD has no branch name to read
+  # a ticket from, so there is nothing to do.
+  branch_name=$(git symbolic-ref --short HEAD 2>/dev/null) || return 0
 
   # Check if branch name matches any supported ticket pattern
   if [[ $branch_name =~ ^.*((BEE|JENKINS|SECURITY)-[0-9]+).* ]]; then
