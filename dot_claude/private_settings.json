@@ -92,6 +92,15 @@
             "command": "bash ~/.claude/hooks/session-handover.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "SessionEnd": [
@@ -102,6 +111,15 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/session-end-pointer.sh",
             "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 2
           }
         ]
       }
@@ -135,6 +153,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -144,6 +172,16 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/auto-format.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
             "async": true
           }
         ]
@@ -158,6 +196,16 @@
             "timeout": 2
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
       }
     ],
     "ConfigChange": [
@@ -167,6 +215,66 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/config-guard.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/polybar/scripts/claude-status-hook.sh",
+            "timeout": 5,
+            "async": true
           }
         ]
       }
