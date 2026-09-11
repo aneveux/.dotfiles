@@ -82,6 +82,10 @@ proj=${proj:--}
 pmode=${pmode//[^A-Za-z]/_}
 pmode=${pmode:--}
 
+# The record is space-separated and tool is the one field that reaches it
+# straight from jq, so a tool name with a space would corrupt the line.
+tool=${tool//[^A-Za-z0-9._-]/_}
+
 win=${WINDOWID:-}
 [[ $win =~ ^[0-9]+$ ]] || win=-
 
@@ -91,6 +95,19 @@ pane=${TMUX_PANE:-}
 sock=${TMUX%%,*}
 sock=${sock//[^A-Za-z0-9._\/-]/_}
 sock=${sock:--}
+
+# Sets a global rather than echoing: this runs on every tool call of every
+# session, so it must not fork a subshell.
+RANK=-1
+set_rank() {
+	case $1 in
+	question | permission) RANK=3 ;;
+	waiting | error) RANK=2 ;;
+	busy) RANK=1 ;;
+	idle) RANK=0 ;;
+	*) RANK=-1 ;;
+	esac
+}
 
 S_COMM= S_PPID=0 S_START=0
 read_stat() {
@@ -122,23 +139,34 @@ done
 mkdir -p -- "$STATE_DIR" 2>/dev/null || exit 0
 chmod 700 -- "$STATE_DIR" 2>/dev/null
 
+# Opt-in tracing: `touch $STATE_DIR/.debug`. Costs one builtin test when off.
+# Lives outside STATE_DIR so the reader's glob never sees it.
+DEBUG_LOG=
+[[ -e $STATE_DIR/.debug ]] &&
+	DEBUG_LOG="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/claude-status-debug.log"
+
 f="$STATE_DIR/$sid"
 # Lock a separate stable inode: the mv below replaces the state file's inode,
 # so locking the state file itself would give two writers no exclusion.
 exec 9>"$f.lock" 2>/dev/null || exit 0
 flock -x -w 2 9 2>/dev/null || exit 0
 
-old=0
+oseq=0 ostate= ots= otool=
 if [[ -r $f ]] && read -r line <"$f" 2>/dev/null; then
 	for kv in $line; do
-		if [[ $kv == seq=* ]]; then
-			old=${kv#seq=}
-			break
-		fi
+		case $kv in
+		seq=*) oseq=${kv#seq=} ;;
+		state=*) ostate=${kv#state=} ;;
+		ts=*) ots=${kv#ts=} ;;
+		tool=*) otool=${kv#tool=} ;;
+		esac
 	done
 fi
-[[ $old =~ ^[0-9]+$ ]] || old=0
-((SEQ < old)) && exit 0
+[[ $oseq =~ ^[0-9]+$ ]] || oseq=0
+[[ $ots =~ ^[0-9]+$ ]] || ots=$NOW
+[[ $otool == - ]] && otool=
+
+((SEQ < oseq)) && exit 0
 
 if [[ $state == gone ]]; then
 	# No further event can arrive for this session id, so the lock goes too
@@ -147,9 +175,55 @@ if [[ $state == gone ]]; then
 	exit 0
 fi
 
+# A session has ONE state slot but many writers: the main agent plus every
+# subagent, all sharing session_id. So a subagent's `busy` heartbeat would erase
+# the main agent's `question` and turn the bar green while you are being asked
+# something. Rule: raising the rank is always allowed, lowering it only when the
+# event proves you acted or the turn ended.
+#
+# Note this does not rely on agent_id: a subagent PreToolUse is blocked for being
+# a generic `busy` against a rank-3 state, not for being tagged as a subagent.
+# The agent_id arm below only stops a stray subagent flipping a finished session
+# back from waiting to busy.
+apply=1
+set_rank "$state"
+nrank=$RANK
+set_rank "$ostate"
+orank=$RANK
+
+if ((orank >= 0 && nrank < orank)); then
+	if ((orank == 3)); then
+		case $event in
+		UserPromptSubmit | Stop | StopFailure) ;;
+		PostToolUse | PostToolUseFailure)
+			# Only the question's own tool returning means you answered.
+			[[ -n $otool && $tool == "$otool" ]] || apply=0
+			;;
+		*) apply=0 ;;
+		esac
+	elif [[ -n $agent ]]; then
+		apply=0
+	fi
+fi
+
+if ((apply)); then
+	wstate=$state wseq=$SEQ wts=$NOW
+	if ((nrank == 3)); then wtool=${tool:--}; else wtool=-; fi
+else
+	# Preserve seq too: advancing it would let this blocked event lock out a
+	# legitimate later write from the main agent.
+	wstate=$ostate wseq=$oseq wts=$ots wtool=${otool:--}
+fi
+
+if [[ -n $DEBUG_LOG ]]; then
+	printf '%s sid=%s ev=%s tool=%s agent=%s %s->%s applied=%s\n' \
+		"$NOW" "$sid" "$event" "${tool:--}" "${agent:--}" \
+		"${ostate:--}" "$state" "$apply" >>"$DEBUG_LOG" 2>/dev/null
+fi
+
 tmp="$f.tmp.$$"
-if printf 'state=%s seq=%s ts=%s pid=%s start=%s win=%s pane=%s sock=%s proj=%s mode=%s\n' \
-	"$state" "$SEQ" "$NOW" "$cpid" "$cstart" "$win" "$pane" "$sock" "$proj" "$pmode" \
+if printf 'state=%s seq=%s ts=%s act=%s tool=%s pid=%s start=%s win=%s pane=%s sock=%s proj=%s mode=%s\n' \
+	"$wstate" "$wseq" "$wts" "$NOW" "$wtool" "$cpid" "$cstart" "$win" "$pane" "$sock" "$proj" "$pmode" \
 	>"$tmp" 2>/dev/null; then
 	mv -f -- "$tmp" "$f" 2>/dev/null
 fi

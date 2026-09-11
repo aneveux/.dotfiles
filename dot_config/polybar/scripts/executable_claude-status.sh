@@ -13,6 +13,7 @@
 export LC_ALL=C
 
 STATE_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/claude-status"
+DEBUG_LOG="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/claude-status-debug.log"
 BUSY_TTL=600   # busy not refreshed this long is shown as waiting (backstop)
 HARD_TTL=43200 # any state file older than this is deleted outright
 LOCK_TTL=600   # orphan .lock files older than this are deleted
@@ -54,9 +55,16 @@ declare -a CNT=(0 0 0 0)
 BEST=-1 BEST_FILE= BEST_TS=0
 
 scan() {
-	local f base st pid start ts rank now alive
+	local f base st pid start ts act rank now alive
 	now=$EPOCHSECONDS
 	shopt -s nullglob
+
+	# Keep the opt-in trace from filling tmpfs; free when tracing is off.
+	if [[ -e $STATE_DIR/.debug ]] &&
+		(($(stat -c%s "$DEBUG_LOG" 2>/dev/null || echo 0) > 4194304)); then
+		: >"$DEBUG_LOG"
+	fi
+
 	for f in "$STATE_DIR"/*; do
 		base=${f##*/}
 		case $base in
@@ -75,8 +83,13 @@ scan() {
 		start=${F[start]:-0}
 		ts=${F[ts]:-0}
 		[[ $ts =~ ^[0-9]+$ ]] || ts=0
+		# ts is when the state was set, act is the last activity from any writer
+		# (main agent or subagent). Freshness must go by act, or a session whose
+		# state is pinned while subagents work would be downgraded.
+		act=${F[act]:-$ts}
+		[[ $act =~ ^[0-9]+$ ]] || act=$ts
 
-		if ((now - ts > HARD_TTL)); then
+		if ((now - act > HARD_TTL)); then
 			rm -f -- "$f" "$f.lock"
 			continue
 		fi
@@ -96,7 +109,7 @@ scan() {
 			fi
 		fi
 
-		if [[ $st == busy || $st == idle ]] && ((now - ts > BUSY_TTL)); then
+		if [[ $st == busy || $st == idle ]] && ((now - act > BUSY_TTL)); then
 			st=waiting
 		fi
 
