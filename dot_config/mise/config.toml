@@ -44,6 +44,7 @@ television = "latest"
 terraform = "latest"
 usage = "latest"
 uv = "latest"
+yq = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
