@@ -8,5 +8,5 @@ extends:
 plugins:
   enable:
     - smart-goals@cloudbees-marketplace
-    - cloudbees-slack@cloudbees-marketplace
+    - slack@claude-plugins-official
     - claude-stats@claude-secret-garden
