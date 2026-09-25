@@ -77,7 +77,7 @@
       "Edit(~/.cc-safety-net/rules/**/rulebook.json)"
     ]
   },
-  "model": "us.anthropic.claude-opus-5",
+  "model": "us.anthropic.claude-opus-5-5",
   "fallbackModel": [
     "opus",
     "sonnet",
