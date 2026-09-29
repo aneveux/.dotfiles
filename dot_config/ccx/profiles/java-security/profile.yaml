@@ -8,3 +8,8 @@ extends:
 plugins:
   enable:
     - java-security@claude-java-stack
+
+permissions:
+  deny:
+    - "Read(**/.env*)"
+    - "Read(~/.aws/**)"
