@@ -7,6 +7,7 @@ M-h    Previous window  #window #navigate #prev #left
 M-l    Next window  #window #navigate #next #right
 M-j    Next session  #session #navigate #next #down #switch
 M-k    Previous session  #session #navigate #prev #up #switch
+M-s    Sesh session picker (also in zsh outside tmux)  #session #switch #open #picker #sesh #alias
 Ctrl+Alt+Arrows    Resize pane  #pane #resize #grow #shrink
 Ctrl+d    Clear screen  #clear #screen #clean
 
@@ -14,7 +15,7 @@ Ctrl+d    Clear screen  #clear #screen #clean
 C-a + |    Split pane side by side  #pane #split #horizontal #vertical #create
 C-a + -    Split pane stacked  #pane #split #vertical #horizontal #create
 C-a + x    Kill pane  #pane #close #kill #delete
-C-a + o    Sesh session picker  #session #switch #open #picker #sesh #tv
+C-a + o    Sesh session picker  #session #switch #open #picker #sesh
 C-a + f    Toggle floating pane (floax)  #float #floax #popup #toggle
 C-a + v    Enter copy mode (vi)  #copy #mode #scroll #search #select
 C-a + d    Detach from session  #session #detach #exit #leave
@@ -53,7 +54,7 @@ C-a p o    Rotate panes  #pane #rotate #reorder #cycle
 C-a p q    Display pane numbers  #pane #number #identify #pick
 
 ## Session Table (C-a s → key)
-C-a s o    Sesh session picker  #session #switch #open #picker #sesh #tv
+C-a s o    Sesh session picker  #session #switch #open #picker #sesh
 C-a s n    New session  #session #new #create
 C-a s r    Rename session  #session #rename
 C-a s a    Last session via sesh (alternate)  #session #switch #last #back #alternate #sesh

@@ -1,0 +1,62 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+# https://github.com/joshmedeski/sesh
+
+sort_order = ["tmux", ["config", "zoxide"]]
+
+# Worktree layouts the git namer gets wrong (matched against the ~-collapsed path)
+# ~/projects/<repo>/.worktrees/<branch> -> <repo>/<branch>
+[[name_substitution]]
+find = '^~/projects/([^/]+)/\.worktrees/(.+)$'
+replace = "$1/$2"
+regex = true
+
+# ~/projects/worktrees-<repo>/<branch> -> <repo>/<branch>
+[[name_substitution]]
+find = '^~/projects/worktrees-([^/]+)/(.+)$'
+replace = "$1/$2"
+regex = true
+
+[tui]
+show_icons = true
+show_windows = true
+preview = true
+group_separator = true
+
+[default_session]
+preview_command = "eza --all --git --icons --color=always {}"
+
+# Aliases: type it in the picker to connect instantly (/ lists aliased sessions)
+[[session]]
+name = "dotfiles"
+path = "~/.local/share/chezmoi"
+alias = "dot"
+alias_auto_connect = true
+icon = ""
+
+[[session]]
+name = "td"
+path = "~/projects/td"
+alias = "td"
+alias_auto_connect = true
+icon = ""
+
+[[session]]
+name = "beefactory"
+path = "~/projects/beefactory"
+alias = "bf"
+alias_auto_connect = true
+icon = ""
+
+[[session]]
+name = "ccx"
+path = "~/projects/ccx"
+alias = "ccx"
+alias_auto_connect = true
+icon = ""
+
+[[session]]
+name = "unified-release"
+path = "~/projects/unified-release"
+alias = "urr"
+alias_auto_connect = true
+icon = ""

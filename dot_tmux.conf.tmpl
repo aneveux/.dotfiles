@@ -105,6 +105,9 @@ bind -n M-l next-window
 bind -n M-j switch-client -n
 bind -n M-k switch-client -p
 
+# Session picker (same key as the zsh widget outside tmux)
+bind -n M-s display-popup -E -w 80% -h 70% -b rounded -S 'fg=#89b4fa' -T ' Sesh ' "sesh picker -idH"
+
 # Pane resize
 bind -n C-M-Left  resize-pane -L 5
 bind -n C-M-Right resize-pane -R 5
@@ -124,7 +127,7 @@ bind s switch-client -T session
 bind | split-window -h -c "#{pane_current_path}"
 bind - split-window -v -c "#{pane_current_path}"
 bind x kill-pane
-bind-key o display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' "tv sesh"
+bind-key o display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -b rounded -S 'fg=#89b4fa' -T ' Sesh ' "sesh picker -idH"
 
 # Tasks 
 bind-key t display-popup -E -w 60% -h 30% 'tsk'
@@ -207,7 +210,7 @@ bind -T pane q display-panes
 #   a = alternate (last)   x = kill   d = detach   s = select
 #
 
-bind -T session o display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' "tv sesh"
+bind -T session o display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -b rounded -S 'fg=#89b4fa' -T ' Sesh ' "sesh picker -idH"
 bind -T session n command-prompt -p "new session:" "new-session -s '%%'"
 bind -T session r command-prompt -I "#S" { rename-session "%%" }
 bind -T session a run-shell "sesh last"
