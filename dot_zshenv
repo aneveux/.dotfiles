@@ -1,0 +1,7 @@
+[ -r "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+# mise tools for non-interactive zsh (scripts, editors); interactive shells use `mise activate`
+path=($HOME/.local/share/mise/shims $path)
+
+# Ubuntu's /etc/zsh/zshrc runs its own compinit (into ~/.zcompdump); ~/.zshrc already does it
+skip_global_compinit=1

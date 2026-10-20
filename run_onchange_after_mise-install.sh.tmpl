@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Installs the tools declared in the mise config; re-runs whenever that config changes.
+# mise config hash: {{ include "dot_config/mise/config.toml" | sha256sum }}
+set -euo pipefail
+
+if ! command -v mise >/dev/null 2>&1; then
+  echo "mise not installed, skipping 'mise install'" >&2
+  exit 0
+fi
+
+mise install --yes

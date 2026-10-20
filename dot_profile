@@ -16,7 +16,10 @@ if [ -d "$HOME/.local/bin" ]; then
   PATH="$HOME/.local/bin:$PATH"
 fi
 
-export EDITOR=/usr/bin/nvim
+# mise tools for the graphical session (i3, rofi, GUI apps)
+PATH="$HOME/.local/share/mise/shims:$PATH"
+
+export EDITOR=nvim
 export TERMINAL=/usr/bin/ghostty
 export QT_QPA_PLATFORMTHEME="qt5ct"
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
@@ -24,4 +27,4 @@ export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 # Added by Toolbox App
 export PATH="$PATH:/home/antoine/.local/share/JetBrains/Toolbox/scripts"
-. "$HOME/.cargo/env"
+[ -r "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

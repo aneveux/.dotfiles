@@ -1,3 +1,6 @@
+# Manual checklist of system packages to install on a new machine (apt/pacman names may differ).
+# CLI tools come from mise (~/.config/mise/config.toml), installed on chezmoi apply.
+
 # System utilities
 curl        # Data transfer tool
 gnupg       # GPG encryption
@@ -14,10 +17,7 @@ playerctl   # Media player controller
 vlc         # Media player
 
 # CLI tools
-bat       # cat with syntax highlighting
 fd        # fast find
-fzf       # fuzzy finder
-eza       # modern ls
 ripgrep   # fast grep
 jq        # JSON processor
 yq        # YAML processor
@@ -27,10 +27,8 @@ gotop     # activity monitor
 lnav      # Log file navigator
 most      # Pager
 tldr      # Simplified man pages
-zoxide    # Smarter cd
 navi      # Interactive cheatsheet
 yazi      # TUI file manager
-atuin     # Shell history manager
 gum       # Terminal UI components
 mods      # AI tool integration
 sesh-bin  # Session manager
@@ -39,7 +37,6 @@ crush-bin # ai coding agent by charmbracelet
 
 # Development tools
 git                    # Version control
-git-delta              # Git diff viewer
 git-secrets            # Prevent committing secrets
 github-cli             # GitHub CLI
 lazygit                # TUI git client

@@ -1,11 +1,13 @@
 export LANG='en_US.UTF-8'
-export LC_ALL='en_US.UTF-8'
 
 export GTK_THEME='Catppuccin-Blue-Dark:dark'
 
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANPAGER='nvim +Man!'
+export MANWIDTH=999                     # no hard wrap from groff; nvim soft-wraps (:h manpager)
 export PAGER='less'
-export SHELL='/usr/bin/zsh'
+
+# a missing file makes every fzf call fail, hence the guard
+[ -r "$HOME/.config/fzf/fzfrc" ] && export FZF_DEFAULT_OPTS_FILE="$HOME/.config/fzf/fzfrc"
 
 export TERMINAL='/usr/bin/ghostty'
 export BROWSER='firefox'
@@ -20,6 +22,5 @@ export WORKSPACE="$HOME/projects"
 export PROJECTS="$WORKSPACE"
 
 export GPG_TTY=$TTY
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1

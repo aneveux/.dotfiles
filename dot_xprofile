@@ -1,4 +1,6 @@
 source "$HOME/.keyboard"
+# Same environment for apps launched from i3/rofi as for shells (GTK_THEME, BROWSER, PAGER, ...)
+[ -f "$HOME/.exports" ] && . "$HOME/.exports"
 
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_STYLE_OVERRIDE=kvantum-dark

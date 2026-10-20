@@ -1,1 +1,1 @@
-function mkcd () { mkdir -p "$@" && eval cd "\"\$$#\""; }
+function mkcd () { mkdir -p -- "$@" && builtin cd -- "${@[-1]}"; }

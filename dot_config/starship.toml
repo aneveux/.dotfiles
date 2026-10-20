@@ -6,6 +6,7 @@ palette = "catppuccin_mocha"
 add_newline = true
 
 format = """
+$status\
 $username\
 $hostname\
 $localip\
@@ -30,16 +31,21 @@ $env_var\
 $sudo\
 $cmd_duration\
 $line_break\
-$status\
 $container\
 $shell\
 $character"""
 
 [character]
 # Note the use of Catppuccin color 'peach'
-success_symbol = "[(green) ❯](peach)"
-error_symbol = "[(red) ❯](peach)"
+success_symbol = "[❯](peach)"
+error_symbol = "[❯](peach)"           # failures are shown by [status] at the start of the line
 vimcmd_symbol = "[❮](subtext1)"       # For use with zsh-vi-mode
+
+# Only rendered on non-zero exit (empty success_symbol), e.g. "[128] ~ via ..."
+[status]
+disabled = false
+format = '[\[$status\]]($style) '
+style = "red"
 
 [directory]
 truncation_length = 4

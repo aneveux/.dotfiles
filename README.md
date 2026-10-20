@@ -10,6 +10,15 @@ Obviously these are my personal dotfiles, and I wouldn't recommend you to use th
 
 ## Setup
 
+On a new machine, install `git`, `zsh` and `mise` first (system packages are listed in `packages.txt`,
+installed by hand), then:
+
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply aneveux/.dotfiles
+```
+
+CLI tools come from mise: `run_onchange_after_mise-install.sh.tmpl` runs `mise install` on apply.
+
 After `chezmoi apply` on a new machine: run `cc-safety-net rule sync -g`, then confirm with
 `cc-safety-net rule list` that it prints "Active sources (1)" and "Active rules (6)". The rulebook is
 inert until synced, and the `-g` flag is required: a bare `rule sync` leaves it inactive.

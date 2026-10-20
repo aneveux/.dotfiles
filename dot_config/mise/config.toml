@@ -1,7 +1,10 @@
 [tools]
+atuin = "latest"
 aws = { version = "latest", symlink_bins = "true" }
-awscli = "latest"
+bat = "latest"
 bun = "latest"
+carapace = "latest"
+chezmoi = "latest"
 claude = { version = "latest", bin = "claude", platforms = """
 [linux-arm64]
 url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{version}/linux-arm64/claude"
@@ -20,6 +23,8 @@ bin = "claude.exe"
 url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{version}/win32-x64/claude.exe"
 """, version_list_url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest" }
 cosign = "latest"
+delta = "latest"
+eza = "latest"
 fzf = "latest"
 go = "latest"
 groovy = "latest"
@@ -40,12 +45,15 @@ quarkus = "latest"
 shellcheck = "latest"
 shfmt = "latest"
 sonarqube-cli = "latest"
+starship = "latest"
 stern = "latest"
 television = "latest"
 terraform = "latest"
 usage = "latest"
 uv = "latest"
+vivid = "latest"
 yq = "latest"
+zoxide = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []

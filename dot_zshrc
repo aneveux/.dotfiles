@@ -4,8 +4,9 @@
 
 # user-specific fragments ------------------------------------------------------
 [[ -f $HOME/.exports  ]] && source $HOME/.exports
-[[ -f $HOME/.aliases  ]] && source $HOME/.aliases
 [[ -f $HOME/.keyboard ]] && source $HOME/.keyboard
+# ~/.aliases is sourced after the modular config below, so its aliases (rm -iv, mv -v)
+# don't get expanded inside plugin and zshrc.d functions
 
 # PATH ------------------------------------------------------------------------
 typeset -U path PATH          # keep both arrays unique
@@ -29,31 +30,61 @@ if [[ ! -f $ZINIT_HOME/zinit.zsh ]]; then
   mkdir -p $ZINIT_HOME
   git clone --depth 1 https://github.com/zdharma-continuum/zinit $ZINIT_HOME
 fi
+# One completion dump for us and zinit (zinit's own compinit calls default to ~/.zcompdump)
+typeset -gA ZINIT
+ZINIT[ZCOMPDUMP_PATH]="${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
 source $ZINIT_HOME/zinit.zsh
 
 # generated completion files
 mkdir -p ~/.zfunc
 fpath+=~/.zfunc
 
+# Generate a completion when missing or older than the tool binary (i.e. after an upgrade);
+# atomic write so a failing command never leaves an empty file.
+# Only for tools carapace doesn't cover: carapace's compdef runs later and wins for the rest.
+ensure_completion() {
+  (( $+commands[$1] )) || return 0
+  local file=~/.zfunc/_$1 bin=${commands[$1]}; shift
+  [[ -s $file && $file -nt $bin ]] && return
+  if "$@" >| $file.tmp && [[ -s $file.tmp ]]; then
+    command mv -f $file.tmp $file
+  else
+    command rm -f $file.tmp
+  fi
+}
+ensure_completion mise mise completion zsh
+
 autoload -Uz compinit
-# Full rebuild every time — fzf-tab's compadd hook breaks with stale cached state
-compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-${ZSH_VERSION}"
+# Reuses the dump unless fpath file count or zsh version changes; compaudit still runs each start
+compinit -d "$ZINIT[ZCOMPDUMP_PATH]"
 
 #==============================================================================
 # ⚡  Core plugins & completions
 #==============================================================================
 
+# fast-theme compiles the chezmoi-managed ini into $FAST_WORK_DIR; (re)do it when missing or the ini
+# is newer (zsh's -nt is false when the right-hand file doesn't exist, hence the ! -e)
 zinit wait lucid for \
+  atload'[[ ! -e $FAST_WORK_DIR/current_theme.zsh || ~/.config/fsh/catppuccin-mocha.ini -nt $FAST_WORK_DIR/current_theme.zsh ]] && fast-theme -q XDG:catppuccin-mocha' \
     zdharma-continuum/fast-syntax-highlighting \
   blockf \
     zsh-users/zsh-completions \
   atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
+# Replay compdef calls zinit recorded during plugin loads, after the turbo plugins above
+zinit ice wait'0c' lucid as'null' id-as'zinit/cdreplay' atload'zicdreplay -q'
+zinit light zdharma-continuum/null
+
+# mise ------------------------------------------------------------------------
+# Before carapace so it runs the mise-installed binary directly instead of through the shim
+eval "$(mise activate zsh)"
+export LS_COLORS="$(vivid generate catppuccin-mocha)"
+
 # Load order matters: compinit -> carapace -> fzf-tab.
 # Carapace loading AFTER fzf-tab corrupts fzf-tab's compadd hook on second completion.
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm,vi,nvim'
+export CARAPACE_EXCLUDES='ls,cat,mv,cp,ln,rm,vi,nvim'   # still needed with carapace 1.8.1
 export CARAPACE_MATCH=1
 source <(carapace _carapace)
 
@@ -65,26 +96,26 @@ done; unset cmd
 
 zinit light Aloxaf/fzf-tab
 
-# zsh-vi-mode clobbers ^I on init; re-bind fzf-tab after it settles
+# zsh-vi-mode resets keymaps on init (^I, viins ^R); re-bind after it settles
 function zvm_after_init() {
-  eval "$(tv init zsh)"
+  bindkey -M viins '^R' atuin-search-viins
+  bindkey -M viins '^D' clear-screen
+  bindkey -M vicmd '^D' clear-screen
+  bindkey -M viins '^F' forward-word        # accept next word of the autosuggestion
   enable-fzf-tab
 }
 
+ZVM_SYSTEM_CLIPBOARD_ENABLED=true
+# zvm picks wl-copy whenever it is installed, which silently fails on X11
+if [[ -z $WAYLAND_DISPLAY ]]; then
+  ZVM_CLIPBOARD_COPY_CMD='xclip -selection clipboard'
+  ZVM_CLIPBOARD_PASTE_CMD='xclip -selection clipboard -o'
+fi
 zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
 
 # lean OMZ snippets -----------------------------------------------------------
-zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/extract/extract.plugin.zsh
-
-# mise ------------------------------------------------------------------------
-zinit ice as=command from=gh-r lucid cp id-as=usage
-zinit light jdx/usage
-
-zinit ice as=command from=gh-r lucid cp id-as=mise mv="mise* -> mise" \
-    atload'eval "$(mise activate zsh)"'
-zinit light jdx/mise
 
 #==============================================================================
 # ⚡  Custom tools (loaded through eval)
@@ -99,9 +130,8 @@ eval "$(starship init zsh)"
 #==============================================================================
 
 # nice defaults ---------------------------------------------------------------
-setopt auto_cd interactivecomments extended_glob print_exit_value
-setopt append_history inc_append_history share_history
-setopt hist_ignore_dups hist_ignore_space notify
+setopt auto_cd interactivecomments extended_glob
+setopt notify
 setopt complete_in_word
 setopt no_list_ambiguous
 setopt no_beep
@@ -109,23 +139,12 @@ setopt IGNORE_EOF                       # disable default Ctrl+D (logout)
 
 unsetopt correct correct_all            # no automatic spelling correction
 
-# key-bindings ----------------------------------------------------------------
-bindkey '^D' clear-screen               # Ctrl+D  -> clear instead of exit
-
-#==============================================================================
-# ⚡  3rd-party completion directories
-#==============================================================================
-
-ensure_file() {
-  local file=$1
-  shift
-  if [[ ! -f "$file" ]]; then
-    "$@"
-  fi
-}
-
-ensure_file ~/.zfunc/_chezmoi chezmoi completion zsh --output=~/.zfunc/_chezmoi
-ensure_file ~/.zfunc/atuin.zsh atuin gen-completions --shell zsh --out-dir ~/.zfunc
+# history ---------------------------------------------------------------------
+# Atuin is the history store; zsh keeps an in-memory list only (atuin's preexec hook and !! need it)
+unset HISTFILE
+HISTSIZE=10000
+SAVEHIST=0
+setopt hist_ignore_all_dups hist_ignore_space hist_reduce_blanks hist_verify
 
 #==============================================================================
 # ⚡  completion configuration
@@ -134,38 +153,48 @@ ensure_file ~/.zfunc/atuin.zsh atuin gen-completions --shell zsh --out-dir ~/.zf
 # Completion styling ----------------------------------------------------------
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcache"
-# fzf-tab overrides menu behavior via compadd hook; this is the fallback when fzf-tab is toggled off
-zstyle ':completion:*' menu select
+# fzf-tab README: menu no lets fzf-tab capture the unambiguous prefix
+zstyle ':completion:*' menu no
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*' matcher-list \
       'm:{a-zA-Z}={A-Za-z}' \
       'r:|[._-]=* r:|=*' \
       'l:|=* r:|=*'
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*:git-checkout:*' sort false
-zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
-zstyle ':completion:*:descriptions' format $'\e[2;37mCompleting %d\e[m'
+# plain text: fzf-tab ignores escape sequences and matches $group against it in previews
+zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 #==============================================================================
-# ⚡  fzf configuration
+# ⚡  fzf-tab configuration
 #==============================================================================
-# FZF_DEFAULT_OPTS: used by native fzf invocations (tv, tmux-fzf-links, fzf CLI).
-# fzf-tab ignores this and uses its own fzf-flags zstyle instead.
+# Colors and shared look live in ~/.config/fzf/fzfrc (FZF_DEFAULT_OPTS_FILE, see ~/.exports).
+# fzf-tab blanks FZF_DEFAULT_OPTS but still reads that file, so only fzf-tab-specific flags go here.
 
-export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} \
-  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
-  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
-  --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
-
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-zstyle ':fzf-tab:*'             fzf-flags --layout=reverse --info=inline --color=fg:1,fg+:2 --bind=tab:accept
+zstyle ':fzf-tab:*'             fzf-flags --bind=tab:accept --info=inline-right
 zstyle ':fzf-tab:*'             switch-group '<' '>'
-zstyle ':fzf-tab:*'             show-group none
+zstyle ':fzf-tab:*'             show-group quiet
 zstyle ':fzf-tab:*'             single-group header
-zstyle ':fzf-tab:*'             fzf-command fzf
+if [[ -n $TMUX ]]; then
+  zstyle ':fzf-tab:*'           fzf-command ftb-tmux-popup
+  zstyle ':fzf-tab:*'           popup-smart-tab no      # otherwise tab:up overrides tab:accept
+  zstyle ':fzf-tab:*'           popup-min-size 60 10
+  zstyle ':fzf-tab:complete:cd:*' popup-pad 30 0
+else
+  zstyle ':fzf-tab:*'           fzf-command fzf
+fi
 
-zinit cdreplay -q
+# previews --------------------------------------------------------------------
+# carapace owns git/systemctl, so contexts are ':complete:git:*' (not git-add); dispatch on $words.
+# carapace candidates arrive quoted with a trailing space, hence ${${(Q)word}% }.
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:git:*' fzf-preview \
+  'case $words[2] in
+     add|diff|restore) git diff -- ${${(Q)word}% } | delta ;;
+     log) git log --color=always ${${(Q)word}% } ;;
+   esac'
+zstyle ':fzf-tab:complete:systemctl:*' fzf-preview \
+  '(( $#words > 2 )) && SYSTEMD_COLORS=1 systemctl ${words[(r)--user]} status -- ${${(Q)word}% }'
 
 #==============================================================================
 # ⚡  Modular configuration
@@ -173,6 +202,8 @@ zinit cdreplay -q
 
 for zf in "$HOME/.zshrc.d/"*.zsh(N);      do source "$zf"; done
 for zf in "$HOME/local/zshrc.d/"*.zsh(N); do source "$zf"; done
+
+[[ -f $HOME/.aliases ]] && source $HOME/.aliases
 
 # Load SSH key into agent on first interactive shell (graphical prompt via gcr)
 if [[ -n "$DISPLAY" ]] && ! ssh-add -l >/dev/null 2>&1; then

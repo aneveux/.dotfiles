@@ -65,8 +65,6 @@ get_session() {
 
 source "$HOME/.keyboard"
 
-source "$HOME/.exports"
-
 nvidia-settings --load-config-only
 
 [ -f ~/.xprofile ] && source ~/.xprofile
