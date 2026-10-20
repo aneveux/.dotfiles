@@ -11,10 +11,13 @@
 
 [include]
 	path = ~/catppuccin.gitconfig
+	# `git maintenance register --config-file` target, kept out of this managed file
+	path = ~/.config/git/maintenance.gitconfig
 
 [commit]
 	template = ~/.gitmessage
 	gpgsign = true
+	verbose = true
 
 [init]
 	defaultBranch = master
@@ -22,28 +25,26 @@
 [push]
 	followTags = true
 	default = current
+	autoSetupRemote = true
 
 [pull]
-	default = simple
 	rebase = true
 
 [fetch]
 	prune = true
-	fsckobjects = true
+	all = true
 
 [transfer]
 	fsckobjects = true
 
-[receive]
-	fsckobjects = true
-
 [merge]
 	tool = nvimdiff
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 
 [rebase]
 	autostash = true
 	autosquash = true
+	updateRefs = true
 
 [rerere]
 	enabled = true
@@ -57,11 +58,23 @@
 
 [blame]
 	coloring = repeatedLines
+	ignoreRevsFile = :(optional).git-blame-ignore-revs
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+
+[help]
+	autocorrect = prompt
 
 [diff]
-	indentHeuristic = true
+	algorithm = histogram
+	renames = copies
 	wordRegex = [A-Za-z0-9]+|[^[:space:]]
 	colorMoved = default
+	colorMovedWS = allow-indentation-change
 
 [log]
 	date = format:%a %b %-d %Y @ %-I:%M %p
@@ -69,33 +82,28 @@
 
 [core]
 	excludesfile = ~/.gitignore
+	attributesFile = ~/.gitattributes
 	editor = nvim
 	filemode = true
 	trustctime = false
 	autocrlf = input
 	pager = delta
-	hooksPath = ~/.githooks/
+	untrackedCache = true
+
+# Config-based hooks (git 2.54+) run before the repo's own .git/hooks entry,
+# so repo-local hooks (git-secrets, pre-commit) keep working.
+[hook "jira-ticket"]
+	event = prepare-commit-msg
+	command = ~/.githooks/prepare-commit-msg
 
 [interactive]
-	diffFilter = delta --color-only --features=interactive
+	diffFilter = delta --color-only
 
 [advice]
 	commitBeforeMerge = false
 	detachedHead = false
 	pushUpdateRejected = false
 	statusHints = false
-
-[color]
-	status = auto
-	branch = auto
-	interactive = auto
-	ui = true
-
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
 
 [color "diff"]
 	meta = blue
@@ -112,13 +120,11 @@
 
 [mergetool]
 	keeptemporaries = false
-	keepbackups = false
+	keepBackup = false
 	prompt = false
-	trustexitcode = false
 
 [alias]
 	# Basic
-	clone = clone --recurse-submodules
 	addp = add -p
 	co = checkout
 	ci = commit
@@ -126,47 +132,44 @@
 	cm = commit -m
 	cam = commit -am
 	amend = commit --amend
-	stat = status
 	st = status -sb
 	br = branch
-	unstage = reset HEAD
-	uns = reset HEAD
+	unstage = restore --staged
 	garbage = gc --prune=now
-	pullr = pull --rebase
 	surr = submodule update --recursive --remote
 	sclone = clone --depth=1
 	cleanall = !git clean -f -x -d && git submodule foreach --recursive git clean -f -x -d
 
 	# Logs
-	l = log --graph --pretty=custom
+	lg = log --graph --pretty=custom
+	lga = log --graph --pretty=custom --all
 	ll = log --stat --abbrev-commit
 	lc = shortlog --summary --numbered
-	gl = log -16 --color=always --all --graph --topo-order --pretty='format: %Cgreen%h%Creset %s%Cred%d%Creset%n'
-	gll = log --color=always --all --graph --topo-order --pretty='format: %Cgreen%h%Creset %s%Cred%d%Creset%n'
-	lol = log --graph --decorate --pretty=oneline --abbrev-commit
-	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
-	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
 
 	# Remote
-	currentbranch = !git branch --contains HEAD | tr -s ' ' | cut -d ' ' -f2
 	fo = fetch origin
 	fu = fetch upstream
 	po = push origin
 	lo = pull origin
-	mo = !git merge --no-ff origin/$(git currentbranch)
-	uo = !git merge --ff-only origin/$(git currentbranch)
+	mo = merge --no-ff @{u}
+	uo = merge --ff-only @{u}
 
 	# Review
-	rdiff = !git diff $1...$2 --no-merges
-	rlog = !git log $1..$2 --no-merges --format='%h | %an | %ad | %s' --date=local
+	rdiff = "!f() { git diff \"$1...$2\"; }; f"
+	rlog = "!f() { git log \"$1..$2\" --no-merges --format='%h | %an | %ad | %s' --date=local; }; f"
+
+	# Difftastic (structural diff), per the difftastic manual
+	dlog = -c diff.external=difft log --ext-diff
+	dshow = -c diff.external=difft show --ext-diff
+	ddiff = -c diff.external=difft diff
 
 	# Tools
 	head = rev-list --max-count=1 HEAD
-	pack = !git archive HEAD --format=tar | gzip > ./`git h`.tar.gz
-	ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
+	pack = !git archive HEAD --format=tar | gzip > ./$(git rev-parse --short HEAD).tar.gz
+	ignore = "!f() { printf '%s\\n' \"$@\" >> .gitignore; }; f"
 	last = log -1 --stat
 	cp = cherry-pick
-	cl = clone
+	cl = clone --recurse-submodules
 	dc = diff --cached
 
 	# LOL
@@ -185,15 +188,13 @@
 	pushInsteadOf = github:
 	pushInsteadOf = git://github.com/
 
-[url "git://github.com/"]
+[url "https://github.com/"]
 	insteadOf = github:
 
 [url "git@gist.github.com:"]
 	insteadOf = gst:
 	pushInsteadOf = gist:
 	pushInsteadOf = git://gist.github.com/
-
-[url "git://gist.github.com/"]
 
 # cargo does not like this
 # [url "git@github.com:"]
@@ -204,12 +205,42 @@
 	true-color = always
 	navigate = true
 	line-numbers = true
-	side-by-side = true
 	hyperlinks = true
-	hyperlinks-file-link-format = "file://{path}:{line}"
-	features = catppuccin-mocha unobtrusive-line-numbers decorations
+	hyperlinks-file-link-format = "file://{path}"
+	# side-by-side as a feature so lazygit can drop it by overriding --features
+	features = catppuccin-mocha side-by-side
 
 {{ if eq .machine "flower" }}
 [secrets]
 	providers = opscore security run git-secrets-provider -q
 {{ end }}
+
+# Personal email in my own repos. hasconfig matches the raw remote URL, so each
+# spelling (including the gh: shorthand) needs its own pattern.
+[includeIf "hasconfig:remote.*.url:git@github.com:aneveux/**"]
+	path = ~/.config/git/personal.gitconfig
+[includeIf "hasconfig:remote.*.url:ssh://git@github.com/aneveux/**"]
+	path = ~/.config/git/personal.gitconfig
+[includeIf "hasconfig:remote.*.url:https://github.com/aneveux/**"]
+	path = ~/.config/git/personal.gitconfig
+[includeIf "hasconfig:remote.*.url:gh:aneveux/**"]
+	path = ~/.config/git/personal.gitconfig
+
+# hasconfig matches if ANY remote matches: work repos with an aneveux fork remote
+# would get the personal email, so restore the machine email for them (last wins).
+[includeIf "hasconfig:remote.*.url:git@github.com:cloudbees/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:ssh://git@github.com/cloudbees/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:https://github.com/cloudbees/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:gh:cloudbees/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:git@github.com:jenkinsci/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:ssh://git@github.com/jenkinsci/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:https://github.com/jenkinsci/**"]
+	path = ~/.config/git/machine.gitconfig
+[includeIf "hasconfig:remote.*.url:gh:jenkinsci/**"]
+	path = ~/.config/git/machine.gitconfig

@@ -1,1 +1,9 @@
-text eol=lf
+*.java diff=java
+*.kt diff=kotlin
+*.go diff=golang
+*.py diff=python
+*.rs diff=rust
+*.sh diff=bash
+*.md diff=markdown
+*.css diff=css
+*.html diff=html
