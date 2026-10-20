@@ -56,7 +56,8 @@ zsh                     # Z shell
 zsh-autosuggestions     # Autosuggestions for zsh
 zsh-completions         # Extra completions
 zsh-syntax-highlighting # Syntax highlighting
-kitty                   # GPU terminal
+ghostty                 # GPU terminal
+kitty                   # GPU terminal (fallback)
 kitty-shell-integration
 kitty-terminfo
 tmux       # Terminal multiplexer

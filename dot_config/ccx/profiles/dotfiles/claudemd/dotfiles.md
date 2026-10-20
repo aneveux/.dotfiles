@@ -11,7 +11,7 @@ source, not the live target.
 ## Toolset
 
 - Editor: **nvim**
-- Terminal: **Kitty** + **tmux**
+- Terminal: **Ghostty** + **tmux**
 - OS: Linux (Ubuntu / Manjaro)
 - Fuzzy finder: **tv** (television), not fzf
 - Directory jump: **zoxide**, not plain `cd`

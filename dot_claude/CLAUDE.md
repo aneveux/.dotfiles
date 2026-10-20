@@ -8,7 +8,7 @@ GitHub: aneveux | Timezone: Europe/Paris | Languages: French (native), English
 
 ## Environment
 
-Linux (Ubuntu/Manjaro) • nvim • Kitty + tmux • Git. Desktop config and toolset detail live in the `dotfiles` ccx profile.
+Linux (Ubuntu/Manjaro) • nvim • Ghostty + tmux • Git. Desktop config and toolset detail live in the `dotfiles` ccx profile.
 
 ## Code Philosophy
 

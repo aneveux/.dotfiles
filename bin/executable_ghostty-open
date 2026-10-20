@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# xdg handler for folders, ssh:// links and shell scripts. Commands run through
+# an interactive zsh so mise tools and the ssh wrapper are available.
+set -euo pipefail
+
+if (($# != 1)); then
+	printf 'usage: %s <path|file://uri|ssh://uri>\n' "${0##*/}" >&2
+	exit 64
+fi
+
+uri=$1
+
+run_in_ghostty() {
+	local workdir=$1 script=$2 arg=$3
+	exec ghostty --working-directory="$workdir" -e zsh -ic "$script" zsh "$arg"
+}
+
+if [[ $uri == ssh://* ]]; then
+	run_in_ghostty "$HOME" 'ssh "$1"' "$uri"
+fi
+
+path=$uri
+if [[ $path == file://* ]]; then
+	path=${path#file://}
+	path=${path#localhost}
+	path=$(printf '%b' "${path//%/\\x}")
+fi
+
+if [[ -d $path ]]; then
+	run_in_ghostty "$path" 'yazi "$1"' "$path"
+fi
+run_in_ghostty "$(dirname -- "$path")" 'nvim "$1"' "$path"

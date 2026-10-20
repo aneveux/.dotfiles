@@ -7,7 +7,7 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export PAGER='less'
 export SHELL='/usr/bin/zsh'
 
-export TERMINAL='/usr/bin/kitty'
+export TERMINAL='/usr/bin/ghostty'
 export BROWSER='firefox'
 export EDITOR='nvim'
 export VISUAL='nvim'

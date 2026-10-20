@@ -340,6 +340,7 @@ mode $resize_mode {
 
 # WS1: Terminals
 assign [class="kitty"] $WS1
+assign [class="com.mitchellh.ghostty" instance="^ghostty$"] $WS1
 
 # WS2: IDE
 assign [class="jetbrains"] $WS2
@@ -403,6 +404,7 @@ for_window [class="Thus"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
 for_window [class="(?i)virtualbox"] floating enable border normal
 for_window [class="Xfburn"] floating enable
+for_window [class="com.mitchellh.ghostty" instance="ghostty-scratch"] move scratchpad, resize set 80 ppt 60 ppt, move position center
 
 # ---------------------------------------------------
 # Monitors
@@ -445,6 +447,9 @@ bindsym $mod+Shift+s exec "flameshot gui"
 
 bindsym $mod+grave exec "~/.config/rofi/music/music"
 
+# ghostty dropdown terminal (i3 scratchpad)
+bindsym $mod+t exec --no-startup-id ~/.i3/scratch-term.sh
+
 # emoji-picker
 bindsym $mod+Shift+colon exec emoji-picker
 
@@ -463,7 +468,8 @@ mode $launcher_mode {
   bindsym s exec spotify, mode "default"
   bindsym o exec obsidian, mode "default"
   bindsym d exec discord, mode "default"
-  bindsym Return exec kitty, mode "default"
+  bindsym k exec kitty, mode "default"
+  bindsym Return exec ghostty, mode "default"
 
   bindsym Escape mode "default"
 }

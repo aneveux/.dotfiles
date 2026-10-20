@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+# Route folders, ssh:// links and shell scripts to ghostty-open whenever its
+# desktop entry changes.
+#
+# ghostty-open.desktop hash: {{ include "private_dot_local/private_share/private_applications/ghostty-open.desktop.tmpl" | sha256sum }}
+set -euo pipefail
+
+if command -v update-desktop-database >/dev/null; then
+	update-desktop-database "{{ .chezmoi.homeDir }}/.local/share/applications"
+fi
+xdg-mime default ghostty-open.desktop inode/directory x-scheme-handler/ssh application/x-shellscript
