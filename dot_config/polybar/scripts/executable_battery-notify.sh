@@ -5,7 +5,7 @@
 
 # Configuration
 BATTERY="BAT0"
-STATE_FILE="/tmp/battery-notify-state"
+STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/battery-notify-state"
 
 # Thresholds (percentage)
 CRITICAL=5
@@ -17,12 +17,11 @@ CAPACITY=$(cat /sys/class/power_supply/${BATTERY}/capacity)
 STATUS=$(cat /sys/class/power_supply/${BATTERY}/status)
 
 # Read previous notification state
+NOTIFIED_CRITICAL=0
+NOTIFIED_LOW=0
+NOTIFIED_WARNING=0
 if [[ -f "$STATE_FILE" ]]; then
-    source "$STATE_FILE"
-else
-    NOTIFIED_CRITICAL=0
-    NOTIFIED_LOW=0
-    NOTIFIED_WARNING=0
+    read -r NOTIFIED_CRITICAL NOTIFIED_LOW NOTIFIED_WARNING < "$STATE_FILE" || true
 fi
 
 # Only notify if discharging
@@ -58,8 +57,4 @@ else
 fi
 
 # Save state
-cat > "$STATE_FILE" << EOF
-NOTIFIED_CRITICAL=$NOTIFIED_CRITICAL
-NOTIFIED_LOW=$NOTIFIED_LOW
-NOTIFIED_WARNING=$NOTIFIED_WARNING
-EOF
+echo "$NOTIFIED_CRITICAL $NOTIFIED_LOW $NOTIFIED_WARNING" > "$STATE_FILE"

@@ -17,7 +17,7 @@ if command -v tailscale &>/dev/null; then
 fi
 
 # Check WiFi
-wifi_ssid=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep "^yes:" | cut -d: -f2)
+wifi_ssid=$(nmcli -t -f active,ssid dev wifi list --rescan no 2>/dev/null | grep "^yes:" | cut -d: -f2)
 if [[ -n "$wifi_ssid" ]]; then
 	echo "${ICON_WIFI}${wifi_ssid}${vpn_status}"
 	exit 0

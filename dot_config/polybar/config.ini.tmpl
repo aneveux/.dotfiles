@@ -14,10 +14,6 @@ font-0 = "Iosevka Nerd Font:size=10;4"
 font-1 = "Iosevka Nerd Font:size=10;3"
 font-2 = "feather:size=12;3"
 
-fill = ⏽
-empty = ⏽
-indicator = 
-
 width = 100%
 height = 34
 line-size = 0
@@ -32,24 +28,10 @@ module-margin-right = 1
 offset-x = 0%
 offset-y = 0%
 
-spacing = 0
 dim-value = 1.0
-
-tray-position = none
-tray-detached = true
-tray-maxsize = 16
-tray-background = ${colors.crust}
-tray-offset-x = 10
-tray-offset-y = 92%
-tray-padding = 0
-tray-scale = 1.0
-
-wm-restack = i3
 
 override-redirect = false
 
-scroll-up = next
-scroll-down = prev
 cursor-click = pointer
 
 enable-ipc = true
@@ -65,7 +47,6 @@ border-bottom-color = ${colors.text}
 
 
 monitor = ${env:MONITOR:{{ .main_monitor }}}
-systray-top = ${env:TRAY_POSITION:right}
 include-file = ~/.config/polybar/bar-main.ini
 
 ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -75,10 +56,6 @@ include-file = ~/.config/polybar/bar-main.ini
 font-0 = "Iosevka Nerd Font:size=10;4"
 font-1 = "Iosevka Nerd Font:size=10;3"
 font-2 = "feather:size=12;3"
-
-fill = ⏽
-empty = ⏽
-indicator = 
 
 width = 100%
 height = 34
@@ -94,24 +71,10 @@ module-margin-right = 1
 offset-x = 0%
 offset-y = 0%
 
-spacing = 0
 dim-value = 1.0
-
-tray-position = none
-tray-detached = true
-tray-maxsize = 16
-tray-background = ${colors.crust}
-tray-offset-x = 10
-tray-offset-y = 92%
-tray-padding = 0
-tray-scale = 1.0
-
-wm-restack = i3
 
 override-redirect = false
 
-scroll-up = next
-scroll-down = prev
 cursor-click = pointer
 
 enable-ipc = true
@@ -126,15 +89,12 @@ border-bottom-size = 0
 border-bottom-color = ${colors.text}
 
 monitor = ${env:MONITOR:{{ .vertical_monitor }}}
-systray-top = ${env:TRAY_POSITION:right}
 include-file = ~/.config/polybar/bar-secondary.ini
 
 ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
 [settings]
 screenchange-reload = true
-throttle-output = 5
-throttle-output-for = 10
 
 compositing-background = source
 compositing-foreground = over

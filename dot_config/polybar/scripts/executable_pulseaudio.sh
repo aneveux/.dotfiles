@@ -14,7 +14,7 @@ SINK_BOSE="bluez_output.E4_58_BC_2E_14_26.1:${ICON_HEADSET} /bose"
 SINK_LOGI="alsa_output.usb-Logitech_Zone_Vibe_125_2216MH00LDD8-00.analog-stereo:${ICON_HEADSET} /logi"
 SINK_LOGI_Z407="alsa_output.usb-Logitech_Logi_Z407_*:${ICON_SPEAKER} /logi"
 SINK_BUILTIN="alsa_output.pci-*:${ICON_SPEAKER} /builtin"
-INPUT_BUILTIN="alsa_input.pci-0000_0b_00.3.analog-stereo:${ICON_SPEAKER}"
+INPUT_BUILTIN="alsa_input.pci-*:${ICON_SPEAKER}"
 
 # Build the command
 pulseaudio-control \

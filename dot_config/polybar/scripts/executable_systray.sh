@@ -1,21 +1,20 @@
 #!/bin/sh
+# Toggles stalonetray and the tray icon on the main bar (the only bar with module/tray).
 
-cache="$HOME/.config/polybar/tray.lock"
-config="$HOME/.config/polybar/modules.ini"
+hidden_flag="${XDG_RUNTIME_DIR:-/tmp}/polybar-tray.hidden"
+main_bar_pid_file="${XDG_RUNTIME_DIR:-/tmp}/polybar-main.pid"
 
-[ ! -d "$HOME/.config/polybar/" ] && mkdir -p "$HOME/.config/polybar/"
+notify_main_bar() {
+    [ -r "$main_bar_pid_file" ] || return 0
+    polybar-msg -p "$(cat "$main_bar_pid_file")" action "#tray.hook.$1" >/dev/null
+}
 
-if [ "$(pgrep stalonetray)" ]; then
-    if [ ! -e "$cache" ]; then
-        polybar-msg action "#tray.hook.1"
-        killall stalonetray
-        touch "$cache"
-        #sed -i 's/tray\ninitial=.*/tray\ninitial=2/g' "$config"
-    fi
+if pgrep -u "$(id -u)" -x stalonetray >/dev/null; then
+    pkill -u "$(id -u)" -x stalonetray
+    touch "$hidden_flag"
+    notify_main_bar 1
 else
-    polybar-msg action "#tray.hook.0"
-    rm "$cache"
-    stalonetray -display :0 -c "$HOME/.config/polybar/stalonetrayrc" &
-    #sed -i 's/tray\ninitial=.*/tray\ninitial=1/g' "$config"
+    rm -f "$hidden_flag"
+    stalonetray -c "$HOME/.config/polybar/stalonetrayrc" >/dev/null 2>&1 &
+    notify_main_bar 0
 fi
-

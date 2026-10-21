@@ -2,7 +2,7 @@
 
 # Caffeine mode - prevents screen lock and sleep
 # State file to track if caffeine is active
-STATE_FILE="/tmp/caffeine-polybar.pid"
+STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/caffeine-polybar.pid"
 
 # Icons
 ICON_ON=""  # Caffeine active
@@ -19,9 +19,10 @@ toggle() {
         # Turn off caffeine
         kill $(cat "$STATE_FILE" 2>/dev/null) 2>/dev/null
         rm -f "$STATE_FILE"
-        # Re-enable DPMS
+        # Re-enable DPMS and the idle locker
         xset +dpms
         xset s on
+        xautolock -enable
     else
         # Turn on caffeine - prevent sleep and screen off
         systemd-inhibit --what=idle:sleep:handle-lid-switch \
@@ -29,9 +30,10 @@ toggle() {
                        --why="User requested to prevent sleep" \
                        sleep infinity &
         echo $! > "$STATE_FILE"
-        # Disable DPMS
+        # Disable DPMS and the idle locker (xautolock ignores logind inhibitors)
         xset -dpms
         xset s off
+        xautolock -disable
     fi
 }
 

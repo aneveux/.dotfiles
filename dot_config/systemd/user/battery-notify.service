@@ -1,0 +1,10 @@
+[Unit]
+Description=Battery Level Notification
+Documentation=man:systemd.service(5)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/polybar/scripts/battery-notify.sh
+
+[Install]
+WantedBy=default.target
