@@ -1,11 +1,10 @@
 [global]
-    monitor = 0
     follow = mouse
 
     width = 400
-    height = 150
+    height = (0, 150)
     origin = top-right
-    offset = 10x38
+    offset = (10, 38)
     scale = 0
     notification_limit = 0
 
@@ -17,16 +16,14 @@
 
     indicate_hidden = yes
 
-    shrink = no
-
     transparency = 10
 
     separator_height = 2
     padding = 20
     horizontal_padding = 20
     frame_width = 2
-    frame_color = "#89B4FA"
-    separator_color = "#161320"
+    frame_color = "#89b4fa"
+    separator_color = frame
 
     sort = yes
 
@@ -65,9 +62,10 @@
 
     icon_position = left
     text_icon_padding = 10
-    min_icon_size = 0
+    min_icon_size = 32
     max_icon_size = 64
-    icon_path = /usr/share/icons/Papirus/symbolic/actions:/usr/share/icons/Papirus/symbolic/apps:/usr/share/icons/Papirus/symbolic/categories:/usr/share/icons/Papirus/symbolic/devices:/usr/share/icons/Papirus/symbolic/emblems:/usr/share/icons/Papirus/symbolic/emotes:/usr/share/icons/Papirus/symbolic/mimetypes:/usr/share/icons/Papirus/symbolic/places:/usr/share/icons/Papirus/symbolic/status
+    icon_theme = "Papirus-Dark"
+    enable_recursive_icon_lookup = true
 
     sticky_history = yes
     history_length = 20
@@ -91,17 +89,20 @@
     close_all = ctrl+shift+space
 
 [urgency_low]
-  background = "#1E1E2E"
-  foreground = "#CDD6F4"
+  background = "#1e1e2e"
+  foreground = "#cdd6f4"
+  highlight = "#89b4fa"
   timeout = 5
 
 [urgency_normal]
-  background = "#1E1E2E"
-  foreground = "#CDD6F4"
+  background = "#1e1e2e"
+  foreground = "#cdd6f4"
+  highlight = "#89b4fa"
   timeout = 10
 
 [urgency_critical]
-  background = "#1E1E2E"
-  foreground = "#CDD6F4"
-  frame_color = "#FE6400"
+  background = "#1e1e2e"
+  foreground = "#cdd6f4"
+  highlight = "#89b4fa"
+  frame_color = "#fab387"
   timeout = 20
