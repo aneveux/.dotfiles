@@ -60,3 +60,10 @@ path = "~/projects/unified-release"
 alias = "urr"
 alias_auto_connect = true
 icon = ""
+
+[[session]]
+name = "project-ci-troubleshooting"
+path = "~/projects/project-ci-troubleshooting"
+alias = "pct"
+alias_auto_connect = true
+icon = ""
