@@ -9,7 +9,6 @@ M-j    Next session  #session #navigate #next #down #switch
 M-k    Previous session  #session #navigate #prev #up #switch
 M-s    Sesh session picker (also in zsh outside tmux)  #session #switch #open #picker #sesh #alias
 Ctrl+Alt+Arrows    Resize pane  #pane #resize #grow #shrink
-Ctrl+d    Clear screen  #clear #screen #clean
 
 ## Quick Actions (C-a + key)
 C-a + |    Split pane side by side  #pane #split #horizontal #vertical #create
@@ -20,11 +19,18 @@ C-a + f    Toggle floating pane (floax)  #float #floax #popup #toggle
 C-a + v    Enter copy mode (vi)  #copy #mode #scroll #search #select
 C-a + d    Detach from session  #session #detach #exit #leave
 C-a + r    Reload tmux config  #reload #config #refresh #source
-C-a + T    Open todo file in nvim  #todo #edit #open #tasks
-C-a + S    Stash popup (tv + quickflow)  #stash #quickflow #popup #tv
+C-a + t    Quick-add task (tsk)  #todo #task #add #tsk
+C-a + T    Pick task (tsk)  #todo #task #pick #tsk
+C-a + S    Stash popup (fzf project picker)  #stash #quickflow #popup #fzf
 C-a + N    Quickflow inbox next  #quickflow #inbox #next #notification
-C-a + Tab    TV window picker (all sessions)  #tv #fzf #picker #search #open #window #jump
+C-a + Tab    Window switcher (all sessions)  #window #switch #picker #search #jump
+C-a + S-Tab    Session switcher  #session #switch #picker #search #jump
+C-a + C-g    File picker: insert repo path  #file #path #picker #fzf #insert #claude
+C-a + W    Workmux dashboard  #workmux #agent #worktree #dashboard #claude
+C-a + L    Workmux: jump to last finished agent  #workmux #agent #done #jump #claude
+C-a + g    Move/resize floating pane table  #pane #float #move #resize
 C-a + b    Send prefix to nested session  #nested #prefix #inner #remote
+C-a + C-a    Send prefix to nested session  #nested #prefix #inner #remote
 C-a + 0-9    Select window by number  #window #switch #jump #number
 
 ## Window Table (C-a w → key)
@@ -84,7 +90,8 @@ C-a + M-u    Clean TPM plugins  #plugin #tpm #clean #remove
 ## Other
 C-a + :    Command prompt  #command #prompt #type #manual
 C-a + ?    Show cheatsheet  #help #cheatsheet #keys #bindings
-C-a + /    List all key bindings  #help #keys #list #bindings #all
+C-a + /    Describe a key binding  #help #keys #describe #bindings
+C-a w|p|s ?    Key table palette  #help #keys #palette #window #pane #session
 C-a + C    Customize options  #config #customize #settings
 C-a + ~    Show messages  #messages #log #history #debug
 C-a + i    Display info  #info #display #status

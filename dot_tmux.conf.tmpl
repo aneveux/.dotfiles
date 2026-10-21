@@ -25,11 +25,19 @@ set-environment -g FZF_DEFAULT_OPTS_FILE "{{ .chezmoi.homeDir }}/.config/fzf/fzf
 set -g mouse on
 
 set -g default-terminal "tmux-256color"
-set -ag terminal-overrides ",xterm-256color:RGB"
+# Reset first: appending on every `prefix r` would stack duplicates
+set -su terminal-features
+set -sa terminal-features ",xterm-ghostty:RGB:hyperlinks:extkeys:sync:usstyle"
+set -sa terminal-features ",xterm-256color:RGB"
+set -s extended-keys on
+set -s extended-keys-format csi-u
 set -g allow-passthrough on
+set -gu update-environment
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
 set -g history-limit 50000
+set -g display-time 4000
+setw -g aggressive-resize on
 
 set-window-option -g monitor-activity off
 set-option -g      visual-activity   off
@@ -41,7 +49,7 @@ set-option -g      bell-action       none
 # ⚡  Keyboard behavior
 #==============================================================================
 
-set -sg escape-time 0
+set -sg escape-time 10
 
 #==============================================================================
 # ⚡  Clipboard / Copy / Paste
@@ -49,16 +57,20 @@ set -sg escape-time 0
 
 setw -g mode-keys vi
 
+# OSC 52 from apps (nvim, ssh) reaches the system clipboard; copy-pipe uses copy-command
+set -s set-clipboard on
+set -s copy-command 'xclip -selection clipboard'
+
 unbind [
 bind v copy-mode
 
 bind-key -T copy-mode-vi v       send-keys -X begin-selection
 bind-key -T copy-mode-vi C-v     send-keys -X rectangle-toggle
-bind-key -T copy-mode-vi y       send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"
+bind-key -T copy-mode-vi y       send-keys -X copy-pipe-and-cancel
 bind-key -T copy-mode-vi Escape  send -X cancel
 bind-key -T copy-mode-vi H       send -X start-of-line
 bind-key -T copy-mode-vi L       send -X end-of-line
-bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "xclip -selection clipboard"
+bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel
 
 #==============================================================================
 # ⚡  Window and pane options
@@ -137,11 +149,13 @@ bind-key T display-popup -E -w 80% -h 60% 'tsk pick'
 bind b send-prefix
 bind d detach-client
 bind r source-file ~/.tmux.conf \; display-message "🔁 Tmux config reloaded!"
-bind-key S display-popup -E -w 80% -h 60% 'stash -C "$(find ~/projects -maxdepth 1 -type d | tail -n +2 | tv)"'
+bind-key S display-popup -E -w 80% -h 60% 'd=$(fd -td -d1 . ~/projects | fzf --preview "eza --git --icons --color=always {}") && stash -C "$d"'
 bind-key N run-shell "~/projects/quickflow/qf inbox --next"
+bind-key C-g display-popup -E -w 70% -h 70% "tmux-file-picker -g"
 
-# tv window picker (jump to any window across all sessions)
-bind-key Tab display-popup -E -w 80% -h 70% "tv tmux-windows"
+# workmux
+bind-key W display-popup -E -w 80% -h 60% -b rounded -S 'fg=#89b4fa' -T ' workmux ' "workmux dashboard"
+bind-key L run-shell "workmux last-done"
 
 #==============================================================================
 # ⚡  Window table (C-a w → key)
@@ -224,7 +238,6 @@ bind -T session s choose-tree -Zs
 
 set-option -g status-position top
 set -g status-justify  left
-set -g status-bg       default
 set -g status-interval 2
 set -g status-left-length  40
 set -g status-right-length 60
@@ -233,11 +246,10 @@ set -g status-right-length 60
 # ⚡  Plugins
 #==============================================================================
 
-# tmux-plugins/tmux-sensible --------------------------------------------------
-set -g @plugin 'tmux-plugins/tmux-sensible'
-
 # christoomey/vim-tmux-navigator ----------------------------------------------
 set -g @plugin 'christoomey/vim-tmux-navigator'
+# prefix C-l belongs to tmux-fzf-links
+set -g @vim_navigator_prefix_mapping_clear_screen ''
 
 # laktak/extrakto -------------------------------------------------------------
 set -g @plugin 'laktak/extrakto'
@@ -246,14 +258,18 @@ set-option -g @extrakto_key 'C-f'
 # lost-melody/tmux-command-palette --------------------------------------------
 set -g @plugin 'lost-melody/tmux-command-palette'
 set -g @cmdpalette-render-cmd 'bat -l md -f -pp'
+# Default tables steal copy-mode-vi ? (search backward); prefix ? is cheatmux's.
+# Custom tables get a which-key style help on ? (C-a w ?, C-a p ?, C-a s ?)
+set -g @cmdpalette-tables 'root,window,pane,session'
 
 # catppuccin/tmux -------------------------------------------------------------
-set -g @plugin 'catppuccin/tmux#v2.1.2'
+set -g @plugin 'catppuccin/tmux#v2.3.2'
 set -g @catppuccin_flavor 'mocha'
 set -g @catppuccin_window_status_style 'rounded'
 
-set -g @catppuccin_window_text " #W"
-set -g @catppuccin_window_current_text " #W"
+# workmux agent status (status_format: false in workmux config) + zoom flag
+set -g @catppuccin_window_text " #W#{?@workmux_status, #{@workmux_status},}#{?window_zoomed_flag, 󰁌,}"
+set -g @catppuccin_window_current_text " #W#{?@workmux_status, #{@workmux_status},}#{?window_zoomed_flag, 󰁌,}"
 
 set -g status-left "#{E:@catppuccin_status_session} "
 set -g status-right "#{E:@catppuccin_status_gitmux}"

@@ -10,3 +10,9 @@
     url = "https://github.com/zdharma-continuum/zinit.git"
     refreshPeriod = "168h"
     clone.args = ["--depth", "1"]
+
+[".local/bin/tmux-file-picker"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/raine/tmux-file-picker/main/tmux-file-picker"
+    executable = true
+    refreshPeriod = "168h"

@@ -292,7 +292,8 @@
     "seed@claude-garden": true,
     "claude-stats@claude-secret-garden": true,
     "qf-inbox@claude-secret-garden": true,
-    "cc-safety-net@cc-marketplace": true
+    "cc-safety-net@cc-marketplace": true,
+    "workmux-status@workmux": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -329,6 +330,12 @@
       "source": {
         "source": "github",
         "repo": "cloudbees/cloudbees-claude-plugins"
+      }
+    },
+    "workmux": {
+      "source": {
+        "source": "github",
+        "repo": "raine/workmux"
       }
     }
   },

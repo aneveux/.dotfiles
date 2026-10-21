@@ -1,0 +1,13 @@
+# https://workmux.raine.dev/guide/configuration/
+nerdfont: true
+agent: claude
+
+# ~/projects/<repo>/.worktrees/<branch>: globally gitignored, sesh names it <repo>/<branch>
+worktree_dir: .worktrees
+
+# catppuccin renders @workmux_status itself (see @catppuccin_window_text in ~/.tmux.conf)
+status_format: false
+status_icons:
+  working: "#[fg=#f9e2af]󰔟#[fg=default]"
+  waiting: "#[fg=#fab387]󰂜#[fg=default]"
+  done: "#[fg=#a6e3a1]󰄴#[fg=default]"

@@ -53,6 +53,7 @@ ensure_completion() {
   fi
 }
 ensure_completion mise mise completion zsh
+ensure_completion workmux workmux completions zsh
 
 autoload -Uz compinit
 # Reuses the dump unless fpath file count or zsh version changes; compaudit still runs each start
