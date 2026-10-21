@@ -1,0 +1,5 @@
+[Desktop Entry]
+# Overrides /etc/xdg/autostart/picom.desktop: not wanted under i3 (dex --autostart)
+Type=Application
+Name=picom
+Hidden=true

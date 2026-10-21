@@ -61,18 +61,15 @@ bindsym $mod+period exec "$HOME/.keyboard"
 # Fonts
 # --------------
 
-font xft:URWGothic-Book 11
 font pango: hack, Awesome 10
 
 # --------------
 # Windows & Borders
 # --------------
 
-new_window pixel 1
-new_float normal
-hide_edge_borders none
-for_window [class="^.*"] border pixel 1
-smart_borders on
+default_border pixel 1
+default_floating_border pixel 1
+hide_edge_borders smart
 
 # --------------
 # Customization Functions
@@ -355,13 +352,13 @@ assign [class="chromium"] $WS3
 for_window [class="Spotify"] move to workspace $WS4
 
 # WS5: Chrome
-assign [class="google-chrome"] $WS5
-for_window [class="google-chrome"] move to workspace $WS5
+assign [class="Google-chrome"] $WS5
+for_window [class="Google-chrome"] move to workspace $WS5
 
 # WS6: Social / Chat
 assign [class="discord"] $WS6
-assign [class="Slack"] $WS6
-for_window [class="Slack"] move to workspace $WS6
+assign [class="slack"] $WS6
+for_window [class="slack"] move to workspace $WS6
 
 # --------------
 # Auto-Floating
@@ -413,16 +410,16 @@ for_window [class="com.mitchellh.ghostty" instance="ghostty-scratch"] move scrat
 set $MAIN {{ .main_monitor }}
 set $LEFT {{ .vertical_monitor }}
 
-workspace $WS1 output $MAIN
-workspace $WS2 output $MAIN
-workspace $WS3 output $MAIN
-workspace $WS5 output $MAIN
-workspace $WS7 output $MAIN
-workspace $WS8 output $MAIN
-workspace $WS9 output $MAIN
-workspace $WS10 output $MAIN
+workspace $WS1 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS2 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS3 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS5 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS7 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS8 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS9 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
+workspace $WS10 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
 
-workspace $WS6 output $LEFT
+workspace $WS6 output $LEFT $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
 
 # Brightness
 bindsym $mod+F7 exec --no-startup-id brightnessctl set +10%
@@ -439,8 +436,8 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 # -------------------------
 
 # rofi for running applications or ssh-ing to machines
-bindsym $mod+d exec "rofi -no-lazy-grab -combi-modi window,drun -modi combi,window,drun,ssh -show combi"
-bindsym $mod+Shift+d exec "rofi -no-lazy-grab -modi ssh,window,drun -show ssh"
+bindsym $mod+d exec "rofi -no-lazy-grab -combi-modes window,drun -modes combi,window,drun,ssh -show combi"
+bindsym $mod+Shift+d exec "rofi -no-lazy-grab -modes ssh,window,drun -show ssh"
 
 bindsym $mod+Shift+f exec "~/.i3/search.sh"
 bindsym $mod+Shift+s exec "flameshot gui"
@@ -483,9 +480,10 @@ bindsym $mod+Shift+e exec "~/.config/rofi/powermenu.sh"
 
 # exit i3 (logs you out of your X session)
 bindsym $mod+BackSpace mode "$mode_system"
-set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+set $mode_system (l)ock, (e)xit, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
     bindsym l exec --no-startup-id ~/.i3/lock.sh, mode "default"
+    bindsym e exit
     bindsym s exec --no-startup-id systemctl suspend, mode "default"
     bindsym h exec --no-startup-id systemctl hibernate, mode "default"
     bindsym r exec --no-startup-id systemctl reboot, mode "default"
@@ -509,7 +507,6 @@ bindsym $mod+m exec ~/.i3/laptop.sh
 bindsym $mod+p exec ~/.i3/jira.sh
 bindsym $mod+Shift+n exec autorandr --load laptop-full
 
-exec --no-startup-id blueman
 
 set $LAPTOP {{ .laptop_monitor }}
 workspace $WS4 output $LAPTOP
@@ -519,8 +516,6 @@ exec --no-startup-id autorandr --change --default desktop
 {{ end }}
 
 exec_always --no-startup-id feh --bg-center ~/wallpaper.png
-exec --no-startup-id pamac-tray
-exec --no-startup-id nm-applet 
 exec --no-startup-id dex --autostart --environment i3
 
 exec --no-startup-id xautolock -detectsleep -time 10 -locker "~/.i3/lock.sh" -notify 30 -notifier "notify-send -u critical -t 10000 -- 'locking screen in 30 seconds'"
@@ -531,9 +526,7 @@ exec_always --no-startup-id $HOME/.config/polybar/polybar.sh
 # Autostart Applications
 # --------------
 
-# https://forum.manjaro.org/t/pamac-manager-issues/9813/26
-exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id picom --conf ~/.config/picom/picom.conf -b
 exec --no-startup-id dunst
-exec --no-startup-id nextcloud --background
 

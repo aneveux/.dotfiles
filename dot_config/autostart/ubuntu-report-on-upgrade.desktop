@@ -1,0 +1,5 @@
+[Desktop Entry]
+# Overrides /etc/xdg/autostart/ubuntu-report-on-upgrade.desktop: not wanted under i3 (dex --autostart)
+Type=Application
+Name=ubuntu-report-on-upgrade
+Hidden=true

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# i3lock-color is not packaged in Ubuntu; ~/.i3/lock.sh needs its options.
+# Bump the pinned commit to rebuild. PAM config comes from the apt i3lock package (/etc/pam.d/i3lock).
+{{- $commit := "e6c0caf9b7aa22cc7864493132a1a2e258da1761" }}
+set -euo pipefail
+
+readonly commit="{{ $commit }}"
+readonly src_dir="$HOME/tools/i3lock-color"
+
+sudo apt-get install -y --no-install-recommends \
+	i3lock autoconf gcc make pkg-config libpam0g-dev libcairo2-dev libfontconfig1-dev \
+	libxcb-composite0-dev libev-dev libx11-xcb-dev libxcb-xkb-dev libxcb-xinerama0-dev \
+	libxcb-randr0-dev libxcb-image0-dev libxcb-util-dev libxcb-xrm-dev libxkbcommon-dev \
+	libxkbcommon-x11-dev libjpeg-dev libgif-dev
+
+if [[ ! -d "$src_dir/.git" ]]; then
+	git clone https://github.com/Raymo111/i3lock-color.git "$src_dir"
+fi
+git -C "$src_dir" fetch --quiet origin
+git -C "$src_dir" checkout --quiet --detach "$commit"
+git -C "$src_dir" tag -f "git-${commit:0:9}" >/dev/null
+
+(
+	cd "$src_dir"
+	autoreconf -fi
+	rm -rf build && mkdir build && cd build
+	../configure --prefix=/usr/local --sysconfdir=/etc
+	make -j"$(nproc)"
+)
+
+sudo install -m755 "$src_dir/build/i3lock" /usr/local/bin/i3lock-color
+i3lock-color --version

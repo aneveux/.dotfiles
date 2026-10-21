@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 BLANK='#00000000'
 CLEAR='#1e1e2e'
@@ -7,7 +8,7 @@ TEXT='#cdd6f4'
 WRONG='#f38ba8'
 VERIFYING='#cba6f7'
 
-i3lock \
+i3lock-color \
 	--insidever-color=$CLEAR \
 	--ringver-color=$VERIFYING \
 	\
@@ -32,5 +33,5 @@ i3lock \
 	--clock \
 	--indicator \
 	--time-str="%H:%M:%S" \
-	--date-str="%A, %m %Y" \
+	--date-str="%A, %d %B %Y" \
 	--keylayout 1
