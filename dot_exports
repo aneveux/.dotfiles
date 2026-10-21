@@ -1,6 +1,6 @@
 export LANG='en_US.UTF-8'
 
-export GTK_THEME='Catppuccin-Blue-Dark:dark'
+export GTK_THEME='Colloid-Dark-Catppuccin'
 
 export MANPAGER='nvim +Man!'
 export MANWIDTH=999                     # no hard wrap from groff; nvim soft-wraps (:h manpager)

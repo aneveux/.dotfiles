@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Catppuccin Mocha for GTK (Colloid + vendored Mocha palette), cursors, Papirus folders and qt5ct/qt6ct colors.
+# palette hash: {{ include "private_dot_local/private_share/colloid/_color-palette-catppuccin.scss" | sha256sum }}
+set -euo pipefail
+
+readonly tools_dir="$HOME/tools"
+readonly colloid_tag="2026-08-08"
+readonly colloid_dir="$tools_dir/Colloid-gtk-theme"
+readonly gtk_theme="Colloid-Dark-Catppuccin"
+readonly palette="$HOME/.local/share/colloid/_color-palette-catppuccin.scss"
+readonly cursor_version="v2.0.0"
+readonly cursor_theme="catppuccin-mocha-light-cursors"
+readonly cursor_sha256="29e530a7e228396c9e4e35fc4b457fb4e77d2872e0ba88cd1ac4bce3099414e3"
+
+mkdir -p "$tools_dir"
+
+echo "Installing $gtk_theme (Colloid $colloid_tag)..."
+if [[ ! -d "$colloid_dir/.git" ]]; then
+	git clone https://github.com/vinceliuice/Colloid-gtk-theme.git "$colloid_dir"
+fi
+git -C "$colloid_dir" fetch --quiet --tags origin
+git -C "$colloid_dir" checkout --quiet --force "refs/tags/$colloid_tag"
+cp "$palette" "$colloid_dir/src/sass/_color-palette-catppuccin.scss"
+(cd "$colloid_dir" && ./install.sh -c dark -t default --tweaks catppuccin -l)
+git -C "$colloid_dir" checkout --quiet -- src/sass/_color-palette-catppuccin.scss
+
+echo "Installing $cursor_theme ($cursor_version)..."
+cursor_zip="$(mktemp --suffix=.zip)"
+trap 'rm -f "$cursor_zip"' EXIT
+curl -fsSL -o "$cursor_zip" "https://github.com/catppuccin/cursors/releases/download/$cursor_version/$cursor_theme.zip"
+echo "$cursor_sha256  $cursor_zip" | sha256sum --check --quiet
+mkdir -p "$HOME/.local/share/icons"
+rm -rf "$HOME/.local/share/icons/$cursor_theme"
+unzip -q "$cursor_zip" -d "$HOME/.local/share/icons"
+
+echo "Applying Catppuccin Papirus folders..."
+papirus_folders_dir="$tools_dir/papirus-folders"
+if [[ -d "$papirus_folders_dir/.git" ]]; then
+	git -C "$papirus_folders_dir" pull --quiet
+else
+	git clone https://github.com/catppuccin/papirus-folders.git "$papirus_folders_dir"
+fi
+sudo cp -r "$papirus_folders_dir"/src/* /usr/share/icons/Papirus
+papirus-folders -C cat-mocha-blue --theme Papirus-Dark
+
+echo "Installing Catppuccin qt5ct/qt6ct colors..."
+qt5ct_dir="$tools_dir/qt5ct"
+if [[ -d "$qt5ct_dir/.git" ]]; then
+	git -C "$qt5ct_dir" pull --quiet
+else
+	git clone https://github.com/catppuccin/qt5ct.git "$qt5ct_dir"
+fi
+mkdir -p "$HOME/.config/qt5ct/colors" "$HOME/.config/qt6ct/colors"
+cp "$qt5ct_dir/themes/catppuccin-mocha-blue.conf" "$HOME/.config/qt5ct/colors/"
+cp "$qt5ct_dir/themes/catppuccin-mocha-blue.conf" "$HOME/.config/qt6ct/colors/"
+
+if command -v gsettings >/dev/null; then
+	gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"
+	gsettings set org.gnome.desktop.wm.preferences theme "$gtk_theme"
+	gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+	gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
+	gsettings set org.gnome.desktop.interface cursor-theme "$cursor_theme"
+	gsettings set org.gnome.desktop.interface cursor-size 16
+fi
+
+if command -v flatpak >/dev/null && flatpak list 2>/dev/null | grep -q .; then
+	sudo flatpak override --filesystem="$HOME/.themes"
+	sudo flatpak override --filesystem="$HOME/.icons"
+	flatpak override --user --filesystem=xdg-config/gtk-4.0
+	sudo flatpak override --filesystem=xdg-config/gtk-4.0
+fi
+
+echo "GTK theme: $gtk_theme, cursors: $cursor_theme. Log out and back in to apply everywhere."

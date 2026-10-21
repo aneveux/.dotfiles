@@ -1,5 +1,6 @@
 *background: #1E1E2E
 *foreground: #CDD6F4
+*cursorColor: #F5E0DC
 
 ! black
 *color0: #45475A
@@ -33,5 +34,6 @@
 *color7: #BAC2DE
 *color15: #A6ADC8
 
+Xcursor.theme: catppuccin-mocha-light-cursors
 Xcursor.size: 16
 Xft.dpi: 110

@@ -1,4 +1,4 @@
-theme = Catppuccin Mocha
+theme = catppuccin-mocha.conf
 font-family = JuliaMono
 font-size = 11
 window-padding-x = 10

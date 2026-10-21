@@ -1,0 +1,75 @@
+// Catppuccin palette for vinceliuice/Colloid-gtk-theme (src/sass/_color-palette-catppuccin.scss).
+// Replaces upstream's Frappé/Macchiato mix: "-light" shades (used by the dark variant) are Mocha,
+// "-dark" shades (used by the light variant) are Latte. Copied in by run_onchange_after_install-gtk-theme.sh.
+
+// Red
+$red-light: #f38ba8;
+$red-dark: #d20f39;
+
+// Pink
+$pink-light: #f5c2e7;
+$pink-dark: #ea76cb;
+
+// Purple
+$purple-light: #cba6f7;
+$purple-dark: #8839ef;
+
+// Blue
+$blue-light: #89b4fa;
+$blue-dark: #1e66f5;
+
+// Teal
+$teal-light: #94e2d5;
+$teal-dark: #179299;
+
+// Green
+$green-light: #a6e3a1;
+$green-dark: #40a02b;
+
+// Yellow
+$yellow-light: #f9e2af;
+$yellow-dark: #df8e1d;
+
+// Orange
+$orange-light: #fab387;
+$orange-dark: #fe640b;
+
+// Grey: 050-250 Latte (light variant), 300-950 Mocha.
+// Dark variant surfaces: 800 panel, 750 titlebar/sidebar, 700 window, 650 cards.
+$grey-050: #eff1f5;
+$grey-100: #e6e9ef;
+$grey-150: #dce0e8;
+$grey-200: #ccd0da;
+$grey-250: #bcc0cc;
+$grey-300: #bac2de;
+$grey-350: #a6adc8;
+$grey-400: #9399b2;
+$grey-450: #7f849c;
+$grey-500: #6c7086;
+$grey-550: #585b70;
+$grey-600: #45475a;
+$grey-650: #313244;
+$grey-700: #1e1e2e;
+$grey-750: #181825;
+$grey-800: #11111b;
+$grey-850: #1e1e2e;
+$grey-900: #181825;
+$grey-950: #11111b;
+
+// White is the text color on dark surfaces
+$white: #cdd6f4;
+
+// Black
+$black: #11111b;
+
+// Button
+$button-close: if($variant == 'light', $red-dark, $red-light);
+$button-max: if($variant == 'light', $green-dark, $green-light);
+$button-min: if($variant == 'light', $yellow-dark, $yellow-light);
+
+// Link
+$links: if($variant == 'light', #04a5e5, #89dceb);
+
+// Theme
+$default-light: $blue-light;
+$default-dark: $blue-dark;
