@@ -7,8 +7,18 @@ configuration {
     location:                       4;
 }
 
-@import "font.rasi"
-@import "colors.rasi"
+@import "catppuccin-mocha"
+
+* {
+    font: "Iosevka Nerd Font 12";
+    BG:  @base;
+    BGA: @surface0;
+    FG:  @text;
+    BDR: @blue;
+    SEL: @blue;
+    ON:  @green;
+    OFF: @red;
+}
 
 /* Line Responsible For Button Layouts */
 /* BUTTON = TRUE */
@@ -117,7 +127,7 @@ element-icon {
 element-text {
     background-color: 		        inherit;
     text-color:       		        inherit;
-    font:			                "feather 20";
+    font:			                "Iosevka Nerd Font 20";
     expand:                         true;
     horizontal-align:               0.5;
     vertical-align:                 0.5;

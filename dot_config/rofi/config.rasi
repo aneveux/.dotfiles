@@ -1,8 +1,8 @@
 configuration {
     font: "Iosevka Nerd Font 12";
 
-    modi: "combi,window,drun";
-    combi-modi: "window,drun";
+    modes: "combi,window,drun";
+    combi-modes: "window,drun";
 
     case-sensitive: false;
     sort: true;
@@ -17,11 +17,9 @@ configuration {
     drun-display-format: "{icon} {name}";
     location: 0;
     disable-history: false;
-    hide-scrollbar: true;
     display-drun: "   Apps ";
     display-run: "   Run ";
-    display-window: " 﩯  Window";
-    display-Network: " 󰤨  Network";
+    display-window: " 󰕰  Window";
     sidebar-mode: true;
 
     terminal: "ghostty";

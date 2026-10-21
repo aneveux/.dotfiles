@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# this script just prints lyrics from file /tmp/lyrics
-# music script finds lyrics and puts it in /tmp/lyrics.
+# this script just prints lyrics from the file passed as $1
+# music script finds lyrics and puts it there.
 
 # Your lyrics is comming from here:
 
@@ -11,5 +11,5 @@
 # makeitpersonal.com/lyrics 2nd alternative if coudn't find on 1st 
 # if output is "Sorry, We don't have lyrics for this song yet. Add them to https://lyrics.wikia.com" it's comming from this api.
 
-printf "$(cat /tmp/lyrics)" | less
+less "${1:-${XDG_RUNTIME_DIR:-/tmp}/rofi-music-lyrics}"
 

@@ -1,9 +1,9 @@
 @theme "/dev/null"
 
 * {
-  bg:			#0C0F09;
-  fg:			#05E289;
-  button:		#1B1E25;
+  bg:			#1e1e2e; /* mocha base */
+  fg:			#a6e3a1; /* mocha green */
+  button:		#313244; /* mocha surface0 */
   background-color:	@bg;
   text-color:		@fg;
   iconfont: "Iosevka Nerd Font 10";
@@ -24,7 +24,6 @@ prompt {
 
 inputbar {
   children:		[ prompt ];
-  background-image:	url("/tmp/cover.png");
   expand:		false;
   border-radius:	8px 8px 0px 0px;
   padding:		290px 15px 15px 15px;
