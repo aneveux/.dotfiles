@@ -1,3 +1,4 @@
+{{ if eq .chezmoi.osRelease.id "ubuntu" -}}
 #!/usr/bin/env bash
 # i3lock-color is not packaged in Ubuntu; ~/.i3/lock.sh needs its options.
 # Bump the pinned commit to rebuild. PAM config comes from the apt i3lock package (/etc/pam.d/i3lock).
@@ -30,3 +31,4 @@ git -C "$src_dir" tag -f "git-${commit:0:9}" >/dev/null
 
 sudo install -m755 "$src_dir/build/i3lock" /usr/local/bin/i3lock-color
 i3lock-color --version
+{{ end -}}
