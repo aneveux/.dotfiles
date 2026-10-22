@@ -8,7 +8,7 @@ TEXT='#cdd6f4'
 WRONG='#f38ba8'
 VERIFYING='#cba6f7'
 
-i3lock-color \
+"$(command -v i3lock-color || echo i3lock)" \
 	--insidever-color=$CLEAR \
 	--ringver-color=$VERIFYING \
 	\

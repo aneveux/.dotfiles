@@ -538,7 +538,7 @@ exec_always --no-startup-id $HOME/.config/polybar/polybar.sh
 # Autostart Applications
 # --------------
 
-exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id {{ if eq .chezmoi.osRelease.id "ubuntu" }}/usr/lib/policykit-1-gnome{{ else }}/usr/lib/polkit-gnome{{ end }}/polkit-gnome-authentication-agent-1
 exec --no-startup-id picom --conf ~/.config/picom/picom.conf -b
 exec --no-startup-id dunst
 exec --no-startup-id greenclip daemon
