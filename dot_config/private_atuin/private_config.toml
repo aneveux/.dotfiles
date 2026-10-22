@@ -64,7 +64,7 @@ style = "compact"
 
 ## the maximum number of lines the interface should take up
 ## set it to 0 to always go full screen
-inline_height = 20
+inline_height = 0
 
 ## Invert the UI - put the search bar at the top , Default to `false`
 #invert = true
@@ -204,3 +204,8 @@ enabled = false
 [keys]
 # Defaults to true. If disabled, using the up/down key won't exit the TUI when scrolled past the first/last entry.
 # scroll_exits = false
+
+[tmux]
+enabled = true
+width = "80%"
+height = "60%"
