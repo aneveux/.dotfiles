@@ -100,7 +100,9 @@ adobe-source-code-pro-fonts
 noto-fonts
 noto-fonts-emoji
 ttf-jetbrains-mono
-ttf-juliamono
+ttf-juliamono # ghostty
+ttf-iosevka-nerd # polybar, rofi, dunst
+ttf-hack-nerd # i3
 ttf-nerd-fonts-symbols
 ttf-nerd-fonts-symbols-common
 epapirus-icon-theme
