@@ -2,6 +2,8 @@
 # https://github.com/joshmedeski/sesh
 
 sort_order = ["tmux", ["config", "zoxide"]]
+cache = true
+separator_aware = true
 
 # Worktree layouts the git namer gets wrong (matched against the ~-collapsed path)
 # ~/projects/<repo>/.worktrees/<branch> -> <repo>/<branch>

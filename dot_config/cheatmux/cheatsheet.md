@@ -42,6 +42,7 @@ C-a w l    Swap window right  #window #swap #move #right #reorder
 C-a w f    Find window  #window #search #find
 C-a w a    Last window (alternate)  #window #switch #last #back #alternate
 C-a w s    Window tree picker  #window #pick #tree #select #choose
+C-a w g    Lazygit window (reuse if open)  #window #git #lazygit #open
 
 ## Pane Table (C-a p → key)
 C-a p |    Split pane side by side  #pane #split #horizontal #create
@@ -67,6 +68,7 @@ C-a s a    Last session via sesh (alternate)  #session #switch #last #back #alte
 C-a s x    Kill session (confirm)  #session #close #kill #delete
 C-a s d    Detach from session  #session #detach #exit #leave
 C-a s s    Session tree picker  #session #pick #tree #select #choose
+C-a s R    Switch to repo root session via sesh  #session #switch #root #worktree #sesh
 
 ## Copy Mode (C-a v to enter)
 v    Begin selection  #copy #select #highlight
