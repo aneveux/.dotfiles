@@ -23,3 +23,9 @@ prompts/**
 .cc-safety-net/logs
 .cc-safety-net/logs/**
 .cc-safety-net/update-check.json
+{{ if ne .machine "flower" }}
+.i3/laptop.sh
+.i3/dualscreen.sh
+.config/systemd/user/battery-notify.service
+.config/systemd/user/battery-notify.timer
+{{ end }}

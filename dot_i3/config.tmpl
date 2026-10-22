@@ -421,9 +421,11 @@ workspace $WS10 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{
 
 workspace $WS6 output $LEFT $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
 
+{{ if eq .machine "flower" -}}
 # Brightness
 bindsym $mod+F7 exec --no-startup-id ~/.i3/osd.sh brightness up
 bindsym $mod+F6 exec --no-startup-id ~/.i3/osd.sh brightness down
+{{ end -}}
 # Volume control
 bindsym XF86AudioRaiseVolume exec --no-startup-id ~/.i3/osd.sh volume up
 bindsym XF86AudioLowerVolume exec --no-startup-id ~/.i3/osd.sh volume down

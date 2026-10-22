@@ -1,3 +1,7 @@
 modules-left = i3 sep cpu memory filesystem sep spotify
 modules-center = date
+{{ if eq .machine "flower" -}}
 modules-right = claude battery network sep github slack caffeine notifications sep pulseaudio-control sep brightness sep machine sep powermenu tray
+{{ else -}}
+modules-right = claude network sep github slack caffeine notifications sep pulseaudio-control sep machine sep powermenu tray
+{{ end -}}
