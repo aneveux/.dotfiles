@@ -116,3 +116,7 @@
 [battery]
   appname = battery
   override_pause_level = 80
+
+[slack]
+  appname = Slack
+  default_icon = slack
