@@ -1,0 +1,6 @@
+.zshrc.d/git.zsh
+.zshrc.d/github.zsh
+.zshrc.d/zsh-vi-mode-clipboard.zsh
+.config/television/cable/sesh.toml
+.config/television/cable/zsh-history.toml
+.oh-my-zsh/custom/resources/catppuccin_mocha.omp.json
