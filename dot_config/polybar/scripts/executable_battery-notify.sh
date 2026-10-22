@@ -28,7 +28,7 @@ fi
 if [[ "$STATUS" == "Discharging" ]]; then
 
     if [[ $CAPACITY -le $CRITICAL && $NOTIFIED_CRITICAL -eq 0 ]]; then
-        notify-send -u critical -i battery-caution \
+        notify-send -a battery -h string:x-dunst-stack-tag:battery -u critical -i battery-caution \
             "Battery Critical: ${CAPACITY}%" \
             "System will suspend soon. Plug in charger immediately!"
         NOTIFIED_CRITICAL=1
@@ -36,14 +36,14 @@ if [[ "$STATUS" == "Discharging" ]]; then
         NOTIFIED_WARNING=1
 
     elif [[ $CAPACITY -le $LOW && $NOTIFIED_LOW -eq 0 ]]; then
-        notify-send -u critical -i battery-low \
+        notify-send -a battery -h string:x-dunst-stack-tag:battery -u critical -i battery-low \
             "Battery Low: ${CAPACITY}%" \
             "Please plug in your charger soon."
         NOTIFIED_LOW=1
         NOTIFIED_WARNING=1
 
     elif [[ $CAPACITY -le $WARNING && $NOTIFIED_WARNING -eq 0 ]]; then
-        notify-send -u normal -i battery-low \
+        notify-send -a battery -h string:x-dunst-stack-tag:battery -u normal -i battery-low \
             "Battery Warning: ${CAPACITY}%" \
             "Battery is getting low."
         NOTIFIED_WARNING=1

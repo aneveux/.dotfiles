@@ -1,8 +1,9 @@
 configuration {
     font: "Iosevka Nerd Font 12";
 
-    modes: "combi,window,drun";
+    modes: "combi,window,drun,run,ssh";
     combi-modes: "window,drun";
+    combi-display-format: "{text}";
 
     case-sensitive: false;
     sort: true;
@@ -15,6 +16,7 @@ configuration {
     icon-theme: "Papirus-Dark";
 
     drun-display-format: "{icon} {name}";
+    drun-show-actions: true;
     location: 0;
     disable-history: false;
     display-drun: "   Apps ";

@@ -16,3 +16,8 @@
     url = "https://raw.githubusercontent.com/raine/tmux-file-picker/main/tmux-file-picker"
     executable = true
     refreshPeriod = "168h"
+
+[".local/bin/greenclip"]
+    type = "file"
+    url = "https://github.com/erebe/greenclip/releases/download/v4.2/greenclip"
+    executable = true

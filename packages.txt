@@ -62,6 +62,7 @@ tmux       # Terminal multiplexer
 tmuxinator # Tmux session manager
 dmenu      # Application launcher
 rofi       # Alternative app launcher
+qalc       # Calculator backend for ~/.config/rofi/calc.sh (greenclip comes from .chezmoiexternal.toml)
 chezmoi    # Dotfile manager
 
 # Desktop environment (Ubuntu apt names)

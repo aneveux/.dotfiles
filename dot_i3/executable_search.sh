@@ -22,14 +22,14 @@ declare -a PLATFORMS
 
 URLS=(
   ["duckduckgo"]="https://www.duckduckgo.com/?q="
-  ["stackoverflow"]="http://stackoverflow.com/search?q="
+  ["stackoverflow"]="https://stackoverflow.com/search?q="
   ["github"]="https://github.com/search?q="
   ["youtube"]="https://www.youtube.com/results?search_query="
   ["google"]="https://www.google.com/search?q="
   ["searchcode"]="https://searchcode.com/?q="
   ["openhub"]="https://www.openhub.net/p?ref=homepage&query="
-  ["superuser"]="http://superuser.com/search?q="
-  ["imdb"]="http://www.imdb.com/find?ref_=nv_sr_fn&q="
+  ["superuser"]="https://superuser.com/search?q="
+  ["imdb"]="https://www.imdb.com/find?ref_=nv_sr_fn&q="
 )
 
 PLATFORMS=(
@@ -59,7 +59,7 @@ main() {
     query=$( (echo) | rofi -dmenu -matching fuzzy -location 0 -p "❓ > ")
 
     if [[ -n "$query" ]]; then
-      url=${URLS[$platform]}$query
+      url=${URLS[$platform]}$(printf '%s' "$query" | jq -sRr @uri)
       xdg-open "$url"
     else
       exit

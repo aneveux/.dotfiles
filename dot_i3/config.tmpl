@@ -284,8 +284,8 @@ bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_
 # Layouts Splits
 # --------------
 
-bindsym $mod+minus split h;exec notify-send 'tile horizontally'
-bindsym $mod+bar split v;exec notify-send 'tile vertically'
+bindsym $mod+minus split h;exec notify-send -a i3 'tile horizontally'
+bindsym $mod+bar split v;exec notify-send -a i3 'tile vertically'
 bindsym $mod+q split toggle
 bindsym $mod+f fullscreen toggle
 
@@ -422,12 +422,12 @@ workspace $WS10 output $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{
 workspace $WS6 output $LEFT $MAIN{{ if eq .machine "flower" }} {{ .laptop_monitor }}{{ end }}
 
 # Brightness
-bindsym $mod+F7 exec --no-startup-id brightnessctl set +10%
-bindsym $mod+F6 exec --no-startup-id brightnessctl set 10%-
+bindsym $mod+F7 exec --no-startup-id ~/.i3/osd.sh brightness up
+bindsym $mod+F6 exec --no-startup-id ~/.i3/osd.sh brightness down
 # Volume control
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id ~/.i3/osd.sh volume up
+bindsym XF86AudioLowerVolume exec --no-startup-id ~/.i3/osd.sh volume down
+bindsym XF86AudioMute exec --no-startup-id ~/.i3/osd.sh volume mute
 
 
 
@@ -436,7 +436,9 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 # -------------------------
 
 # rofi for running applications or ssh-ing to machines
-bindsym $mod+d exec "rofi -no-lazy-grab -combi-modes window,drun -modes combi,window,drun,ssh -show combi"
+bindsym $mod+d exec "rofi -no-lazy-grab -combi-modes window,drun -modes combi,window,drun,run,ssh -show combi"
+# fuzzy file search under $HOME (scans on open, so not part of $mod+d)
+bindsym $mod+i exec "rofi -show recursivebrowser"
 bindsym $mod+Shift+d exec "rofi -no-lazy-grab -modes ssh,window,drun -show ssh"
 
 bindsym $mod+Shift+f exec "~/.i3/search.sh"
@@ -449,6 +451,16 @@ bindsym $mod+t exec --no-startup-id ~/.i3/scratch-term.sh
 
 # emoji-picker
 bindsym $mod+Shift+colon exec emoji-picker
+
+# clipboard history (greenclip daemon autostarted below)
+bindsym $mod+v exec "rofi -modes 'clipboard:greenclip print' -show clipboard -run-command '{cmd}'"
+
+# calculator (qalc)
+bindsym $mod+c exec "~/.config/rofi/calc.sh"
+
+# dunst: recall last notification, open its actions/URLs
+bindsym $mod+n exec --no-startup-id dunstctl history-pop
+bindsym $mod+Ctrl+n exec --no-startup-id dunstctl context
 
 # --------------
 # Launcher Mode
@@ -518,7 +530,7 @@ exec --no-startup-id autorandr --change --default desktop
 exec_always --no-startup-id feh --bg-center ~/wallpaper.png
 exec --no-startup-id dex --autostart --environment i3
 
-exec --no-startup-id xautolock -detectsleep -time 10 -locker "~/.i3/lock.sh" -notify 30 -notifier "notify-send -u critical -t 10000 -- 'locking screen in 30 seconds'"
+exec --no-startup-id xautolock -detectsleep -time 10 -locker "~/.i3/lock.sh" -notify 30 -notifier "notify-send -a i3 -u critical -t 10000 -- 'locking screen in 30 seconds'"
 
 exec_always --no-startup-id $HOME/.config/polybar/polybar.sh
 
@@ -529,4 +541,5 @@ exec_always --no-startup-id $HOME/.config/polybar/polybar.sh
 exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id picom --conf ~/.config/picom/picom.conf -b
 exec --no-startup-id dunst
+exec --no-startup-id greenclip daemon
 

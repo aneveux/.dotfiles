@@ -2,6 +2,7 @@
 
 ROFI_JIRA_HISTORY_FILE="$HOME/.rofi_jira_history"
 MAX_DISPLAYED_HISTORY_ITEMS=10
+MAX_HISTORY_SIZE=50
 
 declare -A JIRA_URLS
 JIRA_URLS=(
@@ -20,11 +21,9 @@ function read_history {
 }
 
 function historize {
-  if [ ! -s "$ROFI_JIRA_HISTORY_FILE" ]; then
-    echo "$1" >"$ROFI_JIRA_HISTORY_FILE"
-  else
-    sed -i "1i $1" "$ROFI_JIRA_HISTORY_FILE"
-  fi
+  local updated
+  updated=$( (echo "$1"; cat "$ROFI_JIRA_HISTORY_FILE") | awk 'NF && !seen[$0]++' | head -n "$MAX_HISTORY_SIZE")
+  echo "$updated" >"$ROFI_JIRA_HISTORY_FILE"
 }
 
 function cb_url {

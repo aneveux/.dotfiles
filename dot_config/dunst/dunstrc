@@ -70,7 +70,7 @@
     sticky_history = yes
     history_length = 20
 
-    dmenu = /usr/bin/dmenu -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -p dunst
     browser = /usr/bin/xdg-open
     always_run_script = true
 
@@ -79,7 +79,7 @@
 
     corner_radius = 20
 
-    ignore_dbusclose = true
+    ignore_dbusclose = false
 
     mouse_left_click = close_current
     mouse_middle_click = do_action, close_current
@@ -105,4 +105,14 @@
   foreground = "#cdd6f4"
   highlight = "#89b4fa"
   frame_color = "#fab387"
-  timeout = 20
+  timeout = 0
+
+[osd]
+  appname = osd
+  format = "%s"
+  history_ignore = yes
+  timeout = 2
+
+[battery]
+  appname = battery
+  override_pause_level = 80
