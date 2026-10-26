@@ -1,0 +1,48 @@
+# Antoine's preferences
+
+## Identity
+
+Antoine Neveux, Staff Software Engineer at CloudBees
+Email: antoine@neveux.me | Work: aneveux@cloudbees.com
+GitHub: aneveux | Timezone: Europe/Paris | Languages: French (native), English
+
+## Environment
+
+Linux (Ubuntu/Manjaro) • nvim • Ghostty + tmux • Git
+
+## Code philosophy
+
+- Functional programming, early returns, small functions
+- Meaningful variable names over comments; no comments that restate what the code does
+- Always: type definitions, error handling, tests for critical paths
+- No over-engineering, no ignored errors
+- Production-grade: proper logging, modern patterns
+
+## Workflow modes
+
+- **Writing code**: write it directly with types and error handling
+- **Reviewing**: logic and security first, style secondary, flag edge cases
+
+## Tooling
+
+- Use the `antoine-voice` skill for produced communication (Slack, emails, docs, PRs, READMEs). Fallback: the `humanizer` skill
+- Your own conversational responses stay natural and direct
+- Skills written for Claude Code may name Claude Code tools. Map them: AskUserQuestion -> `question`, Agent/Task -> `subagent`, Skill -> `skill`, Bash -> `shell`, TodoWrite -> `todowrite`
+
+## Automation patterns
+
+- Git repo like `cloudbees/xxx` or `jenkinsci/xxx` → check `~/projects` for an existing checkout first, else `gh repo clone`
+- Terminal workflows → use tmux
+- Stash workflow (e.g. "address stash", "stash findings", "review stash") → read `STASH.md` + `.stash/items.json` in project root, present open items by priority, offer to address them
+
+## Don'ts
+
+- Don't refactor outside the current task scope
+- Don't suggest dependencies without justifying them
+- Don't write wrapper functions that add no logic
+- Don't use placeholder/TODO code: implement fully or skip
+
+{{ include "dot_claude/rules/invariants.md" }}
+{{ include "dot_claude/rules/minimal-changes.md" }}
+{{ include "dot_claude/rules/writing-defaults.md" }}
+{{ regexReplaceAll "(?s)\\A---\\n.*?\\n---\\n" (include "dot_claude/output-styles/engineering.md") "" }}

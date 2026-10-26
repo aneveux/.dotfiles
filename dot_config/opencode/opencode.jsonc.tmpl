@@ -1,0 +1,62 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "amazon-bedrock/us.anthropic.claude-opus-5-5",
+  "providers": {
+    "amazon-bedrock": {
+      "settings": {
+        "region": "us-east-1",
+        "profile": "cloudbees-bedrock-claude-infra-bedrock-claude-user"
+      }
+    }
+  },
+  "agents": {
+    "title": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
+    "summary": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" }
+  },
+  // mise owns upgrades
+  "update": "disable",
+  "share": "disabled",
+  "compaction": { "auto": true },
+  "plugins": [
+    { "package": "cc-safety-net@2.6.19", "options": { "shell": "posix" } },
+    "opencode-handoff@0.6.1"
+  ],
+  // Last match wins: denies come after the broad rules they narrow
+  "permissions": [
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+
+    { "action": "read", "resource": "*.env", "effect": "deny" },
+    { "action": "read", "resource": "*.env.*", "effect": "deny" },
+    { "action": "read", "resource": "*.env.example", "effect": "allow" },
+    { "action": "read", "resource": "*.pem", "effect": "deny" },
+    { "action": "read", "resource": "*credentials*", "effect": "deny" },
+    { "action": "read", "resource": "*/id_rsa*", "effect": "deny" },
+    { "action": "read", "resource": "*/id_ed25519*", "effect": "deny" },
+    { "action": "read", "resource": "*.p12", "effect": "deny" },
+    { "action": "read", "resource": "*.jks", "effect": "deny" },
+    { "action": "read", "resource": "*.keystore", "effect": "deny" },
+    { "action": "read", "resource": "{{ .chezmoi.homeDir }}/.m2/settings*.xml", "effect": "deny" },
+    { "action": "read", "resource": "{{ .chezmoi.homeDir }}/.aws/*", "effect": "deny" },
+    { "action": "read", "resource": "{{ .chezmoi.homeDir }}/.ssh/*", "effect": "deny" },
+
+    { "action": "edit", "resource": "*.env", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.*", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.example", "effect": "allow" },
+    { "action": "edit", "resource": "*.pem", "effect": "deny" },
+    { "action": "edit", "resource": "*credentials*", "effect": "deny" },
+    { "action": "edit", "resource": "*/id_rsa*", "effect": "deny" },
+    { "action": "edit", "resource": "*/id_ed25519*", "effect": "deny" },
+    { "action": "edit", "resource": "*.p12", "effect": "deny" },
+    { "action": "edit", "resource": "*.jks", "effect": "deny" },
+    { "action": "edit", "resource": "*.keystore", "effect": "deny" },
+    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.config/opencode/*", "effect": "deny" },
+    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.claude/settings.json", "effect": "deny" },
+    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.claude/hooks/*", "effect": "deny" },
+    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.cc-safety-net/*", "effect": "deny" },
+
+    { "action": "shell", "resource": "git push *--force*", "effect": "deny" },
+    { "action": "shell", "resource": "git push -f*", "effect": "deny" },
+    { "action": "shell", "resource": "git push * -f", "effect": "deny" },
+    { "action": "shell", "resource": "git push * -f *", "effect": "deny" }
+  ]
+}
