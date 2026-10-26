@@ -1,0 +1,68 @@
+prSections:
+  - title: Mine
+    filters: >-
+      is:open author:@me
+      repo:cloudbees/cloudbees-ci-ai-agent-service
+      repo:cloudbees/cloudbees-ci-mcp-router
+      repo:cloudbees/cloudbees-oauth-credentials-plugin
+      repo:cloudbees/cloudbees-oauth-resource-plugin
+      repo:cloudbees/cloudbees-oauth-server-plugin
+      repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
+      repo:jenkinsci/mcp-server-plugin
+  - title: Review requested
+    filters: >-
+      is:open review-requested:@me
+      repo:cloudbees/cloudbees-ci-ai-agent-service
+      repo:cloudbees/cloudbees-ci-mcp-router
+      repo:cloudbees/cloudbees-oauth-credentials-plugin
+      repo:cloudbees/cloudbees-oauth-resource-plugin
+      repo:cloudbees/cloudbees-oauth-server-plugin
+      repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
+      repo:jenkinsci/mcp-server-plugin
+  - title: CloudBees
+    filters: >-
+      is:open
+      repo:cloudbees/cloudbees-ci-ai-agent-service
+      repo:cloudbees/cloudbees-ci-mcp-router
+      repo:cloudbees/cloudbees-oauth-credentials-plugin
+      repo:cloudbees/cloudbees-oauth-resource-plugin
+      repo:cloudbees/cloudbees-oauth-server-plugin
+      repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
+  - title: mcp-server-plugin
+    filters: is:open repo:jenkinsci/mcp-server-plugin -author:app/renovate
+  - title: Bots
+    filters: >-
+      is:open author:app/renovate
+      repo:cloudbees/cloudbees-ci-ai-agent-service
+      repo:cloudbees/cloudbees-ci-mcp-router
+      repo:cloudbees/cloudbees-oauth-credentials-plugin
+      repo:cloudbees/cloudbees-oauth-resource-plugin
+      repo:cloudbees/cloudbees-oauth-server-plugin
+      repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
+      repo:jenkinsci/mcp-server-plugin
+defaults:
+  view: prs
+  prsLimit: 50
+  preview:
+    open: true
+    width: 50
+repoPaths:
+  cloudbees/cloudbees-ci-ai-agent-service: ~/projects/project-ci-troubleshooting/cloudbees-ci-ai-agent-service
+  cloudbees/cloudbees-ci-mcp-router: ~/projects/project-ci-troubleshooting/cloudbees-ci-mcp-router
+  cloudbees/cloudbees-oauth-credentials-plugin: ~/projects/project-ci-troubleshooting/cloudbees-oauth-credentials-plugin
+  cloudbees/cloudbees-oauth-resource-plugin: ~/projects/project-ci-troubleshooting/cloudbees-oauth-resource-plugin
+  cloudbees/cloudbees-oauth-server-plugin: ~/projects/project-ci-troubleshooting/cloudbees-oauth-server-plugin
+  cloudbees/cloudbees-workflow-troubleshooting-plugin: ~/projects/project-ci-troubleshooting/cloudbees-workflow-troubleshooting-plugin
+  jenkinsci/mcp-server-plugin: ~/projects/project-ci-troubleshooting/mcp-server-plugin
+keybindings:
+  universal:
+    - key: g
+      name: lazygit
+      command: cd {{.RepoPath}}; lazygit
+pager:
+  diff: delta
+theme:
+  ui:
+    sectionsShowCount: true
+confirmQuit: false
+showAuthorIcons: true
