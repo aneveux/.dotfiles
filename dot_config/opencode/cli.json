@@ -1,5 +1,13 @@
 {
   "$schema": "https://opencode.ai/v2/cli.json",
   "theme": { "name": "catppuccin", "mode": "dark" },
-  "attention": { "notifications": true }
+  "attention": { "notifications": true, "sound": true },
+  "animations": true,
+  "tabs": { "mode": "auto" },
+  "session": { "thinking": "show" },
+  "keybinds": {
+    "session.fork": "<leader>f",
+    "session.toggle.thinking": "<leader>h",
+    "variant.list": "<leader>v"
+  }
 }

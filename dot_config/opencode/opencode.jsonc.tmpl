@@ -1,3 +1,9 @@
+{{- /*
+  Rendered output must stay comment-free: rtk parses this file to decide whether a rewrite would
+  change a permission verdict, and it fails open on JSONC comments. Explanations live in these
+  template comments instead.
+*/ -}}
+{{- $home := .chezmoi.homeDir -}}
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "amazon-bedrock/us.anthropic.claude-opus-5-5",
@@ -10,53 +16,106 @@
     }
   },
   "agents": {
+    "build": { "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#high" },
+    "plan": { "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#high" },
+    "general": { "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#medium" },
+    "explore": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5#low" },
+    "compaction": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5" },
     "title": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
-    "summary": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" }
+    "summary": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
+    "opencode-memory-recall": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
+    "opencode-memory-extract": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5", "steps": 20 },
+    "opencode-memory-dream": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5" },
+    "safe": {
+      "description": "Asks before shell commands, edits and web access",
+      "mode": "primary",
+      "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#high",
+      "color": "#a6e3a1",
+      "permissions": [
+        { "action": "shell", "resource": "*", "effect": "ask" },
+        { "action": "shell", "resource": "git status *", "effect": "allow" },
+        { "action": "shell", "resource": "git diff *", "effect": "allow" },
+        { "action": "shell", "resource": "git log *", "effect": "allow" },
+        { "action": "edit", "resource": "*", "effect": "ask" },
+        { "action": "webfetch", "resource": "*", "effect": "ask" },
+        { "action": "websearch", "resource": "*", "effect": "ask" },
+        { "action": "execute", "resource": "*", "effect": "ask" }
+      ]
+    }
   },
-  // mise owns upgrades
+{{- /* mise owns upgrades */}}
   "update": "disable",
   "share": "disabled",
   "compaction": { "auto": true },
+{{- /* V2 only reads AGENTS.md; this keeps repos that only ship a CLAUDE.md working, resolved per project */}}
+  "instructions": ["CLAUDE.md"],
+  "mcp": {
+    "servers": {
+      "atlassian": { "type": "remote", "url": "https://mcp.atlassian.com/v2/mcp" }
+    }
+  },
   "plugins": [
     { "package": "cc-safety-net@2.6.19", "options": { "shell": "posix" } },
-    "opencode-handoff@0.6.1"
+    "opencode-handoff@0.6.1",
+    "opencode-claude-memory@2.2.1",
+    "{{ $home }}/projects/opencode/plugins/claude-hooks"
   ],
-  // Last match wins: denies come after the broad rules they narrow
+{{- /*
+  formatter: an object enables the built-ins (prettier, shfmt, gofmt, ruff...) plus spotless.
+  Formatters run synchronously after each edit, so spotless uses mvnd and never fails the edit.
+  `.no-spotless` at the project root opts out, as with the Claude auto-format hook.
+*/}}
+  "formatter": {
+    "spotless": {
+      "command": ["sh", "-c", "[ -f pom.xml ] && [ ! -f .no-spotless ] && mvnd -q spotless:apply -DspotlessFiles=\"$1\" >/dev/null 2>&1; exit 0", "spotless", "$FILE"],
+      "extensions": [".java"]
+    }
+  },
   "permissions": [
-    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "*", "effect": "ask" }
+  ],
+{{- /*
+  Hard limits: policies hold in every agent, in --yolo and against saved approvals.
+  Last match wins. rtk does not read policies and rewrites `git push` into `rtk git push`,
+  which opencode then evaluates, so every shell policy has an `rtk` twin.
+*/}}
+  "policies": [
+    { "action": "tool.use", "resource": "read:*.env", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.env.*", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.env.example", "effect": "allow" },
+    { "action": "tool.use", "resource": "read:*.pem", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*credentials*", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*/id_rsa*", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*/id_ed25519*", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.p12", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.jks", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.keystore", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:{{ $home }}/.m2/settings*.xml", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:{{ $home }}/.aws/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:{{ $home }}/.ssh/*", "effect": "deny" },
 
-    { "action": "read", "resource": "*.env", "effect": "deny" },
-    { "action": "read", "resource": "*.env.*", "effect": "deny" },
-    { "action": "read", "resource": "*.env.example", "effect": "allow" },
-    { "action": "read", "resource": "*.pem", "effect": "deny" },
-    { "action": "read", "resource": "*credentials*", "effect": "deny" },
-    { "action": "read", "resource": "*/id_rsa*", "effect": "deny" },
-    { "action": "read", "resource": "*/id_ed25519*", "effect": "deny" },
-    { "action": "read", "resource": "*.p12", "effect": "deny" },
-    { "action": "read", "resource": "*.jks", "effect": "deny" },
-    { "action": "read", "resource": "*.keystore", "effect": "deny" },
-    { "action": "read", "resource": "{{ .chezmoi.homeDir }}/.m2/settings*.xml", "effect": "deny" },
-    { "action": "read", "resource": "{{ .chezmoi.homeDir }}/.aws/*", "effect": "deny" },
-    { "action": "read", "resource": "{{ .chezmoi.homeDir }}/.ssh/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*.env", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*.env.*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*.env.example", "effect": "allow" },
+    { "action": "tool.use", "resource": "edit:*.pem", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*credentials*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/id_rsa*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/id_ed25519*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*.p12", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*.jks", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*.keystore", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:{{ $home }}/.config/opencode/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:{{ $home }}/.claude/settings.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:{{ $home }}/.claude/hooks/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:{{ $home }}/.cc-safety-net/*", "effect": "deny" },
 
-    { "action": "edit", "resource": "*.env", "effect": "deny" },
-    { "action": "edit", "resource": "*.env.*", "effect": "deny" },
-    { "action": "edit", "resource": "*.env.example", "effect": "allow" },
-    { "action": "edit", "resource": "*.pem", "effect": "deny" },
-    { "action": "edit", "resource": "*credentials*", "effect": "deny" },
-    { "action": "edit", "resource": "*/id_rsa*", "effect": "deny" },
-    { "action": "edit", "resource": "*/id_ed25519*", "effect": "deny" },
-    { "action": "edit", "resource": "*.p12", "effect": "deny" },
-    { "action": "edit", "resource": "*.jks", "effect": "deny" },
-    { "action": "edit", "resource": "*.keystore", "effect": "deny" },
-    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.config/opencode/*", "effect": "deny" },
-    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.claude/settings.json", "effect": "deny" },
-    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.claude/hooks/*", "effect": "deny" },
-    { "action": "edit", "resource": "{{ .chezmoi.homeDir }}/.cc-safety-net/*", "effect": "deny" },
-
-    { "action": "shell", "resource": "git push *--force*", "effect": "deny" },
-    { "action": "shell", "resource": "git push -f*", "effect": "deny" },
-    { "action": "shell", "resource": "git push * -f", "effect": "deny" },
-    { "action": "shell", "resource": "git push * -f *", "effect": "deny" }
+    { "action": "tool.use", "resource": "shell:git push *--force*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:rtk git push *--force*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git push -f*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:rtk git push -f*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git push * -f", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:rtk git push * -f", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git push * -f *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:rtk git push * -f *", "effect": "deny" }
   ]
 }
