@@ -4,3 +4,5 @@
 .config/television/cable/sesh.toml
 .config/television/cable/zsh-history.toml
 .oh-my-zsh/custom/resources/catppuccin_mocha.omp.json
+.config/gh-dash/ci-troubleshooting.yml
+.zshrc.d/ghdash.zsh

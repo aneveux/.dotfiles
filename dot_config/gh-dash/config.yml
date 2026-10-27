@@ -1,5 +1,5 @@
 prSections:
-  - title: Mine
+  - title: "CI: Mine"
     filters: >-
       is:open author:@me
       repo:cloudbees/cloudbees-ci-ai-agent-service
@@ -7,7 +7,7 @@ prSections:
       repo:cloudbees/cloudbees-oauth-plugins
       repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
       repo:jenkinsci/mcp-server-plugin
-  - title: Review requested
+  - title: "CI: Review"
     filters: >-
       is:open review-requested:@me
       repo:cloudbees/cloudbees-ci-ai-agent-service
@@ -15,16 +15,16 @@ prSections:
       repo:cloudbees/cloudbees-oauth-plugins
       repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
       repo:jenkinsci/mcp-server-plugin
-  - title: CloudBees
+  - title: "CI: CloudBees"
     filters: >-
       is:open
       repo:cloudbees/cloudbees-ci-ai-agent-service
       repo:cloudbees/cloudbees-ci-mcp-router
       repo:cloudbees/cloudbees-oauth-plugins
       repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
-  - title: mcp-server-plugin
+  - title: "CI: mcp-server"
     filters: is:open repo:jenkinsci/mcp-server-plugin -author:app/renovate
-  - title: Bots
+  - title: "CI: Bots"
     filters: >-
       is:open author:app/renovate
       repo:cloudbees/cloudbees-ci-ai-agent-service
@@ -32,9 +32,50 @@ prSections:
       repo:cloudbees/cloudbees-oauth-plugins
       repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
       repo:jenkinsci/mcp-server-plugin
+  - title: Projects
+    filters: >-
+      is:open -author:app/dependabot
+      repo:aneveux/td
+      repo:aneveux/beefactory
+      repo:aneveux/ccx
+      repo:aneveux/garnish
+      repo:aneveux/cheatmux
+      repo:aneveux/conventional-keys
+  - title: "Projects: Deps"
+    filters: >-
+      is:open author:app/dependabot
+      repo:aneveux/td
+      repo:aneveux/beefactory
+      repo:aneveux/ccx
+      repo:aneveux/garnish
+      repo:aneveux/cheatmux
+      repo:aneveux/conventional-keys
+  - title: AI
+    filters: is:open repo:aneveux/claude-garden repo:aneveux/claude-secret-garden
+issuesSections:
+  - title: "CI: Involved"
+    filters: >-
+      is:open involves:@me
+      repo:cloudbees/cloudbees-ci-ai-agent-service
+      repo:cloudbees/cloudbees-ci-mcp-router
+      repo:cloudbees/cloudbees-oauth-plugins
+      repo:cloudbees/cloudbees-workflow-troubleshooting-plugin
+      repo:jenkinsci/mcp-server-plugin
+  - title: Projects
+    filters: >-
+      is:open
+      repo:aneveux/td
+      repo:aneveux/beefactory
+      repo:aneveux/ccx
+      repo:aneveux/garnish
+      repo:aneveux/cheatmux
+      repo:aneveux/conventional-keys
+  - title: AI
+    filters: is:open repo:aneveux/claude-garden repo:aneveux/claude-secret-garden
 defaults:
   view: prs
   prsLimit: 50
+  issuesLimit: 50
   preview:
     open: true
     width: 50
@@ -44,6 +85,14 @@ repoPaths:
   cloudbees/cloudbees-oauth-plugins: ~/projects/project-ci-troubleshooting/cloudbees-oauth-plugins
   cloudbees/cloudbees-workflow-troubleshooting-plugin: ~/projects/project-ci-troubleshooting/cloudbees-workflow-troubleshooting-plugin
   jenkinsci/mcp-server-plugin: ~/projects/project-ci-troubleshooting/mcp-server-plugin
+  aneveux/td: ~/projects/td
+  aneveux/beefactory: ~/projects/beefactory
+  aneveux/ccx: ~/projects/ccx
+  aneveux/garnish: ~/projects/garnish
+  aneveux/cheatmux: ~/projects/cheatmux
+  aneveux/conventional-keys: ~/projects/conventional-keys
+  aneveux/claude-garden: ~/projects/claude-garden
+  aneveux/claude-secret-garden: ~/projects/claude-secret-garden
 keybindings:
   universal:
     - key: g
