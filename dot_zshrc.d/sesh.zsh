@@ -9,6 +9,9 @@ _sesh_preexec() {
 preexec_functions+=(_sesh_preexec)
 
 zle     -N             sesh-sessions
-zvm_bindkey viins '^[s' sesh-sessions
-zvm_bindkey vicmd '^[s' sesh-sessions
+# zvm_bindkey before zvm_init leaves a dangling zvm_readkeys_handler binding that segfaults zsh 5.9
+zvm_after_init_commands+=(
+  "zvm_bindkey viins '^[s' sesh-sessions"
+  "zvm_bindkey vicmd '^[s' sesh-sessions"
+)
 bindkey -M emacs '^[s' sesh-sessions
