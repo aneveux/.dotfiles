@@ -24,7 +24,6 @@ zo zc               open / close                zj / zk   next / prev fold
 
 ## Comments (native)
 gcc                 toggle line comment         gc{motion}  comment motion
-gbc                 toggle block comment
 
 ## LSP (native 0.11+ defaults)
 grn                 rename            gra   code action     grr   references
@@ -45,7 +44,22 @@ K                   hover             gO    document symbols
 ## Harpoon (harpoon2 extra defaults)
 <leader>H           add file          <leader>h    quick menu (toggle)
 <leader>1..9        jump to file 1..9
-## (optional: to mirror IntelliJ M-hjkl, add binds — see plan Phase 8 note)
+
+## Windows & Tabs (<leader>w = <C-w>, mirrored in IdeaVim)
+<leader>wv / ws     split vertical / horizontal   <leader>w=   equalize
+<leader>wd          close window      <leader>wm   zoom toggle
+<leader><tab><tab>  new tab           <leader><tab>d   close tab
+<leader><tab>] / [  next / prev tab   <leader>bo   delete other buffers
+
+## Tests (neotest; Java: run :NeotestJava setup once)
+<leader>tr          run nearest       <leader>tt   run file
+<leader>tl          run last          <leader>td   debug nearest
+<leader>ts          summary           <leader>to   output
+<leader>tS          stop              <leader>tw   toggle watch
+
+## AI (claudecode; in the Claude pane run /ide to attach)
+<leader>as (v)      send selection    <leader>ab   add current buffer
+<leader>aa / ad     accept / deny diff
 
 ## Debug (dap)
 <leader>db          breakpoint        <leader>dc   continue

@@ -268,7 +268,7 @@ xmap <leader>/ gc
 """  ⌨️  MNEMONIC LEADER NAMESPACES
 """  ----
 """  - a: ai (Copilot chat)      - r: refactor
-"""  - b: bookmarks             - s: splits
+"""  - b: bookmarks             - w: windows
 """  - c: code                  - t: tool windows
 """  - d: debug                 - u: ui toggles
 """  - e: explorer (NERDTree)   - x: execute / run
@@ -761,36 +761,36 @@ let g:WhichKeyDesc_refactor_class       = "<leader>rC Extract [C]lass"
 let g:WhichKeyDesc_refactor_encapsulate = "<leader>re [E]ncapsulate Fields"
 
 """ -------------------------------------------------------------------
-""" 🪟 s: splits
+""" 🪟 w: windows
 """ -------------------------------------------------------------------
 
-nmap <leader>sv <Action>(SplitVertically)
-nmap <leader>sh <Action>(SplitHorizontally)
-nmap <leader>sx <Action>(Unsplit)
-nmap <leader>sX <Action>(UnsplitAll)
-nmap <leader>sm <Action>(MaximizeEditorInSplit)
-nmap <leader>sn <Action>(NextSplitter)
-nmap <leader>sp <Action>(PrevSplitter)
-nmap <leader>so <Action>(MoveEditorToOppositeTabGroup)
-nmap <leader>sq <Action>(CloseContent)
-nmap <leader>sQ <Action>(CloseAllEditors)
-nmap <leader>sO <Action>(CloseAllEditorsButActive)
+nmap <leader>wv <Action>(SplitVertically)
+nmap <leader>ws <Action>(SplitHorizontally)
+nmap <leader>wd <Action>(Unsplit)
+nmap <leader>wD <Action>(UnsplitAll)
+nmap <leader>wm <Action>(MaximizeEditorInSplit)
+nmap <leader>ww <Action>(NextSplitter)
+nmap <leader>wW <Action>(PrevSplitter)
+nmap <leader>wx <Action>(MoveEditorToOppositeTabGroup)
+nmap <leader>wq <Action>(CloseContent)
+nmap <leader>wQ <Action>(CloseAllEditors)
+nmap <leader>wo <Action>(CloseAllEditorsButActive)
 
 """ WHICH-KEY DESCRIPTIONS
 
-let g:WhichKeyDesc_splits            = "<leader>s [S]plits"
+let g:WhichKeyDesc_splits            = "<leader>w [W]indows"
 
-let g:WhichKeyDesc_split_vertical    = "<leader>sv Split [V]ertically"
-let g:WhichKeyDesc_split_horizontal  = "<leader>sh Split [H]orizontally"
-let g:WhichKeyDesc_split_unsplit     = "<leader>sx Unsplit"
-let g:WhichKeyDesc_split_unsplit_all = "<leader>sX Unsplit All"
-let g:WhichKeyDesc_split_maximize    = "<leader>sm [M]aximize Editor"
-let g:WhichKeyDesc_split_next        = "<leader>sn [N]ext Splitter"
-let g:WhichKeyDesc_split_prev        = "<leader>sp [P]revious Splitter"
-let g:WhichKeyDesc_split_move        = "<leader>so M[o]ve to Opposite Group"
-let g:WhichKeyDesc_split_close       = "<leader>sq [Q]uit Editor"
-let g:WhichKeyDesc_split_close_all   = "<leader>sQ [Q]uit All Editors"
-let g:WhichKeyDesc_split_close_other = "<leader>sO Quit [O]ther Editors"
+let g:WhichKeyDesc_split_vertical    = "<leader>wv Split [V]ertically"
+let g:WhichKeyDesc_split_horizontal  = "<leader>ws [S]plit Horizontally"
+let g:WhichKeyDesc_split_unsplit     = "<leader>wd Unsplit ([D]elete)"
+let g:WhichKeyDesc_split_unsplit_all = "<leader>wD Unsplit All"
+let g:WhichKeyDesc_split_maximize    = "<leader>wm [M]aximize Editor"
+let g:WhichKeyDesc_split_next        = "<leader>ww Next Splitter"
+let g:WhichKeyDesc_split_prev        = "<leader>wW Previous Splitter"
+let g:WhichKeyDesc_split_move        = "<leader>wx E[x]change to Opposite Group"
+let g:WhichKeyDesc_split_close       = "<leader>wq [Q]uit Editor"
+let g:WhichKeyDesc_split_close_all   = "<leader>wQ [Q]uit All Editors"
+let g:WhichKeyDesc_split_close_other = "<leader>wo Quit [O]ther Editors"
 
 """ -------------------------------------------------------------------
 """ 🧱 t: tool windows

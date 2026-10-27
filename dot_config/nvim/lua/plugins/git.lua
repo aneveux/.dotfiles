@@ -8,7 +8,7 @@ return {
   -- Branch/range diffs, file history, merge-conflict resolution — the core
   -- of in-editor review. octo (PR review) comes from the util.octo extra.
   {
-    "sindrets/diffview.nvim",
+    "dlyongemallo/diffview-plus.nvim",
     cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory", "DiffviewToggleFiles" },
     keys = {
       { "<leader>gdo", "<cmd>DiffviewOpen<cr>", desc = "Diffview Open" },

@@ -19,11 +19,6 @@ return {
     filesystem = {
       -- Req #1: stop neo-tree from auto-opening when editing a directory (vi .).
       hijack_netrw_behavior = "disabled",
-      -- Req #4: keep the tree synced to the buffer you're editing.
-      follow_current_file = {
-        enabled = true,
-        leave_dirs_open = false,
-      },
     },
   },
 }

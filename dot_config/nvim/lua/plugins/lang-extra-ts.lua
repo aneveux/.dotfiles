@@ -5,10 +5,7 @@ return {
       -- NOTE: no "hugo" parser exists — Hugo templates use the gotmpl parser.
       -- NOTE: no "asciidoc" parser in current nvim-treesitter — omitted to avoid
       -- a startup warning; asciidoc gets no treesitter highlighting for now.
-      ensure_installed = {
-        "bash", "xml", "html", "css", "javascript",
-        "gotmpl", "properties",
-      },
+      ensure_installed = { "css", "gotmpl", "properties" },
     },
   },
   -- Hugo Go-templates: map the template extensions to gotmpl so the parser
