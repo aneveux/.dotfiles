@@ -102,6 +102,10 @@ fake_sts_key() { printf 'ASIA%s' "$(printf 'Z%.0s' {1..16})"; }
 fake_gh_oauth_token() { printf 'gho_%s' "$(printf 'b%.0s' {1..36})"; }
 fake_atlassian_token() { printf 'ATATT%s' "$(printf 'c%.0s' {1..24})"; }
 fake_sonar_token() { printf 'squ_%s' "$(printf 'd%.0s' {1..40})"; }
+fake_anthropic_key() { printf 'sk-ant-api03-%s' "$(printf 'f%.0s' {1..40})"; }
+fake_openai_project_key() { printf 'sk-proj-%s' "$(printf 'g%.0s' {1..40})"; }
+fake_github_fine_grained_token() { printf 'github_pat_%s' "$(printf 'h%.0s' {1..40})"; }
+fake_google_api_key() { printf 'AIza%s' "$(printf 'i%.0s' {1..35})"; }
 fake_private_key_header() { printf -- '-----BEGIN %s PRIVATE KEY-----' 'OPENSSH'; }
 
 # A source line assigning a credential to a constant. Defaults to the GitHub
@@ -721,6 +725,10 @@ test_credential_shapes() {
 		"GitHub OAuth token|$(fake_gh_oauth_token)"
 		"Atlassian API token|$(fake_atlassian_token)"
 		"SonarQube user token|$(fake_sonar_token)"
+		"Anthropic API key|$(fake_anthropic_key)"
+		"OpenAI project key|$(fake_openai_project_key)"
+		"GitHub fine-grained token|$(fake_github_fine_grained_token)"
+		"Google API key|$(fake_google_api_key)"
 	)
 
 	local entry label secret

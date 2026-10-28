@@ -19,6 +19,6 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply aneveux/.dotfiles
 
 CLI tools come from mise: `run_onchange_after_mise-install.sh.tmpl` runs `mise install` on apply.
 
-After `chezmoi apply` on a new machine: run `cc-safety-net rule sync -g`, then confirm with
-`cc-safety-net rule list` that it prints "Active sources (1)" and "Active rules (6)". The rulebook is
-inert until synced, and the `-g` flag is required: a bare `rule sync` leaves it inactive.
+cc-safety-net 2.6+ reads rulebooks live, so there is nothing to sync (`rule sync` is deprecated). After
+`chezmoi apply` on a new machine, confirm with `npx -y cc-safety-net rule list` that it prints
+"Active sources (1)" and "Active rules (10)".

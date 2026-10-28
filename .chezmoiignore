@@ -23,6 +23,9 @@ prompts/**
 .cc-safety-net/logs
 .cc-safety-net/logs/**
 .cc-safety-net/update-check.json
+.cc-safety-net/compile-cache
+.cc-safety-net/compile-cache/**
+.config/opencode/service.json
 {{ if ne .machine "flower" }}
 .i3/laptop.sh
 .i3/dualscreen.sh

@@ -106,7 +106,7 @@ matches() {
 # keyed on the literal placeholder is a hole that goes stale the moment sbx
 # changes it. It costs nothing today: the placeholder appears in this repo only in
 # Markdown, and md is not in SOURCE_EXTENSIONS.
-if matches '(sk-[a-zA-Z0-9]{20,}|sk-ant-[a-zA-Z0-9]{20,}|gh[oprsu]_[A-Za-z0-9]{36,}|(AKIA|ASIA)[A-Z0-9]{16}|xox[bps]-[a-zA-Z0-9\-]{20,}|ATATT[A-Za-z0-9]{20,}|squ_[a-f0-9]{40})'; then
+if matches '(sk-[a-zA-Z0-9]{20,}|sk-ant-[A-Za-z0-9_-]{20,}|sk-(proj|svcacct|admin)-[A-Za-z0-9_-]{20,}|gh[oprsu]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,}|AIza[0-9A-Za-z_-]{35}|(AKIA|ASIA)[A-Z0-9]{16}|xox[bps]-[a-zA-Z0-9\-]{20,}|ATATT[A-Za-z0-9]{20,}|squ_[a-f0-9]{40})'; then
 	echo "SECURITY-GATE: Provider API key pattern detected in $FILE_PATH" >&2
 	echo "Move to .env and reference via environment variable." >&2
 	exit 2

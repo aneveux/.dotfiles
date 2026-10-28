@@ -39,7 +39,8 @@
         { "action": "edit", "resource": "*", "effect": "ask" },
         { "action": "webfetch", "resource": "*", "effect": "ask" },
         { "action": "websearch", "resource": "*", "effect": "ask" },
-        { "action": "execute", "resource": "*", "effect": "ask" }
+        { "action": "execute", "resource": "*", "effect": "ask" },
+        { "action": "subagent", "resource": "*", "effect": "ask" }
       ]
     }
   },
@@ -76,46 +77,36 @@
   ],
 {{- /*
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
-  Last match wins. rtk does not read policies and rewrites `git push` into `rtk git push`,
-  which opencode then evaluates, so every shell policy has an `rtk` twin.
+  Last match wins. Resources are relative inside the project and absolute outside it, so secret
+  patterns start with `*` to match both. rtk does not read policies and rewrites `git push` into
+  `rtk git push`, which opencode then evaluates, so every shell policy has an `rtk` twin.
+  Project config (.opencode/, opencode.json*) is edit-denied because it can drop plugins such as
+  cc-safety-net and auto-load plugin code; plan mode's own files are lifted back out.
 */}}
+{{- $secrets := list
+  "*.env" "*.env.*" "*.envrc" "*.pem" "*.key" "*credentials*"
+  "id_rsa*" "*/id_rsa*" "id_ed25519*" "*/id_ed25519*" "id_ecdsa*" "*/id_ecdsa*"
+  "*.p12" "*.jks" "*.keystore" "*.tfstate" "*.tfstate.*"
+  "*.m2/settings*.xml" "*.aws/*" "*.ssh/*" "*opencode/service.json" "*opencode/auth.json" }}
+{{- $guarded := list
+  (printf "%s/.config/opencode/*" $home) (printf "%s/.claude/settings.json" $home)
+  (printf "%s/.claude/hooks/*" $home) (printf "%s/.cc-safety-net/*" $home)
+  "*.opencode/*" "*opencode.json" "*opencode.jsonc" }}
+{{- $forcePush := list "git push *--force*" "git push -f*" "git push * -f" "git push * -f *" }}
   "policies": [
-    { "action": "tool.use", "resource": "read:*.env", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*.env.*", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*.env.example", "effect": "allow" },
-    { "action": "tool.use", "resource": "read:*.pem", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*credentials*", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*/id_rsa*", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*/id_ed25519*", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*.p12", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*.jks", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:*.keystore", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:{{ $home }}/.m2/settings*.xml", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:{{ $home }}/.aws/*", "effect": "deny" },
-    { "action": "tool.use", "resource": "read:{{ $home }}/.ssh/*", "effect": "deny" },
-
-    { "action": "tool.use", "resource": "edit:*.env", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*.env.*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*.env.example", "effect": "allow" },
-    { "action": "tool.use", "resource": "edit:*.pem", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*credentials*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*/id_rsa*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*/id_ed25519*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*.p12", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*.jks", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*.keystore", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:{{ $home }}/.config/opencode/*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:{{ $home }}/.claude/settings.json", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:{{ $home }}/.claude/hooks/*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:{{ $home }}/.cc-safety-net/*", "effect": "deny" },
-
-    { "action": "tool.use", "resource": "shell:git push *--force*", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:rtk git push *--force*", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:git push -f*", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:rtk git push -f*", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:git push * -f", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:rtk git push * -f", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:git push * -f *", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:rtk git push * -f *", "effect": "deny" }
+{{- range $tool := list "read" "edit" }}
+{{- range $secrets }}
+    { "action": "tool.use", "resource": "{{ $tool }}:{{ . }}", "effect": "deny" },
+{{- end }}
+    { "action": "tool.use", "resource": "{{ $tool }}:*.env.example", "effect": "allow" },
+{{- end }}
+{{- range $guarded }}
+    { "action": "tool.use", "resource": "edit:{{ . }}", "effect": "deny" },
+{{- end }}
+    { "action": "tool.use", "resource": "edit:{{ $home }}/.opencode/plan/*", "effect": "allow" },
+{{- range $index, $command := $forcePush }}
+    { "action": "tool.use", "resource": "shell:{{ $command }}", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:rtk {{ $command }}", "effect": "deny" }{{ if lt (add1 $index) (len $forcePush) }},{{ end }}
+{{- end }}
   ]
 }
