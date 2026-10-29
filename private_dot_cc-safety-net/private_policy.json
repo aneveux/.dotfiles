@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "safety": {
+    "level": "standard",
+    "overrides": {}
+  },
+  "workflow": {
+    "worktree_mode": false
+  },
+  "destructive_command_protection": {
+    "enabled": true,
+    "overrides": {},
+    "allow_paths": []
+  },
+  "secret_protection": {
+    "enabled": true,
+    "overrides": {},
+    "deny_paths": [],
+    "allow_paths": []
+  },
+  "audit": {
+    "retention_days": 30
+  }
+}

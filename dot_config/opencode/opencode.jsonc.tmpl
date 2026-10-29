@@ -33,8 +33,11 @@
       "color": "#a6e3a1",
       "permissions": [
         { "action": "shell", "resource": "*", "effect": "ask" },
+        { "action": "shell", "resource": "git status", "effect": "allow" },
         { "action": "shell", "resource": "git status *", "effect": "allow" },
+        { "action": "shell", "resource": "git diff", "effect": "allow" },
         { "action": "shell", "resource": "git diff *", "effect": "allow" },
+        { "action": "shell", "resource": "git log", "effect": "allow" },
         { "action": "shell", "resource": "git log *", "effect": "allow" },
         { "action": "edit", "resource": "*", "effect": "ask" },
         { "action": "webfetch", "resource": "*", "effect": "ask" },
@@ -56,10 +59,9 @@
     }
   },
   "plugins": [
-    { "package": "cc-safety-net@2.6.19", "options": { "shell": "posix" } },
-    "opencode-handoff@0.6.1",
-    "opencode-claude-memory@2.2.1",
-    "{{ $home }}/projects/opencode/plugins/claude-hooks"
+    "cc-safety-net@2.7.0",
+    "opencode-handoff@0.7.0",
+    "opencode-claude-memory@2.2.1"
   ],
 {{- /*
   formatter: an object enables the built-ins (prettier, shfmt, gofmt, ruff...) plus spotless.
@@ -78,8 +80,8 @@
 {{- /*
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
   Last match wins. Resources are relative inside the project and absolute outside it, so secret
-  patterns start with `*` to match both. rtk does not read policies and rewrites `git push` into
-  `rtk git push`, which opencode then evaluates, so every shell policy has an `rtk` twin.
+  patterns start with `*` to match both. Shell-level blocking (force push, secret reads from the
+  shell) is cc-safety-net's job: it parses commands and sees through `rtk` as a wrapper.
   Project config (.opencode/, opencode.json*) is edit-denied because it can drop plugins such as
   cc-safety-net and auto-load plugin code; plan mode's own files are lifted back out.
 */}}
@@ -92,7 +94,6 @@
   (printf "%s/.config/opencode/*" $home) (printf "%s/.claude/settings.json" $home)
   (printf "%s/.claude/hooks/*" $home) (printf "%s/.cc-safety-net/*" $home)
   "*.opencode/*" "*opencode.json" "*opencode.jsonc" }}
-{{- $forcePush := list "git push *--force*" "git push -f*" "git push * -f" "git push * -f *" }}
   "policies": [
 {{- range $tool := list "read" "edit" }}
 {{- range $secrets }}
@@ -103,10 +104,6 @@
 {{- range $guarded }}
     { "action": "tool.use", "resource": "edit:{{ . }}", "effect": "deny" },
 {{- end }}
-    { "action": "tool.use", "resource": "edit:{{ $home }}/.opencode/plan/*", "effect": "allow" },
-{{- range $index, $command := $forcePush }}
-    { "action": "tool.use", "resource": "shell:{{ $command }}", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:rtk {{ $command }}", "effect": "deny" }{{ if lt (add1 $index) (len $forcePush) }},{{ end }}
-{{- end }}
+    { "action": "tool.use", "resource": "edit:{{ $home }}/.opencode/plan/*", "effect": "allow" }
   ]
 }
