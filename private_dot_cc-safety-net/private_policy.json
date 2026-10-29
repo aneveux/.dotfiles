@@ -15,7 +15,7 @@
   "secret_protection": {
     "enabled": true,
     "overrides": {},
-    "deny_paths": [],
+    "deny_paths": ["~/.m2/settings.xml", "~/.config/opencode/service.json", "~/.config/opencode/auth.json"],
     "allow_paths": []
   },
   "audit": {
