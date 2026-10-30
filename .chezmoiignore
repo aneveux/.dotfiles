@@ -15,8 +15,6 @@ prompts/**
 .claude/gh-pr-status-cache.json
 .claude/stats-cache.json
 .claude/mcp-needs-auth-cache.json
-.claude/skills/humanizer/.git
-.claude/skills/humanizer/.git/**
 .cc-safety-net/rules/rule.lock
 .cc-safety-net/cache
 .cc-safety-net/cache/**

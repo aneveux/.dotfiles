@@ -29,6 +29,6 @@ Never write:
 
 Deliberately not banned: technical words that appear on generic slop lists but are the correct term for the thing (framework, robust, harness, load-bearing, gated). Use them when they are accurate.
 
-Scope: these rules strip patterns that no human voice wants. When the `antoine-voice` skill is active, its documented habits win, because that profile records how Antoine actually writes. For a deeper editing pass on existing text, use `/humanizer`.
+Scope: these rules strip patterns that no human voice wants. When the `antoine-voice` skill is active, its documented habits win, because that profile records how Antoine actually writes.
 
 Adapted from [tropes.fyi](https://tropes.fyi) by Ossama Chaib.

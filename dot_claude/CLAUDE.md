@@ -25,7 +25,7 @@ Linux (Ubuntu/Manjaro) • nvim • Ghostty + tmux • Git. Desktop config and t
 
 ## Tooling
 
-- Use `antoine-voice` skill for produced communication (Slack, emails, docs, PRs, READMEs). Fallback: `/humanizer`
+- Use `antoine-voice` skill for produced communication (Slack, emails, docs, PRs, READMEs)
 - Claude's own conversational responses stay natural and direct
 
 @RTK.md
