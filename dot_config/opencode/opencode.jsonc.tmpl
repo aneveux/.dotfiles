@@ -27,7 +27,7 @@
     "opencode-memory-extract": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5", "steps": 20 },
     "opencode-memory-dream": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5" },
     "safe": {
-      "description": "Asks before shell commands, edits and web access",
+      "description": "Asks before shell commands, edits and web access; no subagents",
       "mode": "primary",
       "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#high",
       "color": "#a6e3a1",
@@ -43,7 +43,7 @@
         { "action": "webfetch", "resource": "*", "effect": "ask" },
         { "action": "websearch", "resource": "*", "effect": "ask" },
         { "action": "execute", "resource": "*", "effect": "ask" },
-        { "action": "subagent", "resource": "*", "effect": "ask" }
+        { "action": "subagent", "resource": "*", "effect": "deny" }
       ]
     }
   },
