@@ -75,7 +75,14 @@
     }
   },
   "permissions": [
-    { "action": "external_directory", "resource": "*", "effect": "ask" }
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "edit", "resource": "*dot_config/opencode/opencode.jsonc.tmpl", "effect": "ask" },
+    { "action": "shell", "resource": "chezmoi *", "effect": "ask" },
+    { "action": "shell", "resource": "chezmoi diff *", "effect": "allow" },
+    { "action": "shell", "resource": "chezmoi status *", "effect": "allow" },
+    { "action": "shell", "resource": "chezmoi cat *", "effect": "allow" },
+    { "action": "shell", "resource": "chezmoi managed *", "effect": "allow" },
+    { "action": "shell", "resource": "chezmoi source-path *", "effect": "allow" }
   ],
 {{- /*
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
