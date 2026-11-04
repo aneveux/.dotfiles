@@ -86,7 +86,12 @@
   file and run commands.
 */}}
 {{- $secrets := list
-  "*.env" "*.env.*" "*.envrc" "*.pem" "*.key" "*credentials*"
+  "*.env" "*.env.*" "*.envrc" "*.pem" "*.key"
+  "credentials" "*/credentials" "credentials.json" "*/credentials.json"
+  ".credentials.json" "*/.credentials.json" ".git-credentials" "*/.git-credentials"
+  ".netrc" "*/.netrc" ".npmrc" "*/.npmrc" ".pypirc" "*/.pypirc" ".vault-token" "*/.vault-token"
+  ".docker/config.json" "*/.docker/config.json" ".kube/config" "*/.kube/config"
+  ".config/gh/hosts.yml" "*/.config/gh/hosts.yml" ".gradle/gradle.properties" "*/.gradle/gradle.properties"
   "id_rsa*" "*/id_rsa*" "id_ed25519*" "*/id_ed25519*" "id_ecdsa*" "*/id_ecdsa*"
   "*.p12" "*.jks" "*.keystore" "*.tfstate" "*.tfstate.*"
   "*.m2/settings*.xml" "*.aws/*" "*.ssh/*" "*opencode/service.json" "*opencode/auth.json" }}
