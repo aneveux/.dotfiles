@@ -46,7 +46,7 @@ maven = "latest"
 mvnd = "latest"
 neovim = "latest"
 node = "latest"
-opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
+opencode = { version = "2.2.5", allow_builds = ["@opencode/cli"] }
 pipx = "latest"
 quarkus = "latest"
 rtk = "latest"
