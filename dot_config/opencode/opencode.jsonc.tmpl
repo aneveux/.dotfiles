@@ -23,9 +23,6 @@
     "compaction": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5" },
     "title": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
     "summary": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
-    "opencode-memory-recall": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
-    "opencode-memory-extract": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5", "steps": 20 },
-    "opencode-memory-dream": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5" },
     "safe": {
       "description": "Asks before shell commands, edits and web access; no subagents",
       "mode": "primary",
@@ -60,8 +57,7 @@
   },
   "plugins": [
     "cc-safety-net@2.7.0",
-    "opencode-handoff@0.7.0",
-    "opencode-claude-memory@2.2.1"
+    "opencode-handoff@0.7.0"
   ],
 {{- /*
   formatter: an object enables the built-ins (prettier, shfmt, gofmt, ruff...) plus spotless.
