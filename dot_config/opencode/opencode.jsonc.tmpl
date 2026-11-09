@@ -107,7 +107,13 @@
     { "action": "slack_slack_read_*", "resource": "*", "effect": "allow" },
     { "action": "slack_slack_search_*", "resource": "*", "effect": "allow" },
     { "action": "slack_slack_list_*", "resource": "*", "effect": "allow" },
-    { "action": "slack_slack_get_reactions", "resource": "*", "effect": "allow" }
+    { "action": "slack_slack_get_reactions", "resource": "*", "effect": "allow" },
+    { "action": "cbci_*", "resource": "*", "effect": "ask" },
+    { "action": "cbci_get*", "resource": "*", "effect": "allow" },
+    { "action": "cbci_find*", "resource": "*", "effect": "allow" },
+    { "action": "cbci_list*", "resource": "*", "effect": "allow" },
+    { "action": "cbci_search*", "resource": "*", "effect": "allow" },
+    { "action": "cbci_whoAmI", "resource": "*", "effect": "allow" }
   ],
 {{- /*
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
