@@ -101,7 +101,13 @@
     { "action": "atlassian_list*", "resource": "*", "effect": "allow" },
     { "action": "atlassian_discover", "resource": "*", "effect": "allow" },
     { "action": "atlassian_executeRead", "resource": "*", "effect": "allow" },
-    { "action": "atlassian_atlassianUserInfo", "resource": "*", "effect": "allow" }
+    { "action": "atlassian_atlassianUserInfo", "resource": "*", "effect": "allow" },
+{{- /* Slack names its tools slack_*, so actions read slack_slack_*. get_file_upload_url starts an upload */}}
+    { "action": "slack_*", "resource": "*", "effect": "ask" },
+    { "action": "slack_slack_read_*", "resource": "*", "effect": "allow" },
+    { "action": "slack_slack_search_*", "resource": "*", "effect": "allow" },
+    { "action": "slack_slack_list_*", "resource": "*", "effect": "allow" },
+    { "action": "slack_slack_get_reactions", "resource": "*", "effect": "allow" }
   ],
 {{- /*
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
