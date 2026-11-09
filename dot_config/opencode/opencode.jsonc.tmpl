@@ -52,7 +52,19 @@
   "instructions": ["CLAUDE.md"],
   "mcp": {
     "servers": {
-      "atlassian": { "type": "remote", "url": "https://mcp.atlassian.com/v2/mcp" }
+      "atlassian": { "type": "remote", "url": "https://mcp.atlassian.com/v2/mcp" },
+      "slack": {
+        "type": "remote",
+        "url": "https://mcp.slack.com/mcp",
+        "oauth": { "client_id": "1601185624273.8899143856786", "redirect_uri": "http://localhost:3118/callback" },
+        "disabled": true
+      },
+      "cbci": {
+        "type": "remote",
+        "url": "https://dogfooding.cloudbees.com/mcp-router/mcp",
+        "oauth": { "client_id": "ci-mcp-client" },
+        "disabled": true
+      }
     }
   },
   "plugins": [
