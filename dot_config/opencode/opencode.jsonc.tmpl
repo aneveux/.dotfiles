@@ -58,9 +58,10 @@
   "compaction": { "auto": true },
 {{- /* V2 only reads AGENTS.md; this keeps repos that only ship a CLAUDE.md working, resolved per project */}}
   "instructions": ["CLAUDE.md"],
+{{- /* Every server is off by default; the opencode-context plugin turns on those its options list in work locations */}}
   "mcp": {
     "servers": {
-      "atlassian": { "type": "remote", "url": "https://mcp.atlassian.com/v2/mcp" },
+      "atlassian": { "type": "remote", "url": "https://mcp.atlassian.com/v2/mcp", "disabled": true },
       "slack": {
         "type": "remote",
         "url": "https://mcp.slack.com/mcp",
@@ -79,6 +80,10 @@
     "cc-safety-net@2.7.0",
     "opencode-handoff@0.7.0",
     "github:aneveux/opencode-antoine-voice#v0.3.1",
+    {
+      "package": "github:aneveux/opencode-context#v0.1.0",
+      "options": { "orgs": ["cloudbees", "jenkinsci", "jenkins-infra"], "servers": ["atlassian", "slack", "cbci"] }
+    },
     "{{ $home }}/projects/opencode-java-stack"
   ],
 {{- /*
