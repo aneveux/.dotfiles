@@ -22,7 +22,7 @@ Antoine's config lives in a chezmoi source, `~/.local/share/chezmoi`, the git re
 - `.chezmoiexternal.toml` pulls tpm, zinit and two binaries. `.chezmoiremove` lists targets to delete.
 - `run_onchange_*` scripts run on apply when their rendered content changes. `run_onchange_after_mise-install.sh.tmpl` embeds a hash of the mise config, so editing `dot_config/mise/config.toml` runs `mise install --yes`.
 - CLI tools come from mise. OpenCode is pinned there, and an upgrade is a deliberate version bump. System packages are listed in `packages.txt` and installed by hand.
-- `dot_config/opencode/` is the OpenCode config: `AGENTS.md`, `opencode.jsonc.tmpl`, `plugins/`, `skills/`. The rendered `opencode.jsonc` must stay comment-free, so explanations go in template comments.
+- `dot_config/opencode/` is the OpenCode config: `AGENTS.md.tmpl`, `opencode.jsonc.tmpl`, `plugins/`, `skills/`. The rendered `opencode.jsonc` must stay comment-free, so explanations go in template comments. `AGENTS.md.tmpl` stays a template, see its comment.
 - `dot_claude/` is Claude Code's config. Leave it alone unless the task is about Claude Code. OpenCode reads nothing in it but the skills under its `skills/`.
 
 ## Toolset
