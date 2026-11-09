@@ -19,7 +19,15 @@
     "build": { "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#high" },
     "plan": { "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#high" },
     "general": { "model": "amazon-bedrock/us.anthropic.claude-opus-5-5#medium" },
-    "explore": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5#low" },
+    "explore": {
+      "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5#low",
+{{- /* Global permissions are appended after explore's own `* deny`: without these, it would get MCP tools as direct tools */}}
+      "permissions": [
+        { "action": "atlassian_*", "resource": "*", "effect": "deny" },
+        { "action": "slack_*", "resource": "*", "effect": "deny" },
+        { "action": "cbci_*", "resource": "*", "effect": "deny" }
+      ]
+    },
     "compaction": { "model": "amazon-bedrock/us.anthropic.claude-sonnet-5-5" },
     "title": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
     "summary": { "model": "amazon-bedrock/us.anthropic.claude-haiku-5-5" },
@@ -84,8 +92,16 @@
       "extensions": [".java"]
     }
   },
+{{- /* MCP write tools ask, listed reads run; a tool a server adds later asks. Asks need a TUI without --yolo */}}
   "permissions": [
-    { "action": "external_directory", "resource": "*", "effect": "ask" }
+    { "action": "external_directory", "resource": "*", "effect": "allow" },
+    { "action": "atlassian_*", "resource": "*", "effect": "ask" },
+    { "action": "atlassian_get*", "resource": "*", "effect": "allow" },
+    { "action": "atlassian_search*", "resource": "*", "effect": "allow" },
+    { "action": "atlassian_list*", "resource": "*", "effect": "allow" },
+    { "action": "atlassian_discover", "resource": "*", "effect": "allow" },
+    { "action": "atlassian_executeRead", "resource": "*", "effect": "allow" },
+    { "action": "atlassian_atlassianUserInfo", "resource": "*", "effect": "allow" }
   ],
 {{- /*
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
