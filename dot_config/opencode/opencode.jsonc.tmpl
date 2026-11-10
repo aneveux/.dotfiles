@@ -55,7 +55,6 @@
 {{- /* mise owns upgrades */}}
   "update": "disable",
   "share": "disabled",
-  "compaction": { "auto": true },
 {{- /* V2 only reads AGENTS.md; this keeps repos that only ship a CLAUDE.md working, resolved per project */}}
   "instructions": ["CLAUDE.md"],
 {{- /* Every server is off by default; the opencode-context plugin turns on those its options list in work locations */}}
@@ -89,7 +88,8 @@
 {{- /*
   formatter: an object enables the built-ins (prettier, shfmt, gofmt, ruff...) plus spotless.
   Formatters run synchronously after each edit, so spotless uses mvnd and never fails the edit.
-  `.no-spotless` at the project root opts out, as with the Claude auto-format hook.
+  Formatters run in the location directory, so the `pom.xml` check and the `.no-spotless` opt-out
+  (as with the Claude auto-format hook) look there, not at the project root.
 */}}
   "formatter": {
     "spotless": {
