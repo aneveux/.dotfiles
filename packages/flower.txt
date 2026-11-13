@@ -1,0 +1,72 @@
+# Manual checklist of apt packages for flower (Ubuntu 26.04, i3 on X11).
+# CLI tools come from mise (~/.config/mise/config.toml), installed on chezmoi apply.
+
+# Bootstrap
+git         # Version control
+zsh         # Z shell
+mise        # Tool version manager
+
+# System utilities
+curl        # Data transfer tool
+gnupg       # GPG encryption
+openvpn     # VPN client
+rsync       # File synchronization
+7zip        # Archive manager
+xclip       # Clipboard for tmux, zsh-vi-mode and nvim
+blueman     # Bluetooth manager
+feh         # Lightweight image viewer
+imagemagick # Image manipulation
+ffmpeg      # Video/Audio processing
+playerctl   # Media player controller
+vlc         # Media player
+
+# CLI tools
+ripgrep   # fast grep
+jq        # JSON processor
+htop      # Process viewer
+lnav      # Log file navigator
+most      # Pager
+
+# Development tools
+git-secrets # Prevent committing secrets
+docker-ce   # Container runtime, from Docker's apt repository
+
+# Terminal
+ghostty # GPU terminal
+rofi    # App launcher
+qalc    # Calculator backend for ~/.config/rofi/calc.sh (greenclip comes from .chezmoiexternal.toml)
+
+# Desktop environment
+i3-wm             # Window manager
+i3lock            # Provides /etc/pam.d/i3lock; i3lock-color itself is built by run_onchange_before_install-i3lock-color.sh.tmpl
+dunst             # Notification daemon
+polybar           # Status bar
+picom             # Compositor
+xautolock         # Idle locker
+stalonetray       # Collapsible tray toggled from polybar
+dex               # Runs XDG autostart entries from i3
+policykit-1-gnome # Polkit authentication agent
+pinentry-gnome3   # GPG passphrase prompt
+brightnessctl     # Backlight control
+qt5ct             # Qt5 theming
+qt6ct             # Qt6 theming
+qt5-style-kvantum # Kvantum (Catppuccin Mocha) for Qt5
+qt6-style-kvantum # Kvantum (Catppuccin Mocha) for Qt6
+papirus-folders   # Applies cat-mocha-blue folders
+papirus-icon-theme
+sassc             # Builds the Colloid GTK theme
+unzip             # Extracts Catppuccin cursors
+x11-emoji-picker  # Emoji picker
+
+# Applications (discord and chromium are snaps, jetbrains-toolbox a manual install)
+slack-desktop     # Chat
+obsidian          # Notes
+spotify-client    # Music
+nextcloud-desktop # Cloud sync
+flameshot         # Screenshot tool
+firefox           # Browser
+
+# Fonts (JuliaMono for ghostty, and the Iosevka and Hack Nerd Fonts for polybar, rofi, dunst and i3, live in ~/.local/share/fonts)
+fonts-noto-color-emoji
+
+# Not from apt: navi, yazi, presenterm and topgrade come from cargo

@@ -10,7 +10,7 @@ Obviously these are my personal dotfiles, and I wouldn't recommend you to use th
 
 ## Setup
 
-On a new machine, install `git`, `zsh` and `mise` first (system packages are listed in `packages.txt`,
+On a new machine, install `git`, `zsh` and `mise` first (system packages are listed per machine in `packages/`,
 installed by hand), then:
 
 ```sh

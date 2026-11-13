@@ -1,0 +1,57 @@
+# Manual checklist of packages for nyx (CachyOS, KDE Plasma on Wayland), pacman names unless noted.
+# CLI tools come from mise (~/.config/mise/config.toml), installed on chezmoi apply.
+# Plasma covers the desktop (notifications, clipboard, screenshots, bluetooth, theming), so nothing here tweaks it.
+
+# Bootstrap
+git        # Version control
+zsh        # Z shell; pick it in the installer, fish is CachyOS's default
+mise       # Tool version manager
+base-devel # mise builds tmux from source
+libevent   # tmux build dependency
+ncurses    # tmux build dependency
+
+# System utilities
+curl         # Data transfer tool
+gnupg        # GPG encryption
+pinentry     # Provides pinentry-qt, used by ~/.gnupg/gpg-agent.conf
+rsync        # File synchronization
+7zip         # Archive manager
+wl-clipboard # Clipboard for tmux, zsh-vi-mode and nvim
+imagemagick  # Image manipulation
+ffmpeg       # Video/Audio processing
+vlc          # Media player
+
+# CLI tools
+ripgrep    # fast grep
+jq         # JSON processor
+htop       # Process viewer
+lnav       # Log file navigator
+most       # Pager
+navi       # Interactive cheatsheet
+yazi       # TUI file manager
+presenterm # Terminal slides
+
+# Development tools
+git-secrets            # Prevent committing secrets
+docker                 # Container runtime
+docker-credential-pass # Docker credential helper
+lazydocker             # TUI docker client
+
+# Terminal
+ghostty       # GPU terminal
+ttf-juliamono # ghostty font
+
+# Applications (AUR ones through paru, which CachyOS ships)
+firefox           # Browser
+discord           # Chat
+slack-desktop     # Chat (AUR)
+obsidian          # Notes
+spotify           # Music (AUR)
+nextcloud-client  # Cloud sync
+jetbrains-toolbox # JetBrains IDE manager (AUR)
+
+# Fonts
+noto-fonts-emoji
+
+# Updaters & meta tools
+topgrade-bin # Auto-update everything (AUR)
