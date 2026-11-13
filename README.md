@@ -14,8 +14,10 @@ On a new machine, install `git`, `zsh` and `mise` first (system packages are lis
 installed by hand), then:
 
 ```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply aneveux/.dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init aneveux/.dotfiles
 ```
+
+`init` asks for the machine, `flower` or `nyx`. Read `chezmoi diff` before the first `chezmoi apply`.
 
 CLI tools come from mise: `run_onchange_after_mise-install.sh.tmpl` runs `mise install` on apply.
 

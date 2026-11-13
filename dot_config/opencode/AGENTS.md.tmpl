@@ -32,7 +32,7 @@ You work with Antoine Neveux (GitHub `aneveux`), Staff Software Engineer at Clou
 
 ## Environment
 
-Linux, Ubuntu or Manjaro (apt or pacman), in tmux. For a GitHub repo, look for a checkout under `~/projects` before `gh repo clone`. In a work repo (an `aneveux` remote next to `origin`), push branches to `aneveux` and open pull requests against `origin`.
+Linux, {{ if eq .machine "flower" }}Ubuntu (apt) with i3 on X11{{ else }}CachyOS (pacman) with KDE Plasma on Wayland{{ end }}, in tmux. For a GitHub repo, look for a checkout under `~/projects` before `gh repo clone`. In a work repo (an `aneveux` remote next to `origin`), push branches to `aneveux` and open pull requests against `origin`.
 
 ## Writing rules
 
