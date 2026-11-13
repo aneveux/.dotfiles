@@ -523,8 +523,6 @@ bindsym $mod+Shift+n exec autorandr --load laptop-full
 set $LAPTOP {{ .laptop_monitor }}
 workspace $WS4 output $LAPTOP
 exec --no-startup-id autorandr --change
-{{ else if eq .machine "atuin" }}
-exec --no-startup-id autorandr --change --default desktop
 {{ end }}
 
 exec_always --no-startup-id feh --bg-center ~/wallpaper.png

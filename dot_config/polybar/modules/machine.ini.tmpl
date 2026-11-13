@@ -1,4 +1,4 @@
 [module/machine]
 type = custom/text
-format = {{ if eq .machine "flower" }}{{ else if eq .machine "atuin" }}{{ else }}{{ .machine }}{{ end }}
+format = {{ if eq .machine "flower" }}{{ else }}{{ .machine }}{{ end }}
 format-foreground = ${colors.subtext0}
