@@ -1,9 +1,8 @@
 metadata:
   name: quickflow
-  description: quickflow (qf) — Jira-to-PR terminal workflow, commands and inbox
+  description: quickflow (qf) — Jira-to-PR terminal workflow and commands
 
 extends: []
 
 plugins:
-  enable:
-    - qf-inbox@claude-secret-garden
+  enable: []

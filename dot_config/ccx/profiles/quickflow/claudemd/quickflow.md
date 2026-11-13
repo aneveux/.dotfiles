@@ -29,7 +29,6 @@ Maintain:
 - `qf track` (t) / `qf done` — track / close a work topic
 - `qf log` (l) — log time to Jira
 - `qf gc` — clean up merged topics
-- `qf inbox` (i) — view Claude notification events
 - `qf doctor` — validate environment and config
 
 Flags: `-v/--verbose` shows external command output (git, gh, curl).

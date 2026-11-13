@@ -159,7 +159,6 @@ bind b send-prefix
 bind d detach-client
 bind r source-file ~/.tmux.conf \; display-message "🔁 Tmux config reloaded!"
 bind-key S display-popup -E -w 80% -h 60% 'd=$(fd -td -d1 . ~/projects | fzf --preview "eza --git --icons --color=always {}") && stash -C "$d"'
-bind-key N run-shell "~/projects/quickflow/qf inbox --next"
 bind-key C-g display-popup -E -w 70% -h 70% "tmux-file-picker -g"
 
 # workmux
@@ -286,7 +285,6 @@ set -g @catppuccin_window_current_text " #W#{?@workmux_status, #{@workmux_status
 
 set -g status-left "#{E:@catppuccin_status_session} "
 set -g status-right "#{E:@catppuccin_status_gitmux}"
-set -ga status-right '#{?#{@qf_inbox_count}, 🔔 #{@qf_inbox_count},}'
 
 # alberti42/tmux-fzf-links ---------------------------------------------------
 set -g @plugin 'alberti42/tmux-fzf-links'

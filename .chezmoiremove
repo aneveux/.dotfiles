@@ -11,3 +11,6 @@
 .config/hunk
 .tweakcc
 .config/kitty
+.config/polybar/modules/claude.ini
+.config/polybar/scripts/claude-status.sh
+.config/polybar/scripts/claude-status-hook.sh

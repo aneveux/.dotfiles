@@ -22,7 +22,6 @@ C-a + r    Reload tmux config  #reload #config #refresh #source
 C-a + t    Quick-add task (tsk)  #todo #task #add #tsk
 C-a + T    Pick task (tsk)  #todo #task #pick #tsk
 C-a + S    Stash popup (fzf project picker)  #stash #quickflow #popup #fzf
-C-a + N    Quickflow inbox next  #quickflow #inbox #next #notification
 C-a + Tab    Window switcher (all sessions)  #window #switch #picker #search #jump
 C-a + S-Tab    Session switcher  #session #switch #picker #search #jump
 C-a + C-g    File picker: insert repo path  #file #path #picker #fzf #insert #claude
