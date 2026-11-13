@@ -1,6 +1,16 @@
 # https://workmux.raine.dev/guide/configuration/
 nerdfont: true
-agent: claude
+# Shadows the built-in opencode agent, so `workmux resurrect` and `-a opencode` go through oc too
+agent: opencode
+agents:
+  opencode:
+    type: opencode
+    # oc (~/local/zshrc.d/opencode.zsh) is a zsh function: mise-resolved binary plus the AWS SSO check.
+    # One string and no env: `-a` looks a bare name up on PATH, and env: would prefix `env`, which can't run a function
+    command: "oc --yolo"
+# The default, a bare `opencode run`, would name branches with the build agent's Opus and list the session
+auto_name:
+  command: "opencode run --archived --model amazon-bedrock/us.anthropic.claude-haiku-5-5"
 
 # ~/projects/<repo>/.worktrees/<branch>: globally gitignored, sesh names it <repo>/<branch>
 worktree_dir: .worktrees
