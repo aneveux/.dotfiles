@@ -11,25 +11,29 @@
 
 ## Dependency Investigation
 
-Real source is almost always obtainable. Decompiling is the last resort, never the first move.
+Read a dependency's code from its sources jar, at the version the build resolves: one command, the
+exact version, and the real source with its Javadoc. `javap -c` on a binary jar shows bytecode, not
+the code, and decompiling is the last resort.
 
-Before reading code you don't own (a library, a plugin, a transitive dep), find the canonical repo:
-read `<scm><connection>` or `<url>` from the artifact's own pom at
-`~/.m2/repository/<group/path>/<artifact>/<version>/<artifact>-<version>.pom`. Do not guess the repo
-name from the artifactId — `ssh-slaves` lives at `jenkinsci/ssh-agents-plugin`.
+Resolve the version first: `mvn dependency:tree -Dincludes=<g>:<a>`. Then escalate in order,
+stopping at the first step that works:
 
-Then escalate in order, stopping at the first step that works:
-
-1. **Existing local checkout.** `~/projects` is flat and holds ~220 repos; the dir name usually
-   matches the repo name (`ls -d ~/projects/*<name>*`). Skip `worktrees-*` and `wt-*`, those are
-   worktrees rather than primary checkouts.
-2. **Clone it.** `gh repo clone <org>/<repo> /tmp/<repo>`. If it is a repo you will likely want
-   again (Jenkins core, a CBCI monorepo), clone into `~/projects` so step 1 finds it next time.
-3. **Source jar.** In-project: `mvn dependency:sources` for all deps. Single artifact:
-   `mvn dependency:unpack -Dartifact=<g>:<a>:<v>:jar:sources -DoutputDirectory=target/src-<a>`.
-   Never pass `-o` here — offline mode is what makes the sources unavailable.
-4. **Decompile.** Only when no source exists anywhere: shaded or relocated artifacts, closed-source
-   binaries. Say explicitly that you fell through to this step, and why.
+1. **Sources jar.** One artifact, inside or outside a project:
+   `mvn dependency:get -Dartifact=<g>:<a>:<v>:jar:sources -Dtransitive=false`. Read it in place, at
+   `~/.m2/repository/<group/path>/<a>/<v>/<a>-<v>-sources.jar`, with
+   `unzip -p <jar> <package/path>/<Class>.java` or `zipgrep <pattern> <jar>`. Every dependency of the
+   project: `mvn dependency:resolve-sources` (`dependency:sources` on a plugin older than 3.7.0). Go
+   through Maven, not `curl` on a repository URL, so the mirrors and credentials apply. Never pass
+   `-o`: offline mode is what makes the sources unavailable.
+2. **A checkout**, for tests or history, or when no sources jar exists. Find the canonical repo in
+   `<scm><connection>` or `<url>` of the artifact's own pom, at
+   `~/.m2/repository/<group/path>/<artifact>/<version>/<artifact>-<version>.pom`. Do not guess the
+   repo name from the artifactId: `ssh-slaves` lives at `jenkinsci/ssh-agents-plugin`. Use an
+   existing checkout in `~/projects` (`ls -d ~/projects/*<name>*`, skipping the `worktrees-*` and
+   `wt-*` worktrees), else `gh repo clone <org>/<repo> /tmp/<repo>`; a repo you will want again
+   (Jenkins core, a CBCI monorepo) goes into `~/projects`.
+3. **Decompile.** Only when neither exists: shaded or relocated artifacts, closed-source binaries.
+   Say explicitly that you fell through to this step, and why.
 
 **Pin the version, and never disturb a working tree.** Read the code at the revision the project
 actually depends on, not at whatever HEAD happens to be. Find the tag with
@@ -42,5 +46,5 @@ revision produces confidently wrong answers, worse than not reading at all.
 **Locating a class is a different question.** "Which jar holds `X`?" is cheap and is not decompiling:
 `mvn dependency:list-classes -Dartifact=<g>:<a>:<v>`, or a jackknife class index
 (`mvn jackknife:index`, then `Grep <ClassName> .jackknife/manifest/`). Use these freely at any step.
-`mvn jackknife:decompile` is step 4 only. See the generated `.jackknife/USAGE.md` for its full
+`mvn jackknife:decompile` is step 3 only. See the generated `.jackknife/USAGE.md` for its full
 command set.
