@@ -1,10 +1,10 @@
 {
   "rulebook_version": 1,
   "name": "antoine-personal",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Gap coverage beyond cc-safety-net built-ins; partial port of the retired pre-bash-security.sh.",
   "author": "antoine",
-  "allowed_commands": ["npm", "curl", "wget", "nc", "ncat", "netcat", "chmod"],
+  "allowed_commands": ["npm", "curl", "wget", "nc", "ncat", "netcat", "chmod", "git"],
   "rules": [
     {
       "name": "block-npm-global-install",
@@ -98,6 +98,21 @@
         "ugo=rwx"
       ],
       "reason": "World-writable permissions are rarely intended. Scope the mode down."
+    },
+    {
+      "name": "block-git-push-force-with-lease",
+      "command": "git",
+      "intent": "hard_stop",
+      "block_args": ["--force-with-lease", "--force-if-includes"],
+      "reason": "Force-with-lease still rewrites remote history. Force pushes are the user's to run, whatever the flag."
+    },
+    {
+      "name": "block-git-po-force",
+      "command": "git",
+      "subcommand": "po",
+      "intent": "hard_stop",
+      "block_args": ["--force", "-f"],
+      "reason": "po is the user's alias for push origin, which the built-in force-push rule doesn't expand. Force pushes are the user's to run."
     }
   ],
   "tests": [
@@ -124,6 +139,13 @@
     { "command": "chmod 0666 data.txt", "expect": "blocked", "rule": "block-chmod-world-writable" },
     { "command": "chmod a+rwx config", "expect": "blocked", "rule": "block-chmod-world-writable" },
     { "command": "chmod 755 binary", "expect": "allowed" },
-    { "command": "chmod 1777 /tmp/shared", "expect": "allowed" }
+    { "command": "chmod 1777 /tmp/shared", "expect": "allowed" },
+    { "command": "git push --force-with-lease", "expect": "blocked", "rule": "block-git-push-force-with-lease" },
+    { "command": "git -C /tmp/repo push --force-if-includes --force-with-lease origin main", "expect": "blocked", "rule": "block-git-push-force-with-lease" },
+    { "command": "git po --force-with-lease main", "expect": "blocked", "rule": "block-git-push-force-with-lease" },
+    { "command": "git po --force main", "expect": "blocked", "rule": "block-git-po-force" },
+    { "command": "git po -f main", "expect": "blocked", "rule": "block-git-po-force" },
+    { "command": "git po main", "expect": "allowed" },
+    { "command": "git push -u aneveux my-branch", "expect": "allowed" }
   ]
 }

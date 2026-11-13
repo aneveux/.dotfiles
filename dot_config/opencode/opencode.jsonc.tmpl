@@ -124,7 +124,10 @@
   Hard limits: policies hold in every agent, in --yolo and against saved approvals.
   Last match wins. Resources are relative inside the project and absolute outside it, so secret
   patterns start with `*` to match both. Shell-level blocking (force push, secret reads from the
-  shell) is cc-safety-net's job: it parses commands and sees through `rtk` as a wrapper.
+  shell) is cc-safety-net's job: it parses commands and sees through `rtk` as a wrapper. One
+  exception: its rules match exact tokens, so `--force-with-lease=<ref>` gets past its
+  force-with-lease rule; the shell denies below catch that form. rtk doesn't read policies and
+  rewrites `git ...` into `rtk git ...` before OpenCode evaluates them, hence the `rtk` twin.
   Project config (.opencode/, opencode.json*) is edit-denied because it can drop plugins such as
   cc-safety-net and auto-load plugin code; plan mode's own files are lifted back out.
   Mutating chezmoi commands are denied so nothing reaches the live config without a manual
@@ -159,6 +162,8 @@
 {{- range list "diff" "status" "cat" "managed" "source-path" }}
     { "action": "tool.use", "resource": "shell:chezmoi {{ . }} *", "effect": "allow" },
 {{- end }}
+    { "action": "tool.use", "resource": "shell:git *--force-with-lease=*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:rtk git *--force-with-lease=*", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:{{ $home }}/.opencode/plan/*", "effect": "allow" }
   ]
 }
