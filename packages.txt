@@ -31,10 +31,8 @@ tldr      # Simplified man pages
 navi      # Interactive cheatsheet
 yazi      # TUI file manager
 gum       # Terminal UI components
-mods      # AI tool integration
 sesh-bin  # Session manager
 cbonsai   # useless but fun, bonsai tree in shell
-crush-bin # ai coding agent by charmbracelet
 
 # Development tools
 git                    # Version control
@@ -55,12 +53,7 @@ zsh-autosuggestions     # Autosuggestions for zsh
 zsh-completions         # Extra completions
 zsh-syntax-highlighting # Syntax highlighting
 ghostty                 # GPU terminal
-kitty                   # GPU terminal (fallback)
-kitty-shell-integration
-kitty-terminfo
 tmux       # Terminal multiplexer
-tmuxinator # Tmux session manager
-dmenu      # Application launcher
 rofi       # Alternative app launcher
 qalc       # Calculator backend for ~/.config/rofi/calc.sh (greenclip comes from .chezmoiexternal.toml)
 chezmoi    # Dotfile manager

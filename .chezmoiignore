@@ -2,8 +2,6 @@ README.md
 LICENSE
 nighttab.json
 packages.txt
-prompts
-prompts/**
 .claude/settings.local.json
 .claude/history.jsonl
 .claude/logs
