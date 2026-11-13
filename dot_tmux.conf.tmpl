@@ -35,6 +35,9 @@ set -g allow-passthrough on
 set -gu update-environment
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
+{{- if ne .machine "flower" }}
+set -ga update-environment WAYLAND_DISPLAY
+{{- end }}
 set -g history-limit 50000
 set -g display-time 4000
 setw -g aggressive-resize on
@@ -59,7 +62,7 @@ setw -g mode-keys vi
 
 # OSC 52 from apps (nvim, ssh) reaches the system clipboard; copy-pipe uses copy-command
 set -s set-clipboard on
-set -s copy-command 'xclip -selection clipboard'
+set -s copy-command '{{ if eq .machine "flower" }}xclip -selection clipboard{{ else }}wl-copy{{ end }}'
 
 unbind [
 bind v copy-mode

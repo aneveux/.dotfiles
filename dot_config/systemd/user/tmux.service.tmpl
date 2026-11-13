@@ -4,7 +4,11 @@ Documentation=man:tmux(1)
 
 [Service]
 Type=forking
+{{- if eq .machine "flower" }}
 Environment=DISPLAY=:0
+{{- else }}
+Environment=WAYLAND_DISPLAY=wayland-0
+{{- end }}
 ExecStart=%h/.local/share/mise/shims/tmux new-session -d
 
 ExecStop=%h/.local/share/mise/shims/tmux kill-server

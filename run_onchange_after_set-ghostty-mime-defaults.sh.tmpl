@@ -1,3 +1,4 @@
+{{ if eq .machine "flower" -}}
 #!/usr/bin/env bash
 #
 # Route folders, ssh:// links and shell scripts to ghostty-open whenever its
@@ -10,3 +11,4 @@ if command -v update-desktop-database >/dev/null; then
 	update-desktop-database "{{ .chezmoi.homeDir }}/.local/share/applications"
 fi
 xdg-mime default ghostty-open.desktop inode/directory x-scheme-handler/ssh application/x-shellscript
+{{ end -}}

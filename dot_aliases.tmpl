@@ -10,8 +10,13 @@ alias rm='rm -iv'
 
 alias df='df -h'
 alias free='free -m'
+{{- if eq .machine "flower" }}
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection c -o'
+{{- else }}
+alias setclip='wl-copy'
+alias getclip='wl-paste'
+{{- end }}
 
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -21,8 +26,10 @@ alias ......='cd ../../../../..'
 
 alias mux='tmux new-session -s "${PWD##*/}"'
 alias slides='presenterm'
+{{- if eq .machine "flower" }}
 
 alias ccup='mise use -g claude@latest && source ~/local/zshrc.d/claude.zsh'
+{{- end }}
 
 # sourcing the script so it can be used to `cd` in directories
 alias clone='. "$HOME/bin/clone"'

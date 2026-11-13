@@ -21,9 +21,11 @@ PATH="$HOME/.local/share/mise/shims:$PATH"
 
 export EDITOR=nvim
 export TERMINAL=/usr/bin/ghostty
+{{- if eq .machine "flower" }}
 export QT_QPA_PLATFORMTHEME="qt5ct"
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
+{{- end }}
 
 # Added by Toolbox App
 export PATH="$PATH:/home/antoine/.local/share/JetBrains/Toolbox/scripts"

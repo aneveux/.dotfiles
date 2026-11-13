@@ -1,9 +1,11 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
-{{- $machine := promptStringOnce . "machine" "Machine Name (flower/atuin)" -}}
-{{- $main_monitor := promptStringOnce . "main_monitor" "Main monitor connector (xrandr name)" -}}
-{{- $vertical_monitor := promptStringOnce . "vertical_monitor" "Vertical monitor connector (xrandr name)" -}}
+{{- $machine := promptChoiceOnce . "machine" "Machine" (list "flower" "nyx") -}}
+{{- $main_monitor := "" -}}
+{{- $vertical_monitor := "" -}}
 {{- $laptop_monitor := "" -}}
 {{- if eq $machine "flower" -}}
+{{- $main_monitor = promptStringOnce . "main_monitor" "Main monitor connector (xrandr name)" -}}
+{{- $vertical_monitor = promptStringOnce . "vertical_monitor" "Vertical monitor connector (xrandr name)" -}}
 {{- $laptop_monitor = promptStringOnce . "laptop_monitor" "Laptop panel connector (eDP name)" -}}
 {{- end -}}
 
